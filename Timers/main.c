@@ -4,12 +4,12 @@
 
 #define F_CPU 16000000
 
-ISR(TIMER1_OVF_vect){
+ISR(TIMER1_COMPA_vect){
     /*
-    * Desabilita a interrupção de overflow do timer 1
+    * Desabilita a interrupção de comparação A do timer 1
     * Habilita a interrupção do INT0
     */
-    TIMSK1 &= ~(1 << TOIE1);
+    TIMSK1 &= ~(1 << OCIE1A);
     EIMSK |= (1 << INT0);
 }
 
@@ -18,12 +18,12 @@ ISR(INT0_vect){
     * Desabilita a interrupção do INT0
     * Toggle no PB5
     * Reseta o valor da contagem
-    * Habilita a interrrupção de overflow do timer 1
+    * Habilita a interrrupção de comparação A do timer 1
     */
     EIMSK &= ~(1 << INT0);
     PINB = (1 << PB5);
     TCNT1 = 0;
-    TIMSK1 |= (1 << TOIE1);
+    TIMSK1 |= (1 << OCIE1A);
 }
 
 
@@ -48,7 +48,6 @@ int main(void) {
     * Divide o clock
     */
     OCR1A = (F_CPU/1024)*0.2;
-    TCCR1A = (1 << WGM10);
     TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10);
 
     sei();
