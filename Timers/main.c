@@ -49,6 +49,7 @@ int main(void) {
     */
     OCR1A = (F_CPU/1024)*0.2;
     TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10);
+    TIFR1 = (1 << OCF1A);
 
     sei();
 
