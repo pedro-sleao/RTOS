@@ -35,10 +35,10 @@ int main(void) {
     DDRD &= ~(1 << PD2);
     PORTD |= (1 << PD2);
 
-    /* Define a interrupção como rising-edge
+    /* Define a interrupção como falling-edge
      * Limpa a flag da interrupção
      * Habilita a interrupção para o INT0 */
-    EICRA |= (1 << ISC01) | (1 << ISC00);
+    EICRA |= (1 << ISC01);
     EIFR |= (1 << INTF0);
     EIMSK |= (1 << INT0);
 
@@ -47,7 +47,7 @@ int main(void) {
     * Ativa o modo CTC
     * Divide o clock
     */
-    OCR1A = (F_CPU/1024)*0.2;
+    OCR1A = 3125;
     TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10);
     TIFR1 = (1 << OCF1A);
 
