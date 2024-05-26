@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/cpufunc.h>
 #include <avr/interrupt.h>
+#include <string.h>
 
 #define FOSC 16000000ul
 #define BAUD 9600
@@ -35,23 +36,24 @@ void delay_ms(uint16_t ms)
 }
 
 int main(void){
-    uint8_t tx_data = 0;
+    char tx_data[] = "Hello, world!\n";
+    uint8_t i;
 
     setup_usart();
     
     sei();
 
     while(1){
-        USART_Transmit(tx_data);
+        USART_Transmit(tx_data[i]);
 
-        if(tx_data >= 9){
-            tx_data = 0;
+        if (i < strlen(tx_data)){
+            i++;
         } else{
-            tx_data++;
+            i = 0;
         }
 
         delay_ms(250);
-    };
+    }
 
     return 0;
 }
