@@ -11,6 +11,7 @@
 #define BAUD 250000
 #define MYUBRR (FOSC/(8ul*BAUD) - 1)
 
+void delay(uint8_t n);
 
 void USART_Transmit(uint8_t data)
 {
@@ -30,21 +31,23 @@ uint8_t USART_Receive(void)
 }
 
 ISR(USART_RX_vect){
+    /* Verifique se houve erro. Se houve transmita o byte 0xDE. Se não
+       houve, ecoe o byte recebido */
     uint8_t data;
 
     data = USART_Receive();
-    if ((UCSR0A & (1 << UPE0) | UCSR0A & (1 << FE0))){
-        
-    } else{
+    if (!(UCSR0A & (1 << FE0))){
         USART_Transmit(data);
+    } else{
+        USART_Transmit(0x7E);
     }
 }
 
 volatile uint16_t compa_count = 0;
 ISR(TIMER0_COMPA_vect) {
     compa_count++;
-    /* Pisque o LED a cada 320 ms */
-    if (compa_count == 2000){
+    /* Pisque o LED a cada 640 ms */
+    if (compa_count == 4000){
         PINB = (1 << PB5);
         compa_count = 0;
     }
