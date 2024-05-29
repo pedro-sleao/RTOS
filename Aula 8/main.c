@@ -36,7 +36,7 @@ ISR(USART_RX_vect){
     uint8_t data;
 
     data = USART_Receive();
-    if (!(UCSR0A & (1 << FE0))){
+    if (!(UCSR0A & ((1 << FE0) | (1 << DOR0)))){
         USART_Transmit(data);
     } else{
         USART_Transmit(0x7E);
