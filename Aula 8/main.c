@@ -31,7 +31,7 @@ uint8_t USART_Receive(void)
 }
 
 ISR(USART_RX_vect){
-    /* Verifique se houve erro. Se houve transmita o byte 0xDE. Se não
+    /* Verifique se houve erro. Se houve transmita o byte 0x7E. Se não
        houve, ecoe o byte recebido */
     uint8_t data;
 
