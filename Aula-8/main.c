@@ -112,9 +112,11 @@ int main(void) {
     uint16_t data = 0xAA55;
     while (1) {
         /* O seu código aqui */
+        cli();
         send_bits((data >> 0) & 0XFF);
         send_bits((data >> 8) & 0XFF);
-
+        sei();
+        
         /* Pequeno delay para separar os sinais individuais */
         delay(40);
     }
