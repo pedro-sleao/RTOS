@@ -50,7 +50,6 @@ int main(void) {
                 ev = EVINVALIDCHAR;
             }
             process_event(ev);
-            printf("%d", ev);
             pInput++;
         }
         
