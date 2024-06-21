@@ -28,7 +28,7 @@ int main(void) {
     float result;
 
     while(1) {
-        scanf("%21s", pInput);
+        scanf("%20s", pInput);
         while(*pInput) {
             if (isdigit(*pInput)) {
                 ev = (uint8_t) *pInput - 48; /* Subtrair 48 para pegar o valor real do digito pela tabela ASCII */
@@ -50,6 +50,7 @@ int main(void) {
                 ev = EVINVALIDCHAR;
             }
             process_event(ev);
+            printf("%d", ev);
             pInput++;
         }
         
