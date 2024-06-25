@@ -15,6 +15,10 @@ enum {
     ST_ERROR
 };
 
+int8_t signal = 1;
+uint64_t rint, rfrac = 0;
+float result;
+
 uint8_t g_state;
 void process_event(uint8_t ev);
 
@@ -24,8 +28,6 @@ int main(void) {
     uint8_t *pInput = input;
 
     uint8_t ev;
-    uint64_t rint1, rint2, rfrac1, rfrac2 = 0;
-    float result;
 
     while(1) {
         scanf("%20s", pInput);
@@ -62,8 +64,28 @@ int main(void) {
 void process_event(uint8_t ev) {
     switch (g_state) {
         case ST_WAITSIGN1:
+            if (ev == EVMAIS) {
+                signal = 1;
+            } else if (ev == EVMENOS) {
+                signal = -1;
+            } else if (ev <= EV9) {
+                rint = ev;
+                g_state = ST_INT2;
+            } else {
+                g_state = ST_ERROR;
+            }
             break;
         case ST_INT1:
+            if (rint == 0) {
+                if (ev <= EV9) {
+                    rint = ev;
+                } else {
+                    g_state = ST_ERROR;
+                }
+            } else if (ev == EVPONTO) {
+                g_state = ST_FRAC1;
+            }
+            
             break;
         case ST_INTX1:
             break;
@@ -80,6 +102,7 @@ void process_event(uint8_t ev) {
         case ST_ANSWER:
             break;
         case ST_ERROR:
+            rint, rfrac = 0;
             break;
         default:
             break;
