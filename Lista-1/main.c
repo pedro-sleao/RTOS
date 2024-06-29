@@ -7,10 +7,15 @@
 
 #include <stdint.h>
 
-#define BUFFER_SIZE 255
 #define FOSC 16000000ul
 #define BAUD 57600
 #define MYUBRR (FOSC/(8ul*BAUD) - 1)
+
+/* Caracteres especiais */
+#define SINC 0x7e
+#define XON 0x11
+#define XOFF 0x13
+#define ESC 0x7d
 
 /* Protótipos das funções */
 uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet);
@@ -24,12 +29,15 @@ void delay_ms(uint16_t ms);
 
 /* Variáveis globais */
 uint8_t rx_byte_cnt, tx_byte_cnt;
-uint8_t sinc = 0x7e, XON = 0x11, XOFF = 0x13, escape = 0x7d;
 uint8_t rx_state, rx_sinc, tx_state=1;
-uint8_t rx_data;
 
 ISR(USART_RX_vect) {
-   
+   uint8_t received_byte = UDR0;
+    if (received_byte == XOFF) {
+        tx_state = 0;
+    } else if (received_byte == XON) {
+        tx_state = 1;
+    }
 }
 
 ISR(USART_UDRE_vect) {
@@ -44,17 +52,18 @@ int main(void) {
     UBRR0H = (MYUBRR>>8); /* Set baud rate */
     UBRR0L = MYUBRR; /* Set baud rate */
 
-    DDRB |= (1 << PB5);
+    DDRB |= (1 << PB5); // Configura PB5 como saída (LED)
+    PORTB &= ~(1 << PB5); // Garante que o LED está apagado no início   
 
     sei();
 
     /* Implemente os testes aqui. Veja o texto para os detalhes */
-    uint8_t str_test2[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistemas";
+    uint8_t str_test[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistemas";
 
     /* Loop infinito necessário em qualquer programa para
        embarcados */
     while (1) {
-        write(str_test2, sizeof(str_test2), 1);
+        write(str_test, sizeof(str_test)-1, 1);
         delay_ms(1000);
     }
 
@@ -74,8 +83,8 @@ uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet){
         tx_byte_cnt++;
     }
 
-    if (close_packet) {
-        USART_Transmit(sinc);
+    if (close_packet && tx_state) {
+        USART_Transmit(SINC);
     }
 
     return tx_byte_cnt;
