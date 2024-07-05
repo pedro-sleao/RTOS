@@ -127,7 +127,8 @@ int main(void) {
     uint8_t buffer[255];
     while (nbytes < 300) {
         if (rcvd_byte) {
-            nbytes += read(buffer, 1);
+            nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
+            rcvd_byte = 0;
         }
     }
     flow_off();
@@ -135,6 +136,40 @@ int main(void) {
         turn_led_on();
     } else {
         blink_led();
+    }
+
+    /* Teste 5 */
+    PORTB &= ~(1 << PB5); /* Apaga o LED */
+    nbytes = 0;
+    while (nbytes < 300) {
+        if (rcvd_byte) {
+            nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
+            rcvd_byte = 0;
+        }
+    }
+
+    flow_off();
+    if (is_flow_on()) {
+        turn_led_on();
+    } else {
+        blink_led();
+    }
+
+    /* Teste 6 */
+    PORTB &= ~(1 << PB5); /* Apaga o LED */
+    
+    uint8_t binary_string[] = {0x00, 0x01, 0x11, 0x02, 0x13, 0x04, 0x7e, 0x05, 0x7d, 0x06};
+    i = 0;
+    
+    /* É pra ficar reenviando a string ou envia ela apenas uma vez? */
+    while (i < sizeof(binary_string)) { 
+        if (!write(binary_string[i], 1, 0)) {
+            PORTB |= (1 << PB5); /* Acende o LED */
+        } else {
+            PORTB &= ~(1 << PB5); /* Apaga o LED */
+            i++;
+        }
+        //delay_ms(1000);
     }
 
     /* Loop infinito necessário em qualquer programa para
@@ -178,6 +213,7 @@ uint8_t read(uint8_t* buf, uint8_t n) {
             if (received_byte == SINC) {
                 buf[byte_pos] = '\0';
                 byte_pos = 0;
+                byte_cnt++; /* Conferir se precisa dessa soma */
                 return byte_cnt;
             } else if (received_byte != XON && received_byte != XOFF && received_byte != ESC) {
                 buf[byte_pos] = received_byte;
