@@ -6,6 +6,7 @@
 #include <avr/interrupt.h>
 
 #include <stdint.h>
+#include <string.h>
 
 #define FOSC 16000000ul
 #define BAUD 57600
@@ -23,13 +24,13 @@ uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet);
 uint8_t read(uint8_t* buf, uint8_t n);
 uint16_t read_rx_buffer(void);
 uint8_t write_tx_buffer(uint8_t c);
+void enqueue_rx_buffer(uint8_t received_data);
 void flow_off(void);
 void flow_on(void);
 uint8_t is_flow_on(void);
 void delay_ms(uint16_t ms);
 void blink_led(void);
 void turn_led_on(void);
-
 
 /* Variáveis globais */
 uint8_t rx_byte_cnt, tx_byte_cnt;
@@ -44,31 +45,22 @@ volatile uint8_t rcvd_byte=0;
 ISR(USART_RX_vect) {
     uint8_t received_data = UDR0;
     
-    if (received_data == ESC && !rx_esc) {
-        rx_esc = 1;
-    } else if (received_data == XOFF && !rx_esc) {
-        tx_state = 0;
-    } else if (received_data == XON && !rx_esc) {
-        tx_state = 1;
-    } else if (received_data == SINC && !rx_esc){
-        rx_sinc = 1;
-    } else {
-        rx_esc = 0;
-
-        uint8_t next = rx_head + 1;
-        if (next >= BUFFER_SIZE)
-            next = 0;
-        
-        /* Se o buffer estiver cheio desprezamos o byte recebido mais antigo e
-        * colocamos o byte que acabamos de receber em seu lugar */
-        rx_buffer[rx_head] = received_data;
-        rx_head = next;
-        if (next == rx_tail) { /* buffer cheio */
-            rx_tail++;
-            if (rx_tail >= BUFFER_SIZE)
-                rx_tail = 0;
+    if (!rx_esc) {
+        if (received_data == ESC) {
+            rx_esc = 1;
+        } else if (received_data == XOFF) {
+            tx_state = 0;
+        } else if (received_data == XON) {
+            tx_state = 1;
+        } else if (received_data == SINC){
+            rx_sinc = 1;
+            rcvd_byte = 1;
+        } else {
+            enqueue_rx_buffer(received_data);
         }
-        rcvd_byte = 1;
+    } else {
+        enqueue_rx_buffer(received_data);
+        rx_esc = 0;
     }
 }
 
@@ -104,7 +96,7 @@ int main(void) {
     sei();
 
     /* Implemente os testes aqui. Veja o texto para os detalhes */
-
+    
     /* Teste 2 */
     uint8_t str_test[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistemas";
     write(str_test, sizeof(str_test)-1, 1);
@@ -126,10 +118,7 @@ int main(void) {
     uint16_t nbytes = 0;
     uint8_t buffer[255];
     while (nbytes < 300) {
-        if (rcvd_byte) {
-            nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
-            rcvd_byte = 0;
-        }
+        nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa desse -1 */
     }
     flow_off();
     if (is_flow_on()) {
@@ -139,13 +128,11 @@ int main(void) {
     }
 
     /* Teste 5 */
+    flow_on(); /* Precisa do flow_on()? */
     PORTB &= ~(1 << PB5); /* Apaga o LED */
     nbytes = 0;
     while (nbytes < 300) {
-        if (rcvd_byte) {
-            nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
-            rcvd_byte = 0;
-        }
+        nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa desse -1 */
     }
 
     flow_off();
@@ -156,6 +143,7 @@ int main(void) {
     }
 
     /* Teste 6 */
+    flow_on(); /* Precisa do flow_on()? */
     PORTB &= ~(1 << PB5); /* Apaga o LED */
     
     uint8_t binary_string[] = {0x00, 0x01, 0x11, 0x02, 0x13, 0x04, 0x7e, 0x05, 0x7d, 0x06};
@@ -163,22 +151,58 @@ int main(void) {
     
     /* É pra ficar reenviando a string ou envia ela apenas uma vez? */
     while (i < sizeof(binary_string)) { 
-        if (!write(binary_string[i], 1, 0)) {
+        if (!write(binary_string+i, 1, 0)) {
             PORTB |= (1 << PB5); /* Acende o LED */
         } else {
             PORTB &= ~(1 << PB5); /* Apaga o LED */
             i++;
         }
-        //delay_ms(1000);
     }
-
+    
+    /* Teste 7 */
+    uint8_t comp_str[] = "Desenvolvimento de sistemas embarcados";
+    uint8_t comp_buffer[sizeof(comp_str)];
+    uint8_t k = 0;
     /* Loop infinito necessário em qualquer programa para
        embarcados */
-    while (1) {}
+    while (1) {
+        /* Letra a */
+        memset(comp_buffer, 0, sizeof(comp_buffer));
+        read(comp_buffer, 254);
+
+        for (int z = 0; z < sizeof(comp_buffer); z++){
+            write_tx_buffer(comp_buffer[z]);
+        }
+        write_tx_buffer('\n');
+        
+        if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
+            PORTB |= (1 << PB5);
+        } else {
+            PORTB &= ~(1 << PB5);
+        }
+
+        memset(comp_buffer, 0, sizeof(comp_buffer));
+        while (read(comp_buffer+k, 10) == 11) {
+            k += 10;
+        };
+        k = 0;
+
+        for (int z = 0; z < sizeof(comp_buffer); z++){
+            write_tx_buffer(comp_buffer[z]);
+        }
+        write_tx_buffer('\n');
+
+        if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
+            PORTB |= (1 << PB5);
+        } else {
+            PORTB &= ~(1 << PB5);
+        }
+    }
 
     return 0;
 }
 
+/* Funções */
 
 uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet){
     tx_byte_cnt = 0;
@@ -188,6 +212,9 @@ uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet){
     }
     
     while ((tx_byte_cnt < n) && tx_state) {
+        if (buf[tx_byte_cnt] == SINC || buf[tx_byte_cnt] == XON || buf[tx_byte_cnt] == XOFF || buf[tx_byte_cnt] == ESC) {
+            write_tx_buffer(ESC);
+        }
         write_tx_buffer(buf[tx_byte_cnt]);
         tx_byte_cnt++;
     }
@@ -199,32 +226,28 @@ uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet){
     return tx_byte_cnt;
 }
 
+/* Falta limitar o byte_cnt caso ultrapasse o tamanho do buffer */
 uint8_t read(uint8_t* buf, uint8_t n) {
     uint8_t received_byte, byte_cnt = 0;
-    static uint8_t byte_pos = 0;
 
-    while (byte_cnt <= n) { 
+    while (byte_cnt < n) { 
         if (!rx_state) {
             return 0;
         }
+        while (!rcvd_byte);
+
         received_byte = read_rx_buffer();
 
-        if (!rx_esc) {
-            if (received_byte == SINC) {
-                buf[byte_pos] = '\0';
-                byte_pos = 0;
-                byte_cnt++; /* Conferir se precisa dessa soma */
-                return byte_cnt;
-            } else if (received_byte != XON && received_byte != XOFF && received_byte != ESC) {
-                buf[byte_pos] = received_byte;
-                byte_cnt++;
-                byte_pos++;
-            }
-        } else {
-            buf[byte_pos] = received_byte;
-            byte_cnt++;
-            byte_pos++;
+        if (rx_sinc) {
+            buf[byte_cnt] = '\0';
+            rx_sinc = 0;
+            return byte_cnt;
         }
+
+        buf[byte_cnt] = received_byte;
+        byte_cnt++;
+
+        rcvd_byte = 0;
     }
     return n+1;
 }
@@ -265,6 +288,23 @@ uint8_t write_tx_buffer(uint8_t c) {
     }
     sei();
     return rc;
+}
+
+void enqueue_rx_buffer(uint8_t received_data) {
+    uint8_t next = rx_head + 1;
+        if (next >= BUFFER_SIZE)
+            next = 0;
+        
+        /* Se o buffer estiver cheio desprezamos o byte recebido mais antigo e
+        * colocamos o byte que acabamos de receber em seu lugar */
+        rx_buffer[rx_head] = received_data;
+        rx_head = next;
+        if (next == rx_tail) { /* buffer cheio */
+            rx_tail++;
+            if (rx_tail >= BUFFER_SIZE)
+                rx_tail = 0;
+        }
+        rcvd_byte = 1;
 }
 
 void flow_off(void) {

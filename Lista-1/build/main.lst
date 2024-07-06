@@ -1,4 +1,4 @@
-GAS LISTING /tmp/ccmqXGgj.s 			page 1
+GAS LISTING /tmp/ccfeYjiW.s 			page 1
 
 
    1               		.file	"main.c"
@@ -7,7 +7,7 @@ GAS LISTING /tmp/ccmqXGgj.s 			page 1
    4               	__SREG__ = 0x3f
    5               	__tmp_reg__ = 0
    6               	__zero_reg__ = 1
-   7               		.stabs	"/home/pedro/Documentos/2024.1/RTOS/Lista-1/",100,0,2,.Ltext0
+   7               		.stabs	"/home/pedro/RTOS/Lista-1/",100,0,2,.Ltext0
    8               		.stabs	"main.c",100,0,2,.Ltext0
    9               		.text
   10               	.Ltext0:
@@ -58,7 +58,7 @@ GAS LISTING /tmp/ccmqXGgj.s 			page 1
   55               		.stabs	"_Sat long _Accum:t(0,44)=r(0,1);8;0;",128,0,0,0
   56               		.stabs	"_Sat long long _Accum:t(0,45)=r(0,1);8;0;",128,0,0,0
   57               		.stabs	"_Sat unsigned short _Accum:t(0,46)=r(0,1);2;0;",128,0,0,0
-GAS LISTING /tmp/ccmqXGgj.s 			page 2
+GAS LISTING /tmp/ccfeYjiW.s 			page 2
 
 
   58               		.stabs	"_Sat unsigned _Accum:t(0,47)=r(0,1);4;0;",128,0,0,0
@@ -108,1729 +108,2007 @@ GAS LISTING /tmp/ccmqXGgj.s 			page 1
  102               		.stabs	"__fuse_t:t(6,1)=(6,2)=s3low:(0,13),0,8;high:(0,13),8,8;extended:(0,13),16,8;;",128,0,244,0
  103               		.stabn	162,0,0,0
  104               		.stabn	162,0,0,0
- 105               		.stabs	"__vector_18:F(0,50)",36,0,44,__vector_18
- 106               	.global	__vector_18
- 107               		.type	__vector_18, @function
- 108               	__vector_18:
- 109               		.stabd	46,0,0
+ 105               		.stabs	"/usr/lib/avr/include/string.h",130,0,0,0
+ 106               		.stabs	"/usr/lib/gcc/avr/7.3.0/include/stddef.h",130,0,0,0
+ 107               		.stabs	"size_t:t(8,1)=(0,4)",128,0,216,0
+ 108               		.stabn	162,0,0,0
+ 109               		.stabn	162,0,0,0
+ 110               		.stabs	"__vector_19:F(0,50)",36,0,68,__vector_19
+ 111               	.global	__vector_19
+ 112               		.type	__vector_19, @function
+ 113               	__vector_19:
+ 114               		.stabd	46,0,0
+GAS LISTING /tmp/ccfeYjiW.s 			page 3
+
+
    1:main.c        **** /* Necessário para funções e macros básicas */
    2:main.c        **** #include <avr/io.h>
    3:main.c        **** 
    4:main.c        **** /* Os próximos dois includes são necessários quando se usa interrupçoes */
    5:main.c        **** #include <avr/cpufunc.h>
-GAS LISTING /tmp/ccmqXGgj.s 			page 3
-
-
    6:main.c        **** #include <avr/interrupt.h>
    7:main.c        **** 
    8:main.c        **** #include <stdint.h>
-   9:main.c        **** 
-  10:main.c        **** #define FOSC 16000000ul
-  11:main.c        **** #define BAUD 57600
-  12:main.c        **** #define MYUBRR (FOSC/(8ul*BAUD) - 1)
-  13:main.c        **** #define BUFFER_SIZE 255
-  14:main.c        **** 
-  15:main.c        **** /* Caracteres especiais */
-  16:main.c        **** #define SINC 0x7e
-  17:main.c        **** #define XON 0x11
-  18:main.c        **** #define XOFF 0x13
-  19:main.c        **** #define ESC 0x7d
-  20:main.c        **** 
-  21:main.c        **** /* Protótipos das funções */
-  22:main.c        **** uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet);
-  23:main.c        **** uint8_t read(uint8_t* buf, uint8_t n);
-  24:main.c        **** uint16_t read_rx_buffer(void);
-  25:main.c        **** uint8_t write_tx_buffer(uint8_t c);
-  26:main.c        **** void flow_off(void);
-  27:main.c        **** void flow_on(void);
-  28:main.c        **** uint8_t is_flow_on(void);
-  29:main.c        **** void delay_ms(uint16_t ms);
-  30:main.c        **** void blink_led(void);
-  31:main.c        **** void turn_led_on(void);
-  32:main.c        **** 
-  33:main.c        **** 
-  34:main.c        **** /* Variáveis globais */
-  35:main.c        **** uint8_t rx_byte_cnt, tx_byte_cnt;
-  36:main.c        **** uint8_t rx_esc, rx_state=1, rx_sinc, tx_state=1;
-  37:main.c        **** uint8_t rx_buffer[BUFFER_SIZE]; /* buffer para recepção */
-  38:main.c        **** uint8_t rx_head, rx_tail; /* ponteiros para o buffer circular */
-  39:main.c        **** uint8_t tx_buffer[BUFFER_SIZE];     /* buffer para transmissão */
-  40:main.c        **** uint8_t tx_head, tx_tail;   /* ponteiros para o buffer circular */
-  41:main.c        **** uint8_t usart_transmitting;
-  42:main.c        **** 
-  43:main.c        **** volatile uint8_t rcvd_byte=0;
-  44:main.c        **** ISR(USART_RX_vect) {
- 110               		.stabn	68,0,44,.LM0-.LFBB1
- 111               	.LM0:
- 112               	.LFBB1:
- 113 0000 1F92      		push r1
- 114 0002 0F92      		push r0
- 115 0004 0FB6      		in r0,__SREG__
- 116 0006 0F92      		push r0
- 117 0008 1124      		clr __zero_reg__
- 118 000a 8F93      		push r24
- 119 000c 9F93      		push r25
- 120 000e EF93      		push r30
- 121 0010 FF93      		push r31
- 122               	/* prologue: Signal */
- 123               	/* frame size = 0 */
- 124               	/* stack size = 7 */
- 125               	.L__stack_usage = 7
-  45:main.c        ****     uint8_t received_data = UDR0;
- 126               		.stabn	68,0,45,.LM1-.LFBB1
-GAS LISTING /tmp/ccmqXGgj.s 			page 4
+   9:main.c        **** #include <string.h>
+  10:main.c        **** 
+  11:main.c        **** #define FOSC 16000000ul
+  12:main.c        **** #define BAUD 57600
+  13:main.c        **** #define MYUBRR (FOSC/(8ul*BAUD) - 1)
+  14:main.c        **** #define BUFFER_SIZE 255
+  15:main.c        **** 
+  16:main.c        **** /* Caracteres especiais */
+  17:main.c        **** #define SINC 0x7e
+  18:main.c        **** #define XON 0x11
+  19:main.c        **** #define XOFF 0x13
+  20:main.c        **** #define ESC 0x7d
+  21:main.c        **** 
+  22:main.c        **** /* Protótipos das funções */
+  23:main.c        **** uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet);
+  24:main.c        **** uint8_t read(uint8_t* buf, uint8_t n);
+  25:main.c        **** uint16_t read_rx_buffer(void);
+  26:main.c        **** uint8_t write_tx_buffer(uint8_t c);
+  27:main.c        **** void enqueue_rx_buffer(uint8_t received_data);
+  28:main.c        **** void flow_off(void);
+  29:main.c        **** void flow_on(void);
+  30:main.c        **** uint8_t is_flow_on(void);
+  31:main.c        **** void delay_ms(uint16_t ms);
+  32:main.c        **** void blink_led(void);
+  33:main.c        **** void turn_led_on(void);
+  34:main.c        **** 
+  35:main.c        **** /* Variáveis globais */
+  36:main.c        **** uint8_t rx_byte_cnt, tx_byte_cnt;
+  37:main.c        **** uint8_t rx_esc, rx_state=1, rx_sinc, tx_state=1;
+  38:main.c        **** uint8_t rx_buffer[BUFFER_SIZE]; /* buffer para recepção */
+  39:main.c        **** uint8_t rx_head, rx_tail; /* ponteiros para o buffer circular */
+  40:main.c        **** uint8_t tx_buffer[BUFFER_SIZE];     /* buffer para transmissão */
+  41:main.c        **** uint8_t tx_head, tx_tail;   /* ponteiros para o buffer circular */
+  42:main.c        **** uint8_t usart_transmitting;
+  43:main.c        **** 
+  44:main.c        **** volatile uint8_t rcvd_byte=0;
+  45:main.c        **** ISR(USART_RX_vect) {
+  46:main.c        ****     uint8_t received_data = UDR0;
+  47:main.c        ****     
+  48:main.c        ****     if (!rx_esc) {
+  49:main.c        ****         if (received_data == ESC) {
+  50:main.c        ****             rx_esc = 1;
+  51:main.c        ****         } else if (received_data == XOFF) {
+  52:main.c        ****             tx_state = 0;
+  53:main.c        ****         } else if (received_data == XON) {
+  54:main.c        ****             tx_state = 1;
+  55:main.c        ****         } else if (received_data == SINC){
+  56:main.c        ****             rx_sinc = 1;
+  57:main.c        ****             rcvd_byte = 1;
+GAS LISTING /tmp/ccfeYjiW.s 			page 4
 
 
- 127               	.LM1:
- 128 0012 9091 C600 		lds r25,198
-  46:main.c        ****     
-  47:main.c        ****     if (received_data == ESC && !rx_esc) {
- 129               		.stabn	68,0,47,.LM2-.LFBB1
- 130               	.LM2:
- 131 0016 9D37      		cpi r25,lo8(125)
- 132 0018 01F4      		brne .L2
- 133               		.stabn	68,0,47,.LM3-.LFBB1
- 134               	.LM3:
- 135 001a 8091 0000 		lds r24,rx_esc
- 136 001e 8111      		cpse r24,__zero_reg__
- 137 0020 00C0      		rjmp .L3
-  48:main.c        ****         rx_esc = 1;
- 138               		.stabn	68,0,48,.LM4-.LFBB1
- 139               	.LM4:
- 140 0022 81E0      		ldi r24,lo8(1)
- 141 0024 8093 0000 		sts rx_esc,r24
- 142               	.L1:
- 143               	/* epilogue start */
-  49:main.c        ****     } else if (received_data == XOFF && !rx_esc) {
-  50:main.c        ****         tx_state = 0;
-  51:main.c        ****     } else if (received_data == XON && !rx_esc) {
-  52:main.c        ****         tx_state = 1;
-  53:main.c        ****     } else if (received_data == SINC && !rx_esc){
-  54:main.c        ****         rx_sinc = 1;
-  55:main.c        ****     } else {
-  56:main.c        ****         rx_esc = 0;
-  57:main.c        **** 
-  58:main.c        ****         uint8_t next = rx_head + 1;
-  59:main.c        ****         if (next >= BUFFER_SIZE)
-  60:main.c        ****             next = 0;
-  61:main.c        ****         
-  62:main.c        ****         /* Se o buffer estiver cheio desprezamos o byte recebido mais antigo e
-  63:main.c        ****         * colocamos o byte que acabamos de receber em seu lugar */
-  64:main.c        ****         rx_buffer[rx_head] = received_data;
-  65:main.c        ****         rx_head = next;
-  66:main.c        ****         if (next == rx_tail) { /* buffer cheio */
-  67:main.c        ****             rx_tail++;
-  68:main.c        ****             if (rx_tail >= BUFFER_SIZE)
-  69:main.c        ****                 rx_tail = 0;
-  70:main.c        ****         }
-  71:main.c        ****         rcvd_byte = 1;
-  72:main.c        ****     }
-  73:main.c        **** }
- 144               		.stabn	68,0,73,.LM5-.LFBB1
- 145               	.LM5:
- 146 0028 FF91      		pop r31
- 147 002a EF91      		pop r30
- 148 002c 9F91      		pop r25
- 149 002e 8F91      		pop r24
- 150 0030 0F90      		pop r0
- 151 0032 0FBE      		out __SREG__,r0
- 152 0034 0F90      		pop r0
- 153 0036 1F90      		pop r1
- 154 0038 1895      		reti
- 155               	.L2:
-GAS LISTING /tmp/ccmqXGgj.s 			page 5
+  58:main.c        ****         } else {
+  59:main.c        ****             enqueue_rx_buffer(received_data);
+  60:main.c        ****         }
+  61:main.c        ****     } else {
+  62:main.c        ****         enqueue_rx_buffer(received_data);
+  63:main.c        ****         rx_esc = 0;
+  64:main.c        ****     }
+  65:main.c        **** }
+  66:main.c        **** 
+  67:main.c        **** /* Flag UDREn indica se o buffer de transmissão UDRn está vazio */
+  68:main.c        **** ISR(USART_UDRE_vect)
+  69:main.c        **** {
+ 115               		.stabn	68,0,69,.LM0-.LFBB1
+ 116               	.LM0:
+ 117               	.LFBB1:
+ 118 0000 1F92      		push r1
+ 119 0002 0F92      		push r0
+ 120 0004 0FB6      		in r0,__SREG__
+ 121 0006 0F92      		push r0
+ 122 0008 1124      		clr __zero_reg__
+ 123 000a 8F93      		push r24
+ 124 000c EF93      		push r30
+ 125 000e FF93      		push r31
+ 126               	/* prologue: Signal */
+ 127               	/* frame size = 0 */
+ 128               	/* stack size = 6 */
+ 129               	.L__stack_usage = 6
+  70:main.c        ****     /*
+  71:main.c        ****      * Caso tx_head == tx_tail é porque todos os dados foram transmitidos e desabilita a interrup�
+  72:main.c        ****      * Caso contrário envia o dado que estava no tx_tail
+  73:main.c        ****      */
+  74:main.c        ****     if (tx_head == tx_tail) {
+ 130               		.stabn	68,0,74,.LM1-.LFBB1
+ 131               	.LM1:
+ 132 0010 E091 0000 		lds r30,tx_tail
+ 133 0014 8091 0000 		lds r24,tx_head
+ 134 0018 8E13      		cpse r24,r30
+ 135 001a 00C0      		rjmp .L2
+  75:main.c        ****         UCSR0B &= ~(1 << UDRIE0);
+ 136               		.stabn	68,0,75,.LM2-.LFBB1
+ 137               	.LM2:
+ 138 001c 8091 C100 		lds r24,193
+ 139 0020 8F7D      		andi r24,lo8(-33)
+ 140 0022 8093 C100 		sts 193,r24
+  76:main.c        ****         usart_transmitting = 0;
+ 141               		.stabn	68,0,76,.LM3-.LFBB1
+ 142               	.LM3:
+ 143 0026 1092 0000 		sts usart_transmitting,__zero_reg__
+ 144               	.L1:
+ 145               	/* epilogue start */
+  77:main.c        ****     } else {
+  78:main.c        ****         UDR0 = tx_buffer[tx_tail];
+  79:main.c        ****         if (++tx_tail >= BUFFER_SIZE)
+  80:main.c        ****             tx_tail = 0;
+  81:main.c        ****     }
+  82:main.c        **** }
+ 146               		.stabn	68,0,82,.LM4-.LFBB1
+GAS LISTING /tmp/ccfeYjiW.s 			page 5
 
 
-  49:main.c        ****     } else if (received_data == XOFF && !rx_esc) {
- 156               		.stabn	68,0,49,.LM6-.LFBB1
- 157               	.LM6:
- 158 003a 9331      		cpi r25,lo8(19)
- 159 003c 01F4      		brne .L5
-  49:main.c        ****     } else if (received_data == XOFF && !rx_esc) {
- 160               		.stabn	68,0,49,.LM7-.LFBB1
- 161               	.LM7:
- 162 003e 8091 0000 		lds r24,rx_esc
- 163 0042 8111      		cpse r24,__zero_reg__
- 164 0044 00C0      		rjmp .L3
-  50:main.c        ****     } else if (received_data == XON && !rx_esc) {
- 165               		.stabn	68,0,50,.LM8-.LFBB1
- 166               	.LM8:
- 167 0046 1092 0000 		sts tx_state,__zero_reg__
- 168 004a 00C0      		rjmp .L1
- 169               	.L5:
-  51:main.c        ****         tx_state = 1;
- 170               		.stabn	68,0,51,.LM9-.LFBB1
- 171               	.LM9:
- 172 004c 9131      		cpi r25,lo8(17)
- 173 004e 01F4      		brne .L6
-  51:main.c        ****         tx_state = 1;
- 174               		.stabn	68,0,51,.LM10-.LFBB1
- 175               	.LM10:
- 176 0050 8091 0000 		lds r24,rx_esc
- 177 0054 8111      		cpse r24,__zero_reg__
- 178 0056 00C0      		rjmp .L3
-  52:main.c        ****     } else if (received_data == SINC && !rx_esc){
- 179               		.stabn	68,0,52,.LM11-.LFBB1
- 180               	.LM11:
- 181 0058 81E0      		ldi r24,lo8(1)
- 182 005a 8093 0000 		sts tx_state,r24
- 183 005e 00C0      		rjmp .L1
- 184               	.L6:
-  53:main.c        ****         rx_sinc = 1;
- 185               		.stabn	68,0,53,.LM12-.LFBB1
- 186               	.LM12:
- 187 0060 9E37      		cpi r25,lo8(126)
- 188 0062 01F4      		brne .L3
-  53:main.c        ****         rx_sinc = 1;
- 189               		.stabn	68,0,53,.LM13-.LFBB1
- 190               	.LM13:
- 191 0064 8091 0000 		lds r24,rx_esc
- 192 0068 8111      		cpse r24,__zero_reg__
- 193 006a 00C0      		rjmp .L3
-  54:main.c        ****     } else {
- 194               		.stabn	68,0,54,.LM14-.LFBB1
- 195               	.LM14:
- 196 006c 81E0      		ldi r24,lo8(1)
- 197 006e 8093 0000 		sts rx_sinc,r24
- 198 0072 00C0      		rjmp .L1
- 199               	.L3:
- 200               	.LBB6:
-  56:main.c        **** 
- 201               		.stabn	68,0,56,.LM15-.LFBB1
- 202               	.LM15:
-GAS LISTING /tmp/ccmqXGgj.s 			page 6
+ 147               	.LM4:
+ 148 002a FF91      		pop r31
+ 149 002c EF91      		pop r30
+ 150 002e 8F91      		pop r24
+ 151 0030 0F90      		pop r0
+ 152 0032 0FBE      		out __SREG__,r0
+ 153 0034 0F90      		pop r0
+ 154 0036 1F90      		pop r1
+ 155 0038 1895      		reti
+ 156               	.L2:
+  78:main.c        ****         if (++tx_tail >= BUFFER_SIZE)
+ 157               		.stabn	68,0,78,.LM5-.LFBB1
+ 158               	.LM5:
+ 159 003a F0E0      		ldi r31,0
+ 160 003c E050      		subi r30,lo8(-(tx_buffer))
+ 161 003e F040      		sbci r31,hi8(-(tx_buffer))
+ 162 0040 8081      		ld r24,Z
+ 163 0042 8093 C600 		sts 198,r24
+  79:main.c        ****             tx_tail = 0;
+ 164               		.stabn	68,0,79,.LM6-.LFBB1
+ 165               	.LM6:
+ 166 0046 8091 0000 		lds r24,tx_tail
+ 167 004a 8F5F      		subi r24,lo8(-(1))
+ 168 004c 8F3F      		cpi r24,lo8(-1)
+ 169 004e 01F0      		breq .L4
+ 170 0050 8093 0000 		sts tx_tail,r24
+ 171 0054 00C0      		rjmp .L1
+ 172               	.L4:
+  80:main.c        ****     }
+ 173               		.stabn	68,0,80,.LM7-.LFBB1
+ 174               	.LM7:
+ 175 0056 1092 0000 		sts tx_tail,__zero_reg__
+ 176               		.stabn	68,0,82,.LM8-.LFBB1
+ 177               	.LM8:
+ 178 005a 00C0      		rjmp .L1
+ 179               		.size	__vector_19, .-__vector_19
+ 180               	.Lscope1:
+ 181               		.stabs	"",36,0,0,.Lscope1-.LFBB1
+ 182               		.stabd	78,0,0
+ 183               		.stabs	"read_rx_buffer:F(5,4)",36,0,255,read_rx_buffer
+ 184               	.global	read_rx_buffer
+ 185               		.type	read_rx_buffer, @function
+ 186               	read_rx_buffer:
+ 187               		.stabd	46,0,0
+  83:main.c        **** 
+  84:main.c        **** int main(void) {
+  85:main.c        ****     /* Faça a configuração do que for necessário aqui */
+  86:main.c        ****     /* Seu código aqui */
+  87:main.c        ****     UCSR0A = (1 << U2X0); /* double speed */
+  88:main.c        ****     UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt,
+  89:main.c        ****     UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); /* Set frame format: 8N1 */
+  90:main.c        ****     UBRR0H = (MYUBRR>>8); /* Set baud rate */
+  91:main.c        ****     UBRR0L = MYUBRR; /* Set baud rate */
+  92:main.c        **** 
+  93:main.c        ****     DDRB |= (1 << PB5); // Configura PB5 como saída (LED)
+  94:main.c        ****     PORTB &= ~(1 << PB5); // Garante que o LED está apagado no início   
+  95:main.c        **** 
+GAS LISTING /tmp/ccfeYjiW.s 			page 6
 
 
- 203 0074 1092 0000 		sts rx_esc,__zero_reg__
-  58:main.c        ****         if (next >= BUFFER_SIZE)
- 204               		.stabn	68,0,58,.LM16-.LFBB1
- 205               	.LM16:
- 206 0078 E091 0000 		lds r30,rx_head
- 207 007c 81E0      		ldi r24,lo8(1)
- 208 007e 8E0F      		add r24,r30
-  59:main.c        ****             next = 0;
- 209               		.stabn	68,0,59,.LM17-.LFBB1
- 210               	.LM17:
- 211 0080 8F3F      		cpi r24,lo8(-1)
- 212 0082 01F4      		brne .L7
-  60:main.c        ****         
- 213               		.stabn	68,0,60,.LM18-.LFBB1
- 214               	.LM18:
- 215 0084 80E0      		ldi r24,0
- 216               	.L7:
-  64:main.c        ****         rx_head = next;
- 217               		.stabn	68,0,64,.LM19-.LFBB1
- 218               	.LM19:
- 219 0086 F0E0      		ldi r31,0
- 220 0088 E050      		subi r30,lo8(-(rx_buffer))
- 221 008a F040      		sbci r31,hi8(-(rx_buffer))
- 222 008c 9083      		st Z,r25
-  65:main.c        ****         if (next == rx_tail) { /* buffer cheio */
- 223               		.stabn	68,0,65,.LM20-.LFBB1
- 224               	.LM20:
- 225 008e 8093 0000 		sts rx_head,r24
-  66:main.c        ****             rx_tail++;
- 226               		.stabn	68,0,66,.LM21-.LFBB1
- 227               	.LM21:
- 228 0092 9091 0000 		lds r25,rx_tail
- 229 0096 9813      		cpse r25,r24
- 230 0098 00C0      		rjmp .L9
-  67:main.c        ****             if (rx_tail >= BUFFER_SIZE)
- 231               		.stabn	68,0,67,.LM22-.LFBB1
- 232               	.LM22:
- 233 009a 8F5F      		subi r24,lo8(-(1))
-  68:main.c        ****                 rx_tail = 0;
- 234               		.stabn	68,0,68,.LM23-.LFBB1
- 235               	.LM23:
- 236 009c 8F3F      		cpi r24,lo8(-1)
- 237 009e 01F0      		breq .L10
-  67:main.c        ****             if (rx_tail >= BUFFER_SIZE)
- 238               		.stabn	68,0,67,.LM24-.LFBB1
- 239               	.LM24:
- 240 00a0 8093 0000 		sts rx_tail,r24
- 241               	.L9:
-  71:main.c        ****     }
- 242               		.stabn	68,0,71,.LM25-.LFBB1
- 243               	.LM25:
- 244 00a4 81E0      		ldi r24,lo8(1)
- 245 00a6 8093 0000 		sts rcvd_byte,r24
- 246               	.LBE6:
- 247               		.stabn	68,0,73,.LM26-.LFBB1
- 248               	.LM26:
- 249 00aa 00C0      		rjmp .L1
-GAS LISTING /tmp/ccmqXGgj.s 			page 7
-
-
- 250               	.L10:
- 251               	.LBB7:
-  69:main.c        ****         }
- 252               		.stabn	68,0,69,.LM27-.LFBB1
- 253               	.LM27:
- 254 00ac 1092 0000 		sts rx_tail,__zero_reg__
- 255 00b0 00C0      		rjmp .L9
- 256               	.LBE7:
- 257               		.size	__vector_18, .-__vector_18
- 258               		.stabs	"received_data:r(5,2)",64,0,45,25
- 259               		.stabn	192,0,0,.LFBB1-.LFBB1
- 260               		.stabs	"next:r(5,2)",64,0,58,24
- 261               		.stabn	192,0,0,.LBB6-.LFBB1
- 262               		.stabn	224,0,0,.LBE6-.LFBB1
- 263               		.stabs	"next:r(5,2)",64,0,58,24
- 264               		.stabn	192,0,0,.LBB7-.LFBB1
- 265               		.stabn	224,0,0,.LBE7-.LFBB1
- 266               		.stabn	224,0,0,.Lscope1-.LFBB1
- 267               	.Lscope1:
- 268               		.stabs	"",36,0,0,.Lscope1-.LFBB1
- 269               		.stabd	78,0,0
- 270               		.stabs	"__vector_19:F(0,50)",36,0,76,__vector_19
- 271               	.global	__vector_19
- 272               		.type	__vector_19, @function
- 273               	__vector_19:
- 274               		.stabd	46,0,0
-  74:main.c        **** 
-  75:main.c        **** /* Flag UDREn indica se o buffer de transmissão UDRn está vazio */
-  76:main.c        **** ISR(USART_UDRE_vect)
-  77:main.c        **** {
- 275               		.stabn	68,0,77,.LM28-.LFBB2
- 276               	.LM28:
- 277               	.LFBB2:
- 278 00b2 1F92      		push r1
- 279 00b4 0F92      		push r0
- 280 00b6 0FB6      		in r0,__SREG__
- 281 00b8 0F92      		push r0
- 282 00ba 1124      		clr __zero_reg__
- 283 00bc 8F93      		push r24
- 284 00be EF93      		push r30
- 285 00c0 FF93      		push r31
- 286               	/* prologue: Signal */
- 287               	/* frame size = 0 */
- 288               	/* stack size = 6 */
- 289               	.L__stack_usage = 6
-  78:main.c        ****     /*
-  79:main.c        ****      * Caso tx_head == tx_tail é porque todos os dados foram transmitidos e desabilita a interrup�
-  80:main.c        ****      * Caso contrário envia o dado que estava no tx_tail
-  81:main.c        ****      */
-  82:main.c        ****     if (tx_head == tx_tail) {
- 290               		.stabn	68,0,82,.LM29-.LFBB2
- 291               	.LM29:
- 292 00c2 E091 0000 		lds r30,tx_tail
- 293 00c6 8091 0000 		lds r24,tx_head
- 294 00ca 8E13      		cpse r24,r30
- 295 00cc 00C0      		rjmp .L13
-  83:main.c        ****         UCSR0B &= ~(1 << UDRIE0);
-GAS LISTING /tmp/ccmqXGgj.s 			page 8
-
-
- 296               		.stabn	68,0,83,.LM30-.LFBB2
- 297               	.LM30:
- 298 00ce 8091 C100 		lds r24,193
- 299 00d2 8F7D      		andi r24,lo8(-33)
- 300 00d4 8093 C100 		sts 193,r24
-  84:main.c        ****         usart_transmitting = 0;
- 301               		.stabn	68,0,84,.LM31-.LFBB2
- 302               	.LM31:
- 303 00d8 1092 0000 		sts usart_transmitting,__zero_reg__
- 304               	.L12:
- 305               	/* epilogue start */
-  85:main.c        ****     } else {
-  86:main.c        ****         UDR0 = tx_buffer[tx_tail];
-  87:main.c        ****         if (++tx_tail >= BUFFER_SIZE)
-  88:main.c        ****             tx_tail = 0;
-  89:main.c        ****     }
-  90:main.c        **** }
- 306               		.stabn	68,0,90,.LM32-.LFBB2
- 307               	.LM32:
- 308 00dc FF91      		pop r31
- 309 00de EF91      		pop r30
- 310 00e0 8F91      		pop r24
- 311 00e2 0F90      		pop r0
- 312 00e4 0FBE      		out __SREG__,r0
- 313 00e6 0F90      		pop r0
- 314 00e8 1F90      		pop r1
- 315 00ea 1895      		reti
- 316               	.L13:
-  86:main.c        ****         if (++tx_tail >= BUFFER_SIZE)
- 317               		.stabn	68,0,86,.LM33-.LFBB2
- 318               	.LM33:
- 319 00ec F0E0      		ldi r31,0
- 320 00ee E050      		subi r30,lo8(-(tx_buffer))
- 321 00f0 F040      		sbci r31,hi8(-(tx_buffer))
- 322 00f2 8081      		ld r24,Z
- 323 00f4 8093 C600 		sts 198,r24
-  87:main.c        ****             tx_tail = 0;
- 324               		.stabn	68,0,87,.LM34-.LFBB2
- 325               	.LM34:
- 326 00f8 8091 0000 		lds r24,tx_tail
- 327 00fc 8F5F      		subi r24,lo8(-(1))
- 328 00fe 8F3F      		cpi r24,lo8(-1)
- 329 0100 01F0      		breq .L15
- 330 0102 8093 0000 		sts tx_tail,r24
- 331 0106 00C0      		rjmp .L12
- 332               	.L15:
-  88:main.c        ****     }
- 333               		.stabn	68,0,88,.LM35-.LFBB2
- 334               	.LM35:
- 335 0108 1092 0000 		sts tx_tail,__zero_reg__
- 336               		.stabn	68,0,90,.LM36-.LFBB2
- 337               	.LM36:
- 338 010c 00C0      		rjmp .L12
- 339               		.size	__vector_19, .-__vector_19
- 340               	.Lscope2:
- 341               		.stabs	"",36,0,0,.Lscope2-.LFBB2
- 342               		.stabd	78,0,0
-GAS LISTING /tmp/ccmqXGgj.s 			page 9
-
-
- 343               		.stabs	"read_rx_buffer:F(5,4)",36,0,231,read_rx_buffer
- 344               	.global	read_rx_buffer
- 345               		.type	read_rx_buffer, @function
- 346               	read_rx_buffer:
- 347               		.stabd	46,0,0
-  91:main.c        **** 
-  92:main.c        **** int main(void) {
-  93:main.c        ****     /* Faça a configuração do que for necessário aqui */
-  94:main.c        ****     /* Seu código aqui */
-  95:main.c        ****     UCSR0A = (1 << U2X0); /* double speed */
-  96:main.c        ****     UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt,
-  97:main.c        ****     UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); /* Set frame format: 8N1 */
-  98:main.c        ****     UBRR0H = (MYUBRR>>8); /* Set baud rate */
-  99:main.c        ****     UBRR0L = MYUBRR; /* Set baud rate */
- 100:main.c        **** 
- 101:main.c        ****     DDRB |= (1 << PB5); // Configura PB5 como saída (LED)
- 102:main.c        ****     PORTB &= ~(1 << PB5); // Garante que o LED está apagado no início   
+  96:main.c        ****     sei();
+  97:main.c        **** 
+  98:main.c        ****     /* Implemente os testes aqui. Veja o texto para os detalhes */
+  99:main.c        ****     
+ 100:main.c        ****     /* Teste 2 */
+ 101:main.c        ****     uint8_t str_test[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistema
+ 102:main.c        ****     write(str_test, sizeof(str_test)-1, 1);
  103:main.c        **** 
- 104:main.c        ****     sei();
- 105:main.c        **** 
- 106:main.c        ****     /* Implemente os testes aqui. Veja o texto para os detalhes */
- 107:main.c        **** 
- 108:main.c        ****     /* Teste 2 */
- 109:main.c        ****     uint8_t str_test[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistema
- 110:main.c        ****     write(str_test, sizeof(str_test)-1, 1);
- 111:main.c        **** 
- 112:main.c        ****     /* Teste 3*/
- 113:main.c        ****     uint8_t i = sizeof(str_test);
- 114:main.c        ****     uint8_t j = 0;
- 115:main.c        ****     while (i) {
- 116:main.c        ****         if (i >= 10) {
- 117:main.c        ****             i -= write(str_test+j, 10, 0);
- 118:main.c        ****             j += 10;
- 119:main.c        ****         } else {
- 120:main.c        ****             write(str_test+j, i, 1);
- 121:main.c        ****             i = 0;
- 122:main.c        ****         }
- 123:main.c        ****     }
- 124:main.c        **** 
- 125:main.c        ****     /* Teste 4 */
- 126:main.c        ****     uint16_t nbytes = 0;
- 127:main.c        ****     uint8_t buffer[255];
- 128:main.c        ****     while (nbytes < 300) {
- 129:main.c        ****         if (rcvd_byte) {
- 130:main.c        ****             nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
- 131:main.c        ****             rcvd_byte = 0;
- 132:main.c        ****         }
- 133:main.c        ****     }
- 134:main.c        ****     flow_off();
- 135:main.c        ****     if (is_flow_on()) {
- 136:main.c        ****         turn_led_on();
- 137:main.c        ****     } else {
- 138:main.c        ****         blink_led();
- 139:main.c        ****     }
- 140:main.c        **** 
- 141:main.c        ****     /* Teste 5 */
- 142:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
-GAS LISTING /tmp/ccmqXGgj.s 			page 10
+ 104:main.c        ****     /* Teste 3*/
+ 105:main.c        ****     uint8_t i = sizeof(str_test);
+ 106:main.c        ****     uint8_t j = 0;
+ 107:main.c        ****     while (i) {
+ 108:main.c        ****         if (i >= 10) {
+ 109:main.c        ****             i -= write(str_test+j, 10, 0);
+ 110:main.c        ****             j += 10;
+ 111:main.c        ****         } else {
+ 112:main.c        ****             write(str_test+j, i, 1);
+ 113:main.c        ****             i = 0;
+ 114:main.c        ****         }
+ 115:main.c        ****     }
+ 116:main.c        **** 
+ 117:main.c        ****     /* Teste 4 */
+ 118:main.c        ****     uint16_t nbytes = 0;
+ 119:main.c        ****     uint8_t buffer[255];
+ 120:main.c        ****     while (nbytes < 300) {
+ 121:main.c        ****         nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa des
+ 122:main.c        ****     }
+ 123:main.c        ****     flow_off();
+ 124:main.c        ****     if (is_flow_on()) {
+ 125:main.c        ****         turn_led_on();
+ 126:main.c        ****     } else {
+ 127:main.c        ****         blink_led();
+ 128:main.c        ****     }
+ 129:main.c        **** 
+ 130:main.c        ****     /* Teste 5 */
+ 131:main.c        ****     flow_on(); /* Precisa do flow_on()? */
+ 132:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
+ 133:main.c        ****     nbytes = 0;
+ 134:main.c        ****     while (nbytes < 300) {
+ 135:main.c        ****         nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa des
+ 136:main.c        ****     }
+ 137:main.c        **** 
+ 138:main.c        ****     flow_off();
+ 139:main.c        ****     if (is_flow_on()) {
+ 140:main.c        ****         turn_led_on();
+ 141:main.c        ****     } else {
+ 142:main.c        ****         blink_led();
+ 143:main.c        ****     }
+ 144:main.c        **** 
+ 145:main.c        ****     /* Teste 6 */
+ 146:main.c        ****     flow_on(); /* Precisa do flow_on()? */
+ 147:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
+ 148:main.c        ****     
+ 149:main.c        ****     uint8_t binary_string[] = {0x00, 0x01, 0x11, 0x02, 0x13, 0x04, 0x7e, 0x05, 0x7d, 0x06};
+ 150:main.c        ****     i = 0;
+ 151:main.c        ****     
+ 152:main.c        ****     /* É pra ficar reenviando a string ou envia ela apenas uma vez? */
+GAS LISTING /tmp/ccfeYjiW.s 			page 7
 
 
- 143:main.c        ****     nbytes = 0;
- 144:main.c        ****     while (nbytes < 300) {
- 145:main.c        ****         if (rcvd_byte) {
- 146:main.c        ****             nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
- 147:main.c        ****             rcvd_byte = 0;
- 148:main.c        ****         }
- 149:main.c        ****     }
- 150:main.c        **** 
- 151:main.c        ****     flow_off();
- 152:main.c        ****     if (is_flow_on()) {
- 153:main.c        ****         turn_led_on();
- 154:main.c        ****     } else {
- 155:main.c        ****         blink_led();
- 156:main.c        ****     }
- 157:main.c        **** 
- 158:main.c        ****     /* Teste 6 */
- 159:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
- 160:main.c        ****     
- 161:main.c        ****     uint8_t binary_string[] = {0x00, 0x01, 0x11, 0x02, 0x13, 0x04, 0x7e, 0x05, 0x7d, 0x06};
- 162:main.c        ****     i = 0;
- 163:main.c        ****     
- 164:main.c        ****     while (i < sizeof(binary_string)) {
- 165:main.c        ****         if (!write(binary_string[i], 1, 0)) {
- 166:main.c        ****             PORTB |= (1 << PB5);
- 167:main.c        ****         } else {
- 168:main.c        ****             PORTB &= ~(1 << PB5);
- 169:main.c        ****             i++;
- 170:main.c        ****         }
- 171:main.c        ****         delay_ms(1000);
- 172:main.c        ****     }
- 173:main.c        **** 
- 174:main.c        ****     /* Loop infinito necessário em qualquer programa para
- 175:main.c        ****        embarcados */
- 176:main.c        ****     while (1) {}
- 177:main.c        **** 
- 178:main.c        ****     return 0;
- 179:main.c        **** }
- 180:main.c        **** 
- 181:main.c        **** 
- 182:main.c        **** uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet){
- 183:main.c        ****     tx_byte_cnt = 0;
- 184:main.c        **** 
- 185:main.c        ****     if (!tx_state) {
- 186:main.c        ****         return 0;
- 187:main.c        ****     }
- 188:main.c        ****     
- 189:main.c        ****     while ((tx_byte_cnt < n) && tx_state) {
- 190:main.c        ****         write_tx_buffer(buf[tx_byte_cnt]);
- 191:main.c        ****         tx_byte_cnt++;
- 192:main.c        ****     }
- 193:main.c        **** 
- 194:main.c        ****     if (close_packet && tx_state) {
- 195:main.c        ****         write_tx_buffer(SINC);
- 196:main.c        ****     }
- 197:main.c        **** 
- 198:main.c        ****     return tx_byte_cnt;
- 199:main.c        **** }
-GAS LISTING /tmp/ccmqXGgj.s 			page 11
-
-
- 200:main.c        **** 
- 201:main.c        **** uint8_t read(uint8_t* buf, uint8_t n) {
- 202:main.c        ****     uint8_t received_byte, byte_cnt = 0;
- 203:main.c        ****     static uint8_t byte_pos = 0;
- 204:main.c        **** 
- 205:main.c        ****     while (byte_cnt <= n) { 
- 206:main.c        ****         if (!rx_state) {
- 207:main.c        ****             return 0;
- 208:main.c        ****         }
- 209:main.c        ****         received_byte = read_rx_buffer();
- 210:main.c        **** 
- 211:main.c        ****         if (!rx_esc) {
- 212:main.c        ****             if (received_byte == SINC) {
- 213:main.c        ****                 buf[byte_pos] = '\0';
- 214:main.c        ****                 byte_pos = 0;
- 215:main.c        ****                 byte_cnt++; /* Conferir se precisa dessa soma */
- 216:main.c        ****                 return byte_cnt;
- 217:main.c        ****             } else if (received_byte != XON && received_byte != XOFF && received_byte != ESC) {
- 218:main.c        ****                 buf[byte_pos] = received_byte;
- 219:main.c        ****                 byte_cnt++;
- 220:main.c        ****                 byte_pos++;
- 221:main.c        ****             }
- 222:main.c        ****         } else {
- 223:main.c        ****             buf[byte_pos] = received_byte;
- 224:main.c        ****             byte_cnt++;
- 225:main.c        ****             byte_pos++;
- 226:main.c        ****         }
- 227:main.c        ****     }
- 228:main.c        ****     return n+1;
- 229:main.c        **** }
- 230:main.c        **** 
- 231:main.c        **** uint16_t read_rx_buffer(void)
- 232:main.c        **** {
- 348               		.stabn	68,0,232,.LM37-.LFBB3
- 349               	.LM37:
- 350               	.LFBB3:
- 351               	/* prologue: function */
- 352               	/* frame size = 0 */
- 353               	/* stack size = 0 */
- 354               	.L__stack_usage = 0
- 233:main.c        ****     uint8_t rc = 0, c = 0;
- 234:main.c        **** 
- 235:main.c        ****     cli();
- 355               		.stabn	68,0,235,.LM38-.LFBB3
- 356               	.LM38:
- 357               	/* #APP */
- 358               	 ;  235 "main.c" 1
- 359 010e F894      		cli
- 360               	 ;  0 "" 2
- 236:main.c        ****     if (rx_head != rx_tail) {
- 361               		.stabn	68,0,236,.LM39-.LFBB3
- 362               	.LM39:
- 363               	/* #NOAPP */
- 364 0110 9091 0000 		lds r25,rx_tail
- 365 0114 8091 0000 		lds r24,rx_head
- 366 0118 8917      		cp r24,r25
- 367 011a 01F0      		breq .L19
-GAS LISTING /tmp/ccmqXGgj.s 			page 12
-
-
- 237:main.c        ****         c = rx_buffer[rx_tail];
- 368               		.stabn	68,0,237,.LM40-.LFBB3
- 369               	.LM40:
- 370 011c E92F      		mov r30,r25
- 371 011e F0E0      		ldi r31,0
- 372 0120 E050      		subi r30,lo8(-(rx_buffer))
- 373 0122 F040      		sbci r31,hi8(-(rx_buffer))
- 374 0124 8081      		ld r24,Z
- 238:main.c        ****         if (++rx_tail >= BUFFER_SIZE)
- 375               		.stabn	68,0,238,.LM41-.LFBB3
- 376               	.LM41:
- 377 0126 9F5F      		subi r25,lo8(-(1))
- 378 0128 9F3F      		cpi r25,lo8(-1)
- 379 012a 01F0      		breq .L18
- 380 012c 9093 0000 		sts rx_tail,r25
- 381               	.L20:
- 233:main.c        **** 
- 382               		.stabn	68,0,233,.LM42-.LFBB3
- 383               	.LM42:
- 384 0130 20E0      		ldi r18,0
- 385               	.L17:
- 239:main.c        ****             rx_tail = 0;
- 240:main.c        ****     } else 
- 241:main.c        ****         rc = 1;
- 242:main.c        ****     sei();
- 386               		.stabn	68,0,242,.LM43-.LFBB3
- 387               	.LM43:
- 388               	/* #APP */
- 389               	 ;  242 "main.c" 1
- 390 0132 7894      		sei
- 391               	 ;  0 "" 2
- 243:main.c        ****     return ((uint16_t) rc << 8) | c;
- 244:main.c        **** }
- 392               		.stabn	68,0,244,.LM44-.LFBB3
- 393               	.LM44:
- 394               	/* #NOAPP */
- 395 0134 922F      		mov r25,r18
- 396               	/* epilogue start */
- 397 0136 0895      		ret
- 398               	.L18:
- 239:main.c        ****             rx_tail = 0;
- 399               		.stabn	68,0,239,.LM45-.LFBB3
- 400               	.LM45:
- 401 0138 1092 0000 		sts rx_tail,__zero_reg__
- 402 013c 00C0      		rjmp .L20
- 403               	.L19:
- 233:main.c        **** 
- 404               		.stabn	68,0,233,.LM46-.LFBB3
- 405               	.LM46:
- 406 013e 80E0      		ldi r24,0
- 241:main.c        ****     sei();
- 407               		.stabn	68,0,241,.LM47-.LFBB3
- 408               	.LM47:
- 409 0140 21E0      		ldi r18,lo8(1)
- 410 0142 00C0      		rjmp .L17
- 411               		.size	read_rx_buffer, .-read_rx_buffer
- 412               		.stabs	"rc:r(5,2)",64,0,233,18
-GAS LISTING /tmp/ccmqXGgj.s 			page 13
-
-
- 413               		.stabs	"c:r(5,2)",64,0,233,24
- 414               		.stabn	192,0,0,.LFBB3-.LFBB3
- 415               		.stabn	224,0,0,.Lscope3-.LFBB3
- 416               	.Lscope3:
- 417               		.stabs	"",36,0,0,.Lscope3-.LFBB3
- 418               		.stabd	78,0,0
- 419               		.stabs	"read:F(5,2)",36,0,201,read
- 420               		.stabs	"buf:P(0,51)=*(5,2)",64,0,201,16
- 421               		.stabs	"n:P(5,2)",64,0,201,29
- 422               	.global	read
- 423               		.type	read, @function
- 424               	read:
- 425               		.stabd	46,0,0
- 201:main.c        ****     uint8_t received_byte, byte_cnt = 0;
- 426               		.stabn	68,0,201,.LM48-.LFBB4
- 427               	.LM48:
- 428               	.LFBB4:
- 429 0144 0F93      		push r16
- 430 0146 1F93      		push r17
- 431 0148 CF93      		push r28
- 432 014a DF93      		push r29
- 433               	/* prologue: function */
- 434               	/* frame size = 0 */
- 435               	/* stack size = 4 */
- 436               	.L__stack_usage = 4
- 437 014c 8C01      		movw r16,r24
- 438 014e D62F      		mov r29,r22
- 202:main.c        ****     static uint8_t byte_pos = 0;
- 439               		.stabn	68,0,202,.LM49-.LFBB4
- 440               	.LM49:
- 441 0150 C0E0      		ldi r28,0
- 442               	.L26:
- 206:main.c        ****             return 0;
- 443               		.stabn	68,0,206,.LM50-.LFBB4
- 444               	.LM50:
- 445 0152 8091 0000 		lds r24,rx_state
- 446 0156 8823      		tst r24
- 447 0158 01F0      		breq .L21
- 209:main.c        **** 
- 448               		.stabn	68,0,209,.LM51-.LFBB4
- 449               	.LM51:
- 450 015a 0E94 0000 		call read_rx_buffer
- 211:main.c        ****             if (received_byte == SINC) {
- 451               		.stabn	68,0,211,.LM52-.LFBB4
- 452               	.LM52:
- 453 015e 9091 0000 		lds r25,rx_esc
- 454 0162 9111      		cpse r25,__zero_reg__
- 455 0164 00C0      		rjmp .L23
- 212:main.c        ****                 buf[byte_pos] = '\0';
- 456               		.stabn	68,0,212,.LM53-.LFBB4
- 457               	.LM53:
- 458 0166 8E37      		cpi r24,lo8(126)
- 459 0168 01F4      		brne .L24
- 213:main.c        ****                 byte_pos = 0;
- 460               		.stabn	68,0,213,.LM54-.LFBB4
- 461               	.LM54:
- 462 016a 8091 0000 		lds r24,byte_pos.1585
-GAS LISTING /tmp/ccmqXGgj.s 			page 14
-
-
- 463 016e 080F      		add r16,r24
- 464 0170 111D      		adc r17,__zero_reg__
- 465 0172 F801      		movw r30,r16
- 466 0174 1082      		st Z,__zero_reg__
- 214:main.c        ****                 byte_cnt++; /* Conferir se precisa dessa soma */
- 467               		.stabn	68,0,214,.LM55-.LFBB4
- 468               	.LM55:
- 469 0176 1092 0000 		sts byte_pos.1585,__zero_reg__
- 215:main.c        ****                 return byte_cnt;
- 470               		.stabn	68,0,215,.LM56-.LFBB4
- 471               	.LM56:
- 472 017a 81E0      		ldi r24,lo8(1)
- 473 017c 8C0F      		add r24,r28
- 474               	.L21:
- 475               	/* epilogue start */
- 229:main.c        **** 
- 476               		.stabn	68,0,229,.LM57-.LFBB4
- 477               	.LM57:
- 478 017e DF91      		pop r29
- 479 0180 CF91      		pop r28
- 480 0182 1F91      		pop r17
- 481 0184 0F91      		pop r16
- 482 0186 0895      		ret
- 483               	.L24:
- 217:main.c        ****                 buf[byte_pos] = received_byte;
- 484               		.stabn	68,0,217,.LM58-.LFBB4
- 485               	.LM58:
- 486 0188 982F      		mov r25,r24
- 487 018a 9D7F      		andi r25,lo8(-3)
- 488 018c 9131      		cpi r25,lo8(17)
- 489 018e 01F0      		breq .L25
- 217:main.c        ****                 buf[byte_pos] = received_byte;
- 490               		.stabn	68,0,217,.LM59-.LFBB4
- 491               	.LM59:
- 492 0190 8D37      		cpi r24,lo8(125)
- 493 0192 01F0      		breq .L25
- 494               	.L23:
- 223:main.c        ****             byte_cnt++;
- 495               		.stabn	68,0,223,.LM60-.LFBB4
- 496               	.LM60:
- 497 0194 9091 0000 		lds r25,byte_pos.1585
- 498 0198 F801      		movw r30,r16
- 499 019a E90F      		add r30,r25
- 500 019c F11D      		adc r31,__zero_reg__
- 501 019e 8083      		st Z,r24
- 224:main.c        ****             byte_pos++;
- 502               		.stabn	68,0,224,.LM61-.LFBB4
- 503               	.LM61:
- 504 01a0 CF5F      		subi r28,lo8(-(1))
- 225:main.c        ****         }
- 505               		.stabn	68,0,225,.LM62-.LFBB4
- 506               	.LM62:
- 507 01a2 9F5F      		subi r25,lo8(-(1))
- 508 01a4 9093 0000 		sts byte_pos.1585,r25
- 509               	.L25:
- 205:main.c        ****         if (!rx_state) {
- 510               		.stabn	68,0,205,.LM63-.LFBB4
-GAS LISTING /tmp/ccmqXGgj.s 			page 15
-
-
- 511               	.LM63:
- 512 01a8 DC17      		cp r29,r28
- 513 01aa 00F4      		brsh .L26
- 228:main.c        **** }
- 514               		.stabn	68,0,228,.LM64-.LFBB4
- 515               	.LM64:
- 516 01ac 81E0      		ldi r24,lo8(1)
- 517 01ae 8D0F      		add r24,r29
- 518 01b0 00C0      		rjmp .L21
- 519               		.size	read, .-read
- 520               		.stabs	"byte_pos:V(5,2)",38,0,203,byte_pos.1585
- 521               		.stabn	192,0,0,.LFBB4-.LFBB4
- 522               		.stabn	224,0,0,.Lscope4-.LFBB4
- 523               	.Lscope4:
- 524               		.stabs	"",36,0,0,.Lscope4-.LFBB4
- 525               		.stabd	78,0,0
- 526               		.stabs	"write_tx_buffer:F(5,2)",36,0,246,write_tx_buffer
- 527               		.stabs	"c:P(5,2)",64,0,246,18
- 528               	.global	write_tx_buffer
- 529               		.type	write_tx_buffer, @function
- 530               	write_tx_buffer:
- 531               		.stabd	46,0,0
- 245:main.c        **** 
- 246:main.c        **** uint8_t write_tx_buffer(uint8_t c) {
- 532               		.stabn	68,0,246,.LM65-.LFBB5
- 533               	.LM65:
- 534               	.LFBB5:
- 535               	/* prologue: function */
- 536               	/* frame size = 0 */
- 537               	/* stack size = 0 */
- 538               	.L__stack_usage = 0
- 539 01b2 282F      		mov r18,r24
- 247:main.c        ****     uint8_t rc = 0;
- 248:main.c        **** 
- 249:main.c        ****     cli();
- 540               		.stabn	68,0,249,.LM66-.LFBB5
- 541               	.LM66:
- 542               	/* #APP */
- 543               	 ;  249 "main.c" 1
- 544 01b4 F894      		cli
- 545               	 ;  0 "" 2
- 250:main.c        **** 
- 251:main.c        ****     if(!usart_transmitting){
- 546               		.stabn	68,0,251,.LM67-.LFBB5
- 547               	.LM67:
- 548               	/* #NOAPP */
- 549 01b6 8091 0000 		lds r24,usart_transmitting
- 550 01ba 8111      		cpse r24,__zero_reg__
- 551 01bc 00C0      		rjmp .L38
- 252:main.c        ****         UDR0 = c;
- 552               		.stabn	68,0,252,.LM68-.LFBB5
- 553               	.LM68:
- 554 01be 2093 C600 		sts 198,r18
- 253:main.c        ****         UCSR0B |= (1 << UDRIE0);
- 555               		.stabn	68,0,253,.LM69-.LFBB5
- 556               	.LM69:
- 557 01c2 9091 C100 		lds r25,193
-GAS LISTING /tmp/ccmqXGgj.s 			page 16
-
-
- 558 01c6 9062      		ori r25,lo8(32)
- 559 01c8 9093 C100 		sts 193,r25
- 254:main.c        ****         usart_transmitting = 1;
- 560               		.stabn	68,0,254,.LM70-.LFBB5
- 561               	.LM70:
- 562 01cc 91E0      		ldi r25,lo8(1)
- 563 01ce 9093 0000 		sts usart_transmitting,r25
- 564               	.L39:
- 255:main.c        ****     } else{
- 256:main.c        ****         uint8_t next = tx_head + 1;
- 257:main.c        ****         if (next >= BUFFER_SIZE)
- 258:main.c        ****             next = 0;
- 259:main.c        ****         if (next != tx_tail) {
- 260:main.c        ****             tx_buffer[tx_head] = c;
- 261:main.c        ****             tx_head = next;
- 262:main.c        ****         } else  /* buffer cheio */
- 263:main.c        ****             rc = 1;
- 264:main.c        ****     }
- 265:main.c        ****     sei();
- 565               		.stabn	68,0,265,.LM71-.LFBB5
- 566               	.LM71:
- 567               	/* #APP */
- 568               	 ;  265 "main.c" 1
- 569 01d2 7894      		sei
- 570               	 ;  0 "" 2
- 571               	/* epilogue start */
- 266:main.c        ****     return rc;
- 267:main.c        **** }
- 572               		.stabn	68,0,267,.LM72-.LFBB5
- 573               	.LM72:
- 574               	/* #NOAPP */
- 575 01d4 0895      		ret
- 576               	.L38:
- 577               	.LBB8:
- 256:main.c        ****         if (next >= BUFFER_SIZE)
- 578               		.stabn	68,0,256,.LM73-.LFBB5
- 579               	.LM73:
- 580 01d6 E091 0000 		lds r30,tx_head
- 581 01da 91E0      		ldi r25,lo8(1)
- 582 01dc 9E0F      		add r25,r30
- 257:main.c        ****             next = 0;
- 583               		.stabn	68,0,257,.LM74-.LFBB5
- 584               	.LM74:
- 585 01de 9F3F      		cpi r25,lo8(-1)
- 586 01e0 01F4      		brne .L40
- 258:main.c        ****         if (next != tx_tail) {
- 587               		.stabn	68,0,258,.LM75-.LFBB5
- 588               	.LM75:
- 589 01e2 90E0      		ldi r25,0
- 590               	.L40:
- 259:main.c        ****             tx_buffer[tx_head] = c;
- 591               		.stabn	68,0,259,.LM76-.LFBB5
- 592               	.LM76:
- 593 01e4 8091 0000 		lds r24,tx_tail
- 594 01e8 8917      		cp r24,r25
- 595 01ea 01F0      		breq .L41
- 260:main.c        ****             tx_head = next;
-GAS LISTING /tmp/ccmqXGgj.s 			page 17
-
-
- 596               		.stabn	68,0,260,.LM77-.LFBB5
- 597               	.LM77:
- 598 01ec F0E0      		ldi r31,0
- 599 01ee E050      		subi r30,lo8(-(tx_buffer))
- 600 01f0 F040      		sbci r31,hi8(-(tx_buffer))
- 601 01f2 2083      		st Z,r18
- 261:main.c        ****         } else  /* buffer cheio */
- 602               		.stabn	68,0,261,.LM78-.LFBB5
- 603               	.LM78:
- 604 01f4 9093 0000 		sts tx_head,r25
- 605               	.LBE8:
- 247:main.c        **** 
- 606               		.stabn	68,0,247,.LM79-.LFBB5
- 607               	.LM79:
- 608 01f8 80E0      		ldi r24,0
- 609               	.LBB9:
- 610 01fa 00C0      		rjmp .L39
- 611               	.L41:
- 263:main.c        ****     }
- 612               		.stabn	68,0,263,.LM80-.LFBB5
- 613               	.LM80:
- 614 01fc 81E0      		ldi r24,lo8(1)
- 615 01fe 00C0      		rjmp .L39
- 616               	.LBE9:
- 617               		.size	write_tx_buffer, .-write_tx_buffer
- 618               		.stabs	"rc:r(5,2)",64,0,247,24
- 619               		.stabn	192,0,0,.LFBB5-.LFBB5
- 620               		.stabs	"next:r(5,2)",64,0,256,25
- 621               		.stabn	192,0,0,.LBB8-.LFBB5
- 622               		.stabn	224,0,0,.LBE8-.LFBB5
- 623               		.stabs	"next:r(5,2)",64,0,256,25
- 624               		.stabn	192,0,0,.LBB9-.LFBB5
- 625               		.stabn	224,0,0,.LBE9-.LFBB5
- 626               		.stabn	224,0,0,.Lscope5-.LFBB5
- 627               	.Lscope5:
- 628               		.stabs	"",36,0,0,.Lscope5-.LFBB5
- 629               		.stabd	78,0,0
- 630               		.stabs	"write:F(5,2)",36,0,182,write
- 631               		.stabs	"buf:P(0,51)",64,0,182,16
- 632               		.stabs	"n:P(5,2)",64,0,182,29
- 633               		.stabs	"close_packet:P(5,1)",64,0,182,28
- 634               	.global	write
- 635               		.type	write, @function
- 636               	write:
- 637               		.stabd	46,0,0
- 182:main.c        ****     tx_byte_cnt = 0;
- 638               		.stabn	68,0,182,.LM81-.LFBB6
- 639               	.LM81:
- 640               	.LFBB6:
- 641 0200 0F93      		push r16
- 642 0202 1F93      		push r17
- 643 0204 CF93      		push r28
- 644 0206 DF93      		push r29
- 645               	/* prologue: function */
- 646               	/* frame size = 0 */
- 647               	/* stack size = 4 */
- 648               	.L__stack_usage = 4
-GAS LISTING /tmp/ccmqXGgj.s 			page 18
-
-
- 649 0208 8C01      		movw r16,r24
- 650 020a D62F      		mov r29,r22
- 651 020c C42F      		mov r28,r20
+ 153:main.c        ****     while (i < sizeof(binary_string)) { 
+ 154:main.c        ****         if (!write(binary_string+i, 1, 0)) {
+ 155:main.c        ****             PORTB |= (1 << PB5); /* Acende o LED */
+ 156:main.c        ****         } else {
+ 157:main.c        ****             PORTB &= ~(1 << PB5); /* Apaga o LED */
+ 158:main.c        ****             i++;
+ 159:main.c        ****         }
+ 160:main.c        ****     }
+ 161:main.c        ****     
+ 162:main.c        ****     /* Teste 7 */
+ 163:main.c        ****     uint8_t comp_str[] = "Desenvolvimento de sistemas embarcados";
+ 164:main.c        ****     uint8_t comp_buffer[sizeof(comp_str)];
+ 165:main.c        ****     uint8_t k = 0;
+ 166:main.c        ****     /* Loop infinito necessário em qualquer programa para
+ 167:main.c        ****        embarcados */
+ 168:main.c        ****     while (1) {
+ 169:main.c        ****         /* Letra a */
+ 170:main.c        ****         memset(comp_buffer, 0, sizeof(comp_buffer));
+ 171:main.c        ****         read(comp_buffer, 254);
+ 172:main.c        **** 
+ 173:main.c        ****         for (int z = 0; z < sizeof(comp_buffer); z++){
+ 174:main.c        ****             write_tx_buffer(comp_buffer[z]);
+ 175:main.c        ****         }
+ 176:main.c        ****         write_tx_buffer('\n');
+ 177:main.c        ****         
+ 178:main.c        ****         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
+ 179:main.c        ****             PORTB |= (1 << PB5);
+ 180:main.c        ****         } else {
+ 181:main.c        ****             PORTB &= ~(1 << PB5);
+ 182:main.c        ****         }
  183:main.c        **** 
- 652               		.stabn	68,0,183,.LM82-.LFBB6
- 653               	.LM82:
- 654 020e 1092 0000 		sts tx_byte_cnt,__zero_reg__
- 185:main.c        ****         return 0;
- 655               		.stabn	68,0,185,.LM83-.LFBB6
- 656               	.LM83:
- 657 0212 8091 0000 		lds r24,tx_state
- 658 0216 8111      		cpse r24,__zero_reg__
- 659 0218 00C0      		rjmp .L44
- 660               	.L42:
- 661               	/* epilogue start */
- 199:main.c        **** 
- 662               		.stabn	68,0,199,.LM84-.LFBB6
- 663               	.LM84:
- 664 021a DF91      		pop r29
- 665 021c CF91      		pop r28
- 666 021e 1F91      		pop r17
- 667 0220 0F91      		pop r16
- 668 0222 0895      		ret
- 669               	.L46:
- 670               	.LBB12:
- 671               	.LBB13:
- 190:main.c        ****         tx_byte_cnt++;
- 672               		.stabn	68,0,190,.LM85-.LFBB6
- 673               	.LM85:
- 674 0224 E00F      		add r30,r16
- 675 0226 F12F      		mov r31,r17
- 676 0228 F11D      		adc r31,__zero_reg__
- 677 022a 8081      		ld r24,Z
- 678 022c 0E94 0000 		call write_tx_buffer
- 191:main.c        ****     }
- 679               		.stabn	68,0,191,.LM86-.LFBB6
- 680               	.LM86:
- 681 0230 8091 0000 		lds r24,tx_byte_cnt
- 682 0234 8F5F      		subi r24,lo8(-(1))
- 683 0236 8093 0000 		sts tx_byte_cnt,r24
- 684               	.L44:
- 189:main.c        ****         write_tx_buffer(buf[tx_byte_cnt]);
- 685               		.stabn	68,0,189,.LM87-.LFBB6
- 686               	.LM87:
- 687 023a E091 0000 		lds r30,tx_byte_cnt
- 688 023e ED17      		cp r30,r29
- 689 0240 00F4      		brsh .L45
- 690 0242 8091 0000 		lds r24,tx_state
- 691 0246 8111      		cpse r24,__zero_reg__
- 692 0248 00C0      		rjmp .L46
- 693               	.L47:
- 198:main.c        **** }
- 694               		.stabn	68,0,198,.LM88-.LFBB6
- 695               	.LM88:
- 696 024a 8091 0000 		lds r24,tx_byte_cnt
- 697 024e 00C0      		rjmp .L42
- 698               	.L45:
-GAS LISTING /tmp/ccmqXGgj.s 			page 19
+ 184:main.c        ****         memset(comp_buffer, 0, sizeof(comp_buffer));
+ 185:main.c        ****         while (read(comp_buffer+k, 10) == 11) {
+ 186:main.c        ****             k += 10;
+ 187:main.c        ****         };
+ 188:main.c        ****         k = 0;
+ 189:main.c        **** 
+ 190:main.c        ****         for (int z = 0; z < sizeof(comp_buffer); z++){
+ 191:main.c        ****             write_tx_buffer(comp_buffer[z]);
+ 192:main.c        ****         }
+ 193:main.c        ****         write_tx_buffer('\n');
+ 194:main.c        **** 
+ 195:main.c        ****         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
+ 196:main.c        ****             PORTB |= (1 << PB5);
+ 197:main.c        ****         } else {
+ 198:main.c        ****             PORTB &= ~(1 << PB5);
+ 199:main.c        ****         }
+ 200:main.c        ****     }
+ 201:main.c        **** 
+ 202:main.c        ****     return 0;
+ 203:main.c        **** }
+ 204:main.c        **** 
+ 205:main.c        **** /* Funções */
+ 206:main.c        **** 
+ 207:main.c        **** uint8_t write(uint8_t* buf, uint8_t n, int8_t close_packet){
+ 208:main.c        ****     tx_byte_cnt = 0;
+ 209:main.c        **** 
+GAS LISTING /tmp/ccfeYjiW.s 			page 8
 
 
- 194:main.c        ****         write_tx_buffer(SINC);
- 699               		.stabn	68,0,194,.LM89-.LFBB6
- 700               	.LM89:
- 701 0250 CC23      		tst r28
- 702 0252 01F0      		breq .L47
- 703 0254 8091 0000 		lds r24,tx_state
- 704 0258 8823      		tst r24
- 705 025a 01F0      		breq .L47
- 195:main.c        ****     }
- 706               		.stabn	68,0,195,.LM90-.LFBB6
- 707               	.LM90:
- 708 025c 8EE7      		ldi r24,lo8(126)
- 709 025e 0E94 0000 		call write_tx_buffer
- 710 0262 00C0      		rjmp .L47
- 711               	.LBE13:
- 712               	.LBE12:
- 713               		.size	write, .-write
- 714               	.Lscope6:
- 715               		.stabs	"",36,0,0,.Lscope6-.LFBB6
- 716               		.stabd	78,0,0
- 717               		.stabs	"flow_off:F(0,50)",36,0,269,flow_off
- 718               	.global	flow_off
- 719               		.type	flow_off, @function
- 720               	flow_off:
- 721               		.stabd	46,0,0
- 268:main.c        **** 
- 269:main.c        **** void flow_off(void) {
- 722               		.stabn	68,0,269,.LM91-.LFBB7
- 723               	.LM91:
- 724               	.LFBB7:
- 725               	/* prologue: function */
- 726               	/* frame size = 0 */
- 727               	/* stack size = 0 */
- 728               	.L__stack_usage = 0
- 270:main.c        ****     write_tx_buffer(XOFF);
- 729               		.stabn	68,0,270,.LM92-.LFBB7
- 730               	.LM92:
- 731 0264 83E1      		ldi r24,lo8(19)
- 732 0266 0E94 0000 		call write_tx_buffer
- 271:main.c        ****     rx_state = 0;
- 733               		.stabn	68,0,271,.LM93-.LFBB7
- 734               	.LM93:
- 735 026a 1092 0000 		sts rx_state,__zero_reg__
- 736               	/* epilogue start */
- 272:main.c        **** }
- 737               		.stabn	68,0,272,.LM94-.LFBB7
- 738               	.LM94:
- 739 026e 0895      		ret
- 740               		.size	flow_off, .-flow_off
- 741               	.Lscope7:
- 742               		.stabs	"",36,0,0,.Lscope7-.LFBB7
- 743               		.stabd	78,0,0
- 744               		.stabs	"flow_on:F(0,50)",36,0,274,flow_on
- 745               	.global	flow_on
- 746               		.type	flow_on, @function
- 747               	flow_on:
- 748               		.stabd	46,0,0
-GAS LISTING /tmp/ccmqXGgj.s 			page 20
+ 210:main.c        ****     if (!tx_state) {
+ 211:main.c        ****         return 0;
+ 212:main.c        ****     }
+ 213:main.c        ****     
+ 214:main.c        ****     while ((tx_byte_cnt < n) && tx_state) {
+ 215:main.c        ****         if (buf[tx_byte_cnt] == SINC || buf[tx_byte_cnt] == XON || buf[tx_byte_cnt] == XOFF || buf[
+ 216:main.c        ****             write_tx_buffer(ESC);
+ 217:main.c        ****         }
+ 218:main.c        ****         write_tx_buffer(buf[tx_byte_cnt]);
+ 219:main.c        ****         tx_byte_cnt++;
+ 220:main.c        ****     }
+ 221:main.c        **** 
+ 222:main.c        ****     if (close_packet && tx_state) {
+ 223:main.c        ****         write_tx_buffer(SINC);
+ 224:main.c        ****     }
+ 225:main.c        **** 
+ 226:main.c        ****     return tx_byte_cnt;
+ 227:main.c        **** }
+ 228:main.c        **** 
+ 229:main.c        **** /* Falta limitar o byte_cnt caso ultrapasse o tamanho do buffer */
+ 230:main.c        **** uint8_t read(uint8_t* buf, uint8_t n) {
+ 231:main.c        ****     uint8_t received_byte, byte_cnt = 0;
+ 232:main.c        **** 
+ 233:main.c        ****     while (byte_cnt < n) { 
+ 234:main.c        ****         if (!rx_state) {
+ 235:main.c        ****             return 0;
+ 236:main.c        ****         }
+ 237:main.c        ****         while (!rcvd_byte);
+ 238:main.c        **** 
+ 239:main.c        ****         received_byte = read_rx_buffer();
+ 240:main.c        **** 
+ 241:main.c        ****         if (rx_sinc) {
+ 242:main.c        ****             buf[byte_cnt] = '\0';
+ 243:main.c        ****             rx_sinc = 0;
+ 244:main.c        ****             return byte_cnt;
+ 245:main.c        ****         }
+ 246:main.c        **** 
+ 247:main.c        ****         buf[byte_cnt] = received_byte;
+ 248:main.c        ****         byte_cnt++;
+ 249:main.c        **** 
+ 250:main.c        ****         rcvd_byte = 0;
+ 251:main.c        ****     }
+ 252:main.c        ****     return n+1;
+ 253:main.c        **** }
+ 254:main.c        **** 
+ 255:main.c        **** uint16_t read_rx_buffer(void)
+ 256:main.c        **** {
+ 188               		.stabn	68,0,256,.LM9-.LFBB2
+ 189               	.LM9:
+ 190               	.LFBB2:
+ 191               	/* prologue: function */
+ 192               	/* frame size = 0 */
+ 193               	/* stack size = 0 */
+ 194               	.L__stack_usage = 0
+ 257:main.c        ****     uint8_t rc = 0, c = 0;
+ 258:main.c        **** 
+ 259:main.c        ****     cli();
+GAS LISTING /tmp/ccfeYjiW.s 			page 9
 
 
- 273:main.c        **** 
- 274:main.c        **** void flow_on(void) {
- 749               		.stabn	68,0,274,.LM95-.LFBB8
- 750               	.LM95:
- 751               	.LFBB8:
- 752               	/* prologue: function */
- 753               	/* frame size = 0 */
- 754               	/* stack size = 0 */
- 755               	.L__stack_usage = 0
- 275:main.c        ****     write_tx_buffer(XON);
- 756               		.stabn	68,0,275,.LM96-.LFBB8
- 757               	.LM96:
- 758 0270 81E1      		ldi r24,lo8(17)
- 759 0272 0E94 0000 		call write_tx_buffer
- 276:main.c        ****     rx_state = 1;
- 760               		.stabn	68,0,276,.LM97-.LFBB8
- 761               	.LM97:
- 762 0276 81E0      		ldi r24,lo8(1)
- 763 0278 8093 0000 		sts rx_state,r24
- 764               	/* epilogue start */
- 277:main.c        **** }
- 765               		.stabn	68,0,277,.LM98-.LFBB8
- 766               	.LM98:
- 767 027c 0895      		ret
- 768               		.size	flow_on, .-flow_on
- 769               	.Lscope8:
- 770               		.stabs	"",36,0,0,.Lscope8-.LFBB8
- 771               		.stabd	78,0,0
- 772               		.stabs	"is_flow_on:F(5,2)",36,0,279,is_flow_on
- 773               	.global	is_flow_on
- 774               		.type	is_flow_on, @function
- 775               	is_flow_on:
- 776               		.stabd	46,0,0
- 278:main.c        **** 
- 279:main.c        **** uint8_t is_flow_on(void) {
- 777               		.stabn	68,0,279,.LM99-.LFBB9
- 778               	.LM99:
- 779               	.LFBB9:
- 780               	/* prologue: function */
- 781               	/* frame size = 0 */
- 782               	/* stack size = 0 */
- 783               	.L__stack_usage = 0
- 280:main.c        ****     return tx_state;
- 281:main.c        **** }
- 784               		.stabn	68,0,281,.LM100-.LFBB9
- 785               	.LM100:
- 786 027e 8091 0000 		lds r24,tx_state
- 787               	/* epilogue start */
- 788 0282 0895      		ret
- 789               		.size	is_flow_on, .-is_flow_on
- 790               	.Lscope9:
- 791               		.stabs	"",36,0,0,.Lscope9-.LFBB9
- 792               		.stabd	78,0,0
- 793               		.stabs	"delay_ms:F(0,50)",36,0,283,delay_ms
- 794               		.stabs	"ms:P(5,4)",64,0,283,24
- 795               	.global	delay_ms
- 796               		.type	delay_ms, @function
-GAS LISTING /tmp/ccmqXGgj.s 			page 21
+ 195               		.stabn	68,0,259,.LM10-.LFBB2
+ 196               	.LM10:
+ 197               	/* #APP */
+ 198               	 ;  259 "main.c" 1
+ 199 005c F894      		cli
+ 200               	 ;  0 "" 2
+ 260:main.c        ****     if (rx_head != rx_tail) {
+ 201               		.stabn	68,0,260,.LM11-.LFBB2
+ 202               	.LM11:
+ 203               	/* #NOAPP */
+ 204 005e 9091 0000 		lds r25,rx_tail
+ 205 0062 8091 0000 		lds r24,rx_head
+ 206 0066 8917      		cp r24,r25
+ 207 0068 01F0      		breq .L8
+ 261:main.c        ****         c = rx_buffer[rx_tail];
+ 208               		.stabn	68,0,261,.LM12-.LFBB2
+ 209               	.LM12:
+ 210 006a E92F      		mov r30,r25
+ 211 006c F0E0      		ldi r31,0
+ 212 006e E050      		subi r30,lo8(-(rx_buffer))
+ 213 0070 F040      		sbci r31,hi8(-(rx_buffer))
+ 214 0072 8081      		ld r24,Z
+ 262:main.c        ****         if (++rx_tail >= BUFFER_SIZE)
+ 215               		.stabn	68,0,262,.LM13-.LFBB2
+ 216               	.LM13:
+ 217 0074 9F5F      		subi r25,lo8(-(1))
+ 218 0076 9F3F      		cpi r25,lo8(-1)
+ 219 0078 01F0      		breq .L7
+ 220 007a 9093 0000 		sts rx_tail,r25
+ 221               	.L9:
+ 257:main.c        **** 
+ 222               		.stabn	68,0,257,.LM14-.LFBB2
+ 223               	.LM14:
+ 224 007e 20E0      		ldi r18,0
+ 225               	.L6:
+ 263:main.c        ****             rx_tail = 0;
+ 264:main.c        ****     } else 
+ 265:main.c        ****         rc = 1;
+ 266:main.c        ****     sei();
+ 226               		.stabn	68,0,266,.LM15-.LFBB2
+ 227               	.LM15:
+ 228               	/* #APP */
+ 229               	 ;  266 "main.c" 1
+ 230 0080 7894      		sei
+ 231               	 ;  0 "" 2
+ 267:main.c        ****     return ((uint16_t) rc << 8) | c;
+ 268:main.c        **** }
+ 232               		.stabn	68,0,268,.LM16-.LFBB2
+ 233               	.LM16:
+ 234               	/* #NOAPP */
+ 235 0082 922F      		mov r25,r18
+ 236               	/* epilogue start */
+ 237 0084 0895      		ret
+ 238               	.L7:
+ 263:main.c        ****             rx_tail = 0;
+ 239               		.stabn	68,0,263,.LM17-.LFBB2
+ 240               	.LM17:
+GAS LISTING /tmp/ccfeYjiW.s 			page 10
 
 
- 797               	delay_ms:
- 798               		.stabd	46,0,0
- 282:main.c        **** 
- 283:main.c        **** void delay_ms(uint16_t ms)
- 284:main.c        **** {
- 799               		.stabn	68,0,284,.LM101-.LFBB10
+ 241 0086 1092 0000 		sts rx_tail,__zero_reg__
+ 242 008a 00C0      		rjmp .L9
+ 243               	.L8:
+ 257:main.c        **** 
+ 244               		.stabn	68,0,257,.LM18-.LFBB2
+ 245               	.LM18:
+ 246 008c 80E0      		ldi r24,0
+ 265:main.c        ****     sei();
+ 247               		.stabn	68,0,265,.LM19-.LFBB2
+ 248               	.LM19:
+ 249 008e 21E0      		ldi r18,lo8(1)
+ 250 0090 00C0      		rjmp .L6
+ 251               		.size	read_rx_buffer, .-read_rx_buffer
+ 252               		.stabs	"rc:r(5,2)",64,0,257,18
+ 253               		.stabs	"c:r(5,2)",64,0,257,24
+ 254               		.stabn	192,0,0,.LFBB2-.LFBB2
+ 255               		.stabn	224,0,0,.Lscope2-.LFBB2
+ 256               	.Lscope2:
+ 257               		.stabs	"",36,0,0,.Lscope2-.LFBB2
+ 258               		.stabd	78,0,0
+ 259               		.stabs	"read:F(5,2)",36,0,230,read
+ 260               		.stabs	"buf:P(0,51)=*(5,2)",64,0,230,24
+ 261               		.stabs	"n:P(5,2)",64,0,230,29
+ 262               	.global	read
+ 263               		.type	read, @function
+ 264               	read:
+ 265               		.stabd	46,0,0
+ 230:main.c        ****     uint8_t received_byte, byte_cnt = 0;
+ 266               		.stabn	68,0,230,.LM20-.LFBB3
+ 267               	.LM20:
+ 268               	.LFBB3:
+ 269 0092 0F93      		push r16
+ 270 0094 1F93      		push r17
+ 271 0096 CF93      		push r28
+ 272 0098 DF93      		push r29
+ 273               	/* prologue: function */
+ 274               	/* frame size = 0 */
+ 275               	/* stack size = 4 */
+ 276               	.L__stack_usage = 4
+ 277 009a D62F      		mov r29,r22
+ 278 009c 8C01      		movw r16,r24
+ 231:main.c        **** 
+ 279               		.stabn	68,0,231,.LM21-.LFBB3
+ 280               	.LM21:
+ 281 009e C0E0      		ldi r28,0
+ 282               	.L11:
+ 233:main.c        ****         if (!rx_state) {
+ 283               		.stabn	68,0,233,.LM22-.LFBB3
+ 284               	.LM22:
+ 285 00a0 CD13      		cpse r28,r29
+ 286 00a2 00C0      		rjmp .L15
+ 252:main.c        **** }
+ 287               		.stabn	68,0,252,.LM23-.LFBB3
+ 288               	.LM23:
+ 289 00a4 81E0      		ldi r24,lo8(1)
+ 290 00a6 8C0F      		add r24,r28
+ 291 00a8 00C0      		rjmp .L10
+GAS LISTING /tmp/ccfeYjiW.s 			page 11
+
+
+ 292               	.L15:
+ 234:main.c        ****             return 0;
+ 293               		.stabn	68,0,234,.LM24-.LFBB3
+ 294               	.LM24:
+ 295 00aa 8091 0000 		lds r24,rx_state
+ 296 00ae 8823      		tst r24
+ 297 00b0 01F0      		breq .L10
+ 298               	.L13:
+ 237:main.c        **** 
+ 299               		.stabn	68,0,237,.LM25-.LFBB3
+ 300               	.LM25:
+ 301 00b2 8091 0000 		lds r24,rcvd_byte
+ 302 00b6 8823      		tst r24
+ 303 00b8 01F0      		breq .L13
+ 239:main.c        **** 
+ 304               		.stabn	68,0,239,.LM26-.LFBB3
+ 305               	.LM26:
+ 306 00ba 0E94 0000 		call read_rx_buffer
+ 241:main.c        ****             buf[byte_cnt] = '\0';
+ 307               		.stabn	68,0,241,.LM27-.LFBB3
+ 308               	.LM27:
+ 309 00be 9091 0000 		lds r25,rx_sinc
+ 242:main.c        ****             rx_sinc = 0;
+ 310               		.stabn	68,0,242,.LM28-.LFBB3
+ 311               	.LM28:
+ 312 00c2 F801      		movw r30,r16
+ 241:main.c        ****             buf[byte_cnt] = '\0';
+ 313               		.stabn	68,0,241,.LM29-.LFBB3
+ 314               	.LM29:
+ 315 00c4 9923      		tst r25
+ 316 00c6 01F0      		breq .L14
+ 242:main.c        ****             rx_sinc = 0;
+ 317               		.stabn	68,0,242,.LM30-.LFBB3
+ 318               	.LM30:
+ 319 00c8 1082      		st Z,__zero_reg__
+ 243:main.c        ****             return byte_cnt;
+ 320               		.stabn	68,0,243,.LM31-.LFBB3
+ 321               	.LM31:
+ 322 00ca 1092 0000 		sts rx_sinc,__zero_reg__
+ 244:main.c        ****         }
+ 323               		.stabn	68,0,244,.LM32-.LFBB3
+ 324               	.LM32:
+ 325 00ce 8C2F      		mov r24,r28
+ 326               	.L10:
+ 327               	/* epilogue start */
+ 253:main.c        **** 
+ 328               		.stabn	68,0,253,.LM33-.LFBB3
+ 329               	.LM33:
+ 330 00d0 DF91      		pop r29
+ 331 00d2 CF91      		pop r28
+ 332 00d4 1F91      		pop r17
+ 333 00d6 0F91      		pop r16
+ 334 00d8 0895      		ret
+ 335               	.L14:
+ 247:main.c        ****         byte_cnt++;
+ 336               		.stabn	68,0,247,.LM34-.LFBB3
+ 337               	.LM34:
+GAS LISTING /tmp/ccfeYjiW.s 			page 12
+
+
+ 338 00da 8193      		st Z+,r24
+ 339 00dc 8F01      		movw r16,r30
+ 248:main.c        **** 
+ 340               		.stabn	68,0,248,.LM35-.LFBB3
+ 341               	.LM35:
+ 342 00de CF5F      		subi r28,lo8(-(1))
+ 250:main.c        ****     }
+ 343               		.stabn	68,0,250,.LM36-.LFBB3
+ 344               	.LM36:
+ 345 00e0 1092 0000 		sts rcvd_byte,__zero_reg__
+ 346 00e4 00C0      		rjmp .L11
+ 347               		.size	read, .-read
+ 348               		.stabs	"byte_cnt:r(5,2)",64,0,231,28
+ 349               		.stabn	192,0,0,.LFBB3-.LFBB3
+ 350               		.stabn	224,0,0,.Lscope3-.LFBB3
+ 351               	.Lscope3:
+ 352               		.stabs	"",36,0,0,.Lscope3-.LFBB3
+ 353               		.stabd	78,0,0
+ 354               		.stabs	"write_tx_buffer:F(5,2)",36,0,270,write_tx_buffer
+ 355               		.stabs	"c:P(5,2)",64,0,270,18
+ 356               	.global	write_tx_buffer
+ 357               		.type	write_tx_buffer, @function
+ 358               	write_tx_buffer:
+ 359               		.stabd	46,0,0
+ 269:main.c        **** 
+ 270:main.c        **** uint8_t write_tx_buffer(uint8_t c) {
+ 360               		.stabn	68,0,270,.LM37-.LFBB4
+ 361               	.LM37:
+ 362               	.LFBB4:
+ 363               	/* prologue: function */
+ 364               	/* frame size = 0 */
+ 365               	/* stack size = 0 */
+ 366               	.L__stack_usage = 0
+ 367 00e6 282F      		mov r18,r24
+ 271:main.c        ****     uint8_t rc = 0;
+ 272:main.c        **** 
+ 273:main.c        ****     cli();
+ 368               		.stabn	68,0,273,.LM38-.LFBB4
+ 369               	.LM38:
+ 370               	/* #APP */
+ 371               	 ;  273 "main.c" 1
+ 372 00e8 F894      		cli
+ 373               	 ;  0 "" 2
+ 274:main.c        **** 
+ 275:main.c        ****     if(!usart_transmitting){
+ 374               		.stabn	68,0,275,.LM39-.LFBB4
+ 375               	.LM39:
+ 376               	/* #NOAPP */
+ 377 00ea 8091 0000 		lds r24,usart_transmitting
+ 378 00ee 8111      		cpse r24,__zero_reg__
+ 379 00f0 00C0      		rjmp .L22
+ 276:main.c        ****         UDR0 = c;
+ 380               		.stabn	68,0,276,.LM40-.LFBB4
+ 381               	.LM40:
+ 382 00f2 2093 C600 		sts 198,r18
+ 277:main.c        ****         UCSR0B |= (1 << UDRIE0);
+ 383               		.stabn	68,0,277,.LM41-.LFBB4
+GAS LISTING /tmp/ccfeYjiW.s 			page 13
+
+
+ 384               	.LM41:
+ 385 00f6 9091 C100 		lds r25,193
+ 386 00fa 9062      		ori r25,lo8(32)
+ 387 00fc 9093 C100 		sts 193,r25
+ 278:main.c        ****         usart_transmitting = 1;
+ 388               		.stabn	68,0,278,.LM42-.LFBB4
+ 389               	.LM42:
+ 390 0100 91E0      		ldi r25,lo8(1)
+ 391 0102 9093 0000 		sts usart_transmitting,r25
+ 392               	.L23:
+ 279:main.c        ****     } else{
+ 280:main.c        ****         uint8_t next = tx_head + 1;
+ 281:main.c        ****         if (next >= BUFFER_SIZE)
+ 282:main.c        ****             next = 0;
+ 283:main.c        ****         if (next != tx_tail) {
+ 284:main.c        ****             tx_buffer[tx_head] = c;
+ 285:main.c        ****             tx_head = next;
+ 286:main.c        ****         } else  /* buffer cheio */
+ 287:main.c        ****             rc = 1;
+ 288:main.c        ****     }
+ 289:main.c        ****     sei();
+ 393               		.stabn	68,0,289,.LM43-.LFBB4
+ 394               	.LM43:
+ 395               	/* #APP */
+ 396               	 ;  289 "main.c" 1
+ 397 0106 7894      		sei
+ 398               	 ;  0 "" 2
+ 399               	/* epilogue start */
+ 290:main.c        ****     return rc;
+ 291:main.c        **** }
+ 400               		.stabn	68,0,291,.LM44-.LFBB4
+ 401               	.LM44:
+ 402               	/* #NOAPP */
+ 403 0108 0895      		ret
+ 404               	.L22:
+ 405               	.LBB8:
+ 280:main.c        ****         if (next >= BUFFER_SIZE)
+ 406               		.stabn	68,0,280,.LM45-.LFBB4
+ 407               	.LM45:
+ 408 010a E091 0000 		lds r30,tx_head
+ 409 010e 91E0      		ldi r25,lo8(1)
+ 410 0110 9E0F      		add r25,r30
+ 281:main.c        ****             next = 0;
+ 411               		.stabn	68,0,281,.LM46-.LFBB4
+ 412               	.LM46:
+ 413 0112 9F3F      		cpi r25,lo8(-1)
+ 414 0114 01F4      		brne .L24
+ 282:main.c        ****         if (next != tx_tail) {
+ 415               		.stabn	68,0,282,.LM47-.LFBB4
+ 416               	.LM47:
+ 417 0116 90E0      		ldi r25,0
+ 418               	.L24:
+ 283:main.c        ****             tx_buffer[tx_head] = c;
+ 419               		.stabn	68,0,283,.LM48-.LFBB4
+ 420               	.LM48:
+ 421 0118 8091 0000 		lds r24,tx_tail
+ 422 011c 8917      		cp r24,r25
+GAS LISTING /tmp/ccfeYjiW.s 			page 14
+
+
+ 423 011e 01F0      		breq .L25
+ 284:main.c        ****             tx_head = next;
+ 424               		.stabn	68,0,284,.LM49-.LFBB4
+ 425               	.LM49:
+ 426 0120 F0E0      		ldi r31,0
+ 427 0122 E050      		subi r30,lo8(-(tx_buffer))
+ 428 0124 F040      		sbci r31,hi8(-(tx_buffer))
+ 429 0126 2083      		st Z,r18
+ 285:main.c        ****         } else  /* buffer cheio */
+ 430               		.stabn	68,0,285,.LM50-.LFBB4
+ 431               	.LM50:
+ 432 0128 9093 0000 		sts tx_head,r25
+ 433               	.LBE8:
+ 271:main.c        **** 
+ 434               		.stabn	68,0,271,.LM51-.LFBB4
+ 435               	.LM51:
+ 436 012c 80E0      		ldi r24,0
+ 437               	.LBB9:
+ 438 012e 00C0      		rjmp .L23
+ 439               	.L25:
+ 287:main.c        ****     }
+ 440               		.stabn	68,0,287,.LM52-.LFBB4
+ 441               	.LM52:
+ 442 0130 81E0      		ldi r24,lo8(1)
+ 443 0132 00C0      		rjmp .L23
+ 444               	.LBE9:
+ 445               		.size	write_tx_buffer, .-write_tx_buffer
+ 446               		.stabs	"rc:r(5,2)",64,0,271,24
+ 447               		.stabn	192,0,0,.LFBB4-.LFBB4
+ 448               		.stabs	"next:r(5,2)",64,0,280,25
+ 449               		.stabn	192,0,0,.LBB8-.LFBB4
+ 450               		.stabn	224,0,0,.LBE8-.LFBB4
+ 451               		.stabs	"next:r(5,2)",64,0,280,25
+ 452               		.stabn	192,0,0,.LBB9-.LFBB4
+ 453               		.stabn	224,0,0,.LBE9-.LFBB4
+ 454               		.stabn	224,0,0,.Lscope4-.LFBB4
+ 455               	.Lscope4:
+ 456               		.stabs	"",36,0,0,.Lscope4-.LFBB4
+ 457               		.stabd	78,0,0
+ 458               		.stabs	"write:F(5,2)",36,0,207,write
+ 459               		.stabs	"buf:P(0,51)",64,0,207,28
+ 460               		.stabs	"n:P(5,2)",64,0,207,16
+ 461               		.stabs	"close_packet:P(5,1)",64,0,207,17
+ 462               	.global	write
+ 463               		.type	write, @function
+ 464               	write:
+ 465               		.stabd	46,0,0
+ 207:main.c        ****     tx_byte_cnt = 0;
+ 466               		.stabn	68,0,207,.LM53-.LFBB5
+ 467               	.LM53:
+ 468               	.LFBB5:
+ 469 0134 0F93      		push r16
+ 470 0136 1F93      		push r17
+ 471 0138 CF93      		push r28
+ 472 013a DF93      		push r29
+ 473               	/* prologue: function */
+ 474               	/* frame size = 0 */
+GAS LISTING /tmp/ccfeYjiW.s 			page 15
+
+
+ 475               	/* stack size = 4 */
+ 476               	.L__stack_usage = 4
+ 477 013c EC01      		movw r28,r24
+ 478 013e 062F      		mov r16,r22
+ 479 0140 142F      		mov r17,r20
+ 208:main.c        **** 
+ 480               		.stabn	68,0,208,.LM54-.LFBB5
+ 481               	.LM54:
+ 482 0142 1092 0000 		sts tx_byte_cnt,__zero_reg__
+ 210:main.c        ****         return 0;
+ 483               		.stabn	68,0,210,.LM55-.LFBB5
+ 484               	.LM55:
+ 485 0146 8091 0000 		lds r24,tx_state
+ 486 014a 8111      		cpse r24,__zero_reg__
+ 487 014c 00C0      		rjmp .L28
+ 488               	.L26:
+ 489               	/* epilogue start */
+ 227:main.c        **** 
+ 490               		.stabn	68,0,227,.LM56-.LFBB5
+ 491               	.LM56:
+ 492 014e DF91      		pop r29
+ 493 0150 CF91      		pop r28
+ 494 0152 1F91      		pop r17
+ 495 0154 0F91      		pop r16
+ 496 0156 0895      		ret
+ 497               	.L32:
+ 498               	.LBB12:
+ 499               	.LBB13:
+ 215:main.c        ****             write_tx_buffer(ESC);
+ 500               		.stabn	68,0,215,.LM57-.LFBB5
+ 501               	.LM57:
+ 502 0158 EC0F      		add r30,r28
+ 503 015a FD2F      		mov r31,r29
+ 504 015c F11D      		adc r31,__zero_reg__
+ 505 015e 8081      		ld r24,Z
+ 506 0160 982F      		mov r25,r24
+ 507 0162 9D7F      		andi r25,lo8(-3)
+ 508 0164 9131      		cpi r25,lo8(17)
+ 509 0166 01F0      		breq .L29
+ 510 0168 8D57      		subi r24,lo8(-(-125))
+ 511 016a 8230      		cpi r24,lo8(2)
+ 512 016c 00F4      		brsh .L30
+ 513               	.L29:
+ 216:main.c        ****         }
+ 514               		.stabn	68,0,216,.LM58-.LFBB5
+ 515               	.LM58:
+ 516 016e 8DE7      		ldi r24,lo8(125)
+ 517 0170 0E94 0000 		call write_tx_buffer
+ 518               	.L30:
+ 218:main.c        ****         tx_byte_cnt++;
+ 519               		.stabn	68,0,218,.LM59-.LFBB5
+ 520               	.LM59:
+ 521 0174 E091 0000 		lds r30,tx_byte_cnt
+ 522 0178 EC0F      		add r30,r28
+ 523 017a FD2F      		mov r31,r29
+ 524 017c F11D      		adc r31,__zero_reg__
+ 525 017e 8081      		ld r24,Z
+GAS LISTING /tmp/ccfeYjiW.s 			page 16
+
+
+ 526 0180 0E94 0000 		call write_tx_buffer
+ 219:main.c        ****     }
+ 527               		.stabn	68,0,219,.LM60-.LFBB5
+ 528               	.LM60:
+ 529 0184 8091 0000 		lds r24,tx_byte_cnt
+ 530 0188 8F5F      		subi r24,lo8(-(1))
+ 531 018a 8093 0000 		sts tx_byte_cnt,r24
+ 532               	.L28:
+ 214:main.c        ****         if (buf[tx_byte_cnt] == SINC || buf[tx_byte_cnt] == XON || buf[tx_byte_cnt] == XOFF || buf[
+ 533               		.stabn	68,0,214,.LM61-.LFBB5
+ 534               	.LM61:
+ 535 018e E091 0000 		lds r30,tx_byte_cnt
+ 536 0192 E017      		cp r30,r16
+ 537 0194 00F4      		brsh .L31
+ 538 0196 8091 0000 		lds r24,tx_state
+ 539 019a 8111      		cpse r24,__zero_reg__
+ 540 019c 00C0      		rjmp .L32
+ 541               	.L33:
+ 226:main.c        **** }
+ 542               		.stabn	68,0,226,.LM62-.LFBB5
+ 543               	.LM62:
+ 544 019e 8091 0000 		lds r24,tx_byte_cnt
+ 545 01a2 00C0      		rjmp .L26
+ 546               	.L31:
+ 222:main.c        ****         write_tx_buffer(SINC);
+ 547               		.stabn	68,0,222,.LM63-.LFBB5
+ 548               	.LM63:
+ 549 01a4 1123      		tst r17
+ 550 01a6 01F0      		breq .L33
+ 551 01a8 8091 0000 		lds r24,tx_state
+ 552 01ac 8823      		tst r24
+ 553 01ae 01F0      		breq .L33
+ 223:main.c        ****     }
+ 554               		.stabn	68,0,223,.LM64-.LFBB5
+ 555               	.LM64:
+ 556 01b0 8EE7      		ldi r24,lo8(126)
+ 557 01b2 0E94 0000 		call write_tx_buffer
+ 558 01b6 00C0      		rjmp .L33
+ 559               	.LBE13:
+ 560               	.LBE12:
+ 561               		.size	write, .-write
+ 562               	.Lscope5:
+ 563               		.stabs	"",36,0,0,.Lscope5-.LFBB5
+ 564               		.stabd	78,0,0
+ 565               		.stabs	"enqueue_rx_buffer:F(0,50)",36,0,293,enqueue_rx_buffer
+ 566               		.stabs	"received_data:P(5,2)",64,0,293,24
+ 567               	.global	enqueue_rx_buffer
+ 568               		.type	enqueue_rx_buffer, @function
+ 569               	enqueue_rx_buffer:
+ 570               		.stabd	46,0,0
+ 292:main.c        **** 
+ 293:main.c        **** void enqueue_rx_buffer(uint8_t received_data) {
+ 571               		.stabn	68,0,293,.LM65-.LFBB6
+ 572               	.LM65:
+ 573               	.LFBB6:
+ 574               	/* prologue: function */
+ 575               	/* frame size = 0 */
+GAS LISTING /tmp/ccfeYjiW.s 			page 17
+
+
+ 576               	/* stack size = 0 */
+ 577               	.L__stack_usage = 0
+ 294:main.c        ****     uint8_t next = rx_head + 1;
+ 578               		.stabn	68,0,294,.LM66-.LFBB6
+ 579               	.LM66:
+ 580 01b8 E091 0000 		lds r30,rx_head
+ 581 01bc 91E0      		ldi r25,lo8(1)
+ 582 01be 9E0F      		add r25,r30
+ 295:main.c        ****         if (next >= BUFFER_SIZE)
+ 583               		.stabn	68,0,295,.LM67-.LFBB6
+ 584               	.LM67:
+ 585 01c0 9F3F      		cpi r25,lo8(-1)
+ 586 01c2 01F4      		brne .L47
+ 296:main.c        ****             next = 0;
+ 587               		.stabn	68,0,296,.LM68-.LFBB6
+ 588               	.LM68:
+ 589 01c4 90E0      		ldi r25,0
+ 590               	.L47:
+ 297:main.c        ****         
+ 298:main.c        ****         /* Se o buffer estiver cheio desprezamos o byte recebido mais antigo e
+ 299:main.c        ****         * colocamos o byte que acabamos de receber em seu lugar */
+ 300:main.c        ****         rx_buffer[rx_head] = received_data;
+ 591               		.stabn	68,0,300,.LM69-.LFBB6
+ 592               	.LM69:
+ 593 01c6 F0E0      		ldi r31,0
+ 594 01c8 E050      		subi r30,lo8(-(rx_buffer))
+ 595 01ca F040      		sbci r31,hi8(-(rx_buffer))
+ 596 01cc 8083      		st Z,r24
+ 301:main.c        ****         rx_head = next;
+ 597               		.stabn	68,0,301,.LM70-.LFBB6
+ 598               	.LM70:
+ 599 01ce 9093 0000 		sts rx_head,r25
+ 302:main.c        ****         if (next == rx_tail) { /* buffer cheio */
+ 600               		.stabn	68,0,302,.LM71-.LFBB6
+ 601               	.LM71:
+ 602 01d2 8091 0000 		lds r24,rx_tail
+ 603 01d6 8913      		cpse r24,r25
+ 604 01d8 00C0      		rjmp .L49
+ 303:main.c        ****             rx_tail++;
+ 605               		.stabn	68,0,303,.LM72-.LFBB6
+ 606               	.LM72:
+ 607 01da 9F5F      		subi r25,lo8(-(1))
+ 304:main.c        ****             if (rx_tail >= BUFFER_SIZE)
+ 608               		.stabn	68,0,304,.LM73-.LFBB6
+ 609               	.LM73:
+ 610 01dc 9F3F      		cpi r25,lo8(-1)
+ 611 01de 01F0      		breq .L50
+ 303:main.c        ****             rx_tail++;
+ 612               		.stabn	68,0,303,.LM74-.LFBB6
+ 613               	.LM74:
+ 614 01e0 9093 0000 		sts rx_tail,r25
+ 615               	.L49:
+ 305:main.c        ****                 rx_tail = 0;
+ 306:main.c        ****         }
+ 307:main.c        ****         rcvd_byte = 1;
+ 616               		.stabn	68,0,307,.LM75-.LFBB6
+ 617               	.LM75:
+GAS LISTING /tmp/ccfeYjiW.s 			page 18
+
+
+ 618 01e4 81E0      		ldi r24,lo8(1)
+ 619 01e6 8093 0000 		sts rcvd_byte,r24
+ 620               	/* epilogue start */
+ 308:main.c        **** }
+ 621               		.stabn	68,0,308,.LM76-.LFBB6
+ 622               	.LM76:
+ 623 01ea 0895      		ret
+ 624               	.L50:
+ 305:main.c        ****                 rx_tail = 0;
+ 625               		.stabn	68,0,305,.LM77-.LFBB6
+ 626               	.LM77:
+ 627 01ec 1092 0000 		sts rx_tail,__zero_reg__
+ 628 01f0 00C0      		rjmp .L49
+ 629               		.size	enqueue_rx_buffer, .-enqueue_rx_buffer
+ 630               		.stabs	"next:r(5,2)",64,0,294,25
+ 631               		.stabn	192,0,0,.LFBB6-.LFBB6
+ 632               		.stabn	224,0,0,.Lscope6-.LFBB6
+ 633               	.Lscope6:
+ 634               		.stabs	"",36,0,0,.Lscope6-.LFBB6
+ 635               		.stabd	78,0,0
+ 636               		.stabs	"__vector_18:F(0,50)",36,0,45,__vector_18
+ 637               	.global	__vector_18
+ 638               		.type	__vector_18, @function
+ 639               	__vector_18:
+ 640               		.stabd	46,0,0
+  45:main.c        ****     uint8_t received_data = UDR0;
+ 641               		.stabn	68,0,45,.LM78-.LFBB7
+ 642               	.LM78:
+ 643               	.LFBB7:
+ 644 01f2 1F92      		push r1
+ 645 01f4 0F92      		push r0
+ 646 01f6 0FB6      		in r0,__SREG__
+ 647 01f8 0F92      		push r0
+ 648 01fa 1124      		clr __zero_reg__
+ 649 01fc 2F93      		push r18
+ 650 01fe 3F93      		push r19
+ 651 0200 4F93      		push r20
+ 652 0202 5F93      		push r21
+ 653 0204 6F93      		push r22
+ 654 0206 7F93      		push r23
+ 655 0208 8F93      		push r24
+ 656 020a 9F93      		push r25
+ 657 020c AF93      		push r26
+ 658 020e BF93      		push r27
+ 659 0210 EF93      		push r30
+ 660 0212 FF93      		push r31
+ 661               	/* prologue: Signal */
+ 662               	/* frame size = 0 */
+ 663               	/* stack size = 15 */
+ 664               	.L__stack_usage = 15
+  46:main.c        ****     
+ 665               		.stabn	68,0,46,.LM79-.LFBB7
+ 666               	.LM79:
+ 667 0214 8091 C600 		lds r24,198
+  48:main.c        ****         if (received_data == ESC) {
+ 668               		.stabn	68,0,48,.LM80-.LFBB7
+ 669               	.LM80:
+GAS LISTING /tmp/ccfeYjiW.s 			page 19
+
+
+ 670 0218 9091 0000 		lds r25,rx_esc
+ 671 021c 9111      		cpse r25,__zero_reg__
+ 672 021e 00C0      		rjmp .L53
+  49:main.c        ****             rx_esc = 1;
+ 673               		.stabn	68,0,49,.LM81-.LFBB7
+ 674               	.LM81:
+ 675 0220 8D37      		cpi r24,lo8(125)
+ 676 0222 01F4      		brne .L54
+  50:main.c        ****         } else if (received_data == XOFF) {
+ 677               		.stabn	68,0,50,.LM82-.LFBB7
+ 678               	.LM82:
+ 679 0224 81E0      		ldi r24,lo8(1)
+ 680 0226 8093 0000 		sts rx_esc,r24
+ 681               	.L52:
+ 682               	/* epilogue start */
+  65:main.c        **** 
+ 683               		.stabn	68,0,65,.LM83-.LFBB7
+ 684               	.LM83:
+ 685 022a FF91      		pop r31
+ 686 022c EF91      		pop r30
+ 687 022e BF91      		pop r27
+ 688 0230 AF91      		pop r26
+ 689 0232 9F91      		pop r25
+ 690 0234 8F91      		pop r24
+ 691 0236 7F91      		pop r23
+ 692 0238 6F91      		pop r22
+ 693 023a 5F91      		pop r21
+ 694 023c 4F91      		pop r20
+ 695 023e 3F91      		pop r19
+ 696 0240 2F91      		pop r18
+ 697 0242 0F90      		pop r0
+ 698 0244 0FBE      		out __SREG__,r0
+ 699 0246 0F90      		pop r0
+ 700 0248 1F90      		pop r1
+ 701 024a 1895      		reti
+ 702               	.L54:
+  51:main.c        ****             tx_state = 0;
+ 703               		.stabn	68,0,51,.LM84-.LFBB7
+ 704               	.LM84:
+ 705 024c 8331      		cpi r24,lo8(19)
+ 706 024e 01F4      		brne .L56
+  52:main.c        ****         } else if (received_data == XON) {
+ 707               		.stabn	68,0,52,.LM85-.LFBB7
+ 708               	.LM85:
+ 709 0250 1092 0000 		sts tx_state,__zero_reg__
+ 710 0254 00C0      		rjmp .L52
+ 711               	.L56:
+  53:main.c        ****             tx_state = 1;
+ 712               		.stabn	68,0,53,.LM86-.LFBB7
+ 713               	.LM86:
+ 714 0256 8131      		cpi r24,lo8(17)
+ 715 0258 01F4      		brne .L57
+  54:main.c        ****         } else if (received_data == SINC){
+ 716               		.stabn	68,0,54,.LM87-.LFBB7
+ 717               	.LM87:
+ 718 025a 81E0      		ldi r24,lo8(1)
+ 719 025c 8093 0000 		sts tx_state,r24
+GAS LISTING /tmp/ccfeYjiW.s 			page 20
+
+
+ 720 0260 00C0      		rjmp .L52
+ 721               	.L57:
+  55:main.c        ****             rx_sinc = 1;
+ 722               		.stabn	68,0,55,.LM88-.LFBB7
+ 723               	.LM88:
+ 724 0262 8E37      		cpi r24,lo8(126)
+ 725 0264 01F4      		brne .L58
+  56:main.c        ****             rcvd_byte = 1;
+ 726               		.stabn	68,0,56,.LM89-.LFBB7
+ 727               	.LM89:
+ 728 0266 81E0      		ldi r24,lo8(1)
+ 729 0268 8093 0000 		sts rx_sinc,r24
+  57:main.c        ****         } else {
+ 730               		.stabn	68,0,57,.LM90-.LFBB7
+ 731               	.LM90:
+ 732 026c 8093 0000 		sts rcvd_byte,r24
+ 733 0270 00C0      		rjmp .L52
+ 734               	.L58:
+  59:main.c        ****         }
+ 735               		.stabn	68,0,59,.LM91-.LFBB7
+ 736               	.LM91:
+ 737 0272 0E94 0000 		call enqueue_rx_buffer
+ 738 0276 00C0      		rjmp .L52
+ 739               	.L53:
+  62:main.c        ****         rx_esc = 0;
+ 740               		.stabn	68,0,62,.LM92-.LFBB7
+ 741               	.LM92:
+ 742 0278 0E94 0000 		call enqueue_rx_buffer
+  63:main.c        ****     }
+ 743               		.stabn	68,0,63,.LM93-.LFBB7
+ 744               	.LM93:
+ 745 027c 1092 0000 		sts rx_esc,__zero_reg__
+  65:main.c        **** 
+ 746               		.stabn	68,0,65,.LM94-.LFBB7
+ 747               	.LM94:
+ 748 0280 00C0      		rjmp .L52
+ 749               		.size	__vector_18, .-__vector_18
+ 750               		.stabs	"received_data:r(5,2)",64,0,46,24
+ 751               		.stabn	192,0,0,.LFBB7-.LFBB7
+ 752               		.stabn	224,0,0,.Lscope7-.LFBB7
+ 753               	.Lscope7:
+ 754               		.stabs	"",36,0,0,.Lscope7-.LFBB7
+ 755               		.stabd	78,0,0
+ 756               		.stabs	"flow_off:F(0,50)",36,0,310,flow_off
+ 757               	.global	flow_off
+ 758               		.type	flow_off, @function
+ 759               	flow_off:
+ 760               		.stabd	46,0,0
+ 309:main.c        **** 
+ 310:main.c        **** void flow_off(void) {
+ 761               		.stabn	68,0,310,.LM95-.LFBB8
+ 762               	.LM95:
+ 763               	.LFBB8:
+ 764               	/* prologue: function */
+ 765               	/* frame size = 0 */
+ 766               	/* stack size = 0 */
+ 767               	.L__stack_usage = 0
+GAS LISTING /tmp/ccfeYjiW.s 			page 21
+
+
+ 311:main.c        ****     write_tx_buffer(XOFF);
+ 768               		.stabn	68,0,311,.LM96-.LFBB8
+ 769               	.LM96:
+ 770 0282 83E1      		ldi r24,lo8(19)
+ 771 0284 0E94 0000 		call write_tx_buffer
+ 312:main.c        ****     rx_state = 0;
+ 772               		.stabn	68,0,312,.LM97-.LFBB8
+ 773               	.LM97:
+ 774 0288 1092 0000 		sts rx_state,__zero_reg__
+ 775               	/* epilogue start */
+ 313:main.c        **** }
+ 776               		.stabn	68,0,313,.LM98-.LFBB8
+ 777               	.LM98:
+ 778 028c 0895      		ret
+ 779               		.size	flow_off, .-flow_off
+ 780               	.Lscope8:
+ 781               		.stabs	"",36,0,0,.Lscope8-.LFBB8
+ 782               		.stabd	78,0,0
+ 783               		.stabs	"flow_on:F(0,50)",36,0,315,flow_on
+ 784               	.global	flow_on
+ 785               		.type	flow_on, @function
+ 786               	flow_on:
+ 787               		.stabd	46,0,0
+ 314:main.c        **** 
+ 315:main.c        **** void flow_on(void) {
+ 788               		.stabn	68,0,315,.LM99-.LFBB9
+ 789               	.LM99:
+ 790               	.LFBB9:
+ 791               	/* prologue: function */
+ 792               	/* frame size = 0 */
+ 793               	/* stack size = 0 */
+ 794               	.L__stack_usage = 0
+ 316:main.c        ****     write_tx_buffer(XON);
+ 795               		.stabn	68,0,316,.LM100-.LFBB9
+ 796               	.LM100:
+ 797 028e 81E1      		ldi r24,lo8(17)
+ 798 0290 0E94 0000 		call write_tx_buffer
+ 317:main.c        ****     rx_state = 1;
+ 799               		.stabn	68,0,317,.LM101-.LFBB9
  800               	.LM101:
- 801               	.LFBB10:
- 802               	/* prologue: function */
- 803               	/* frame size = 0 */
- 804               	/* stack size = 0 */
- 805               	.L__stack_usage = 0
- 285:main.c        ****     uint16_t i, j;
- 286:main.c        ****     for(i=0; i<ms; i++)
- 806               		.stabn	68,0,286,.LM102-.LFBB10
- 807               	.LM102:
- 808 0284 30E0      		ldi r19,0
- 809 0286 20E0      		ldi r18,0
- 810               	.L61:
- 811               		.stabn	68,0,286,.LM103-.LFBB10
- 812               	.LM103:
- 813 0288 2817      		cp r18,r24
- 814 028a 3907      		cpc r19,r25
- 815 028c 01F4      		brne .L63
- 816               	/* epilogue start */
- 287:main.c        ****         for(j=0; j<4000; j++)
- 288:main.c        ****             _NOP();
- 289:main.c        **** }
- 817               		.stabn	68,0,289,.LM104-.LFBB10
- 818               	.LM104:
- 819 028e 0895      		ret
- 820               	.L63:
- 821 0290 40EA      		ldi r20,lo8(-96)
- 822 0292 5FE0      		ldi r21,lo8(15)
- 823               	.L62:
- 288:main.c        **** }
- 824               		.stabn	68,0,288,.LM105-.LFBB10
- 825               	.LM105:
- 826               	/* #APP */
- 827               	 ;  288 "main.c" 1
- 828 0294 0000      		nop
- 829               	 ;  0 "" 2
- 830               	/* #NOAPP */
- 831 0296 4150      		subi r20,1
- 832 0298 5109      		sbc r21,__zero_reg__
- 287:main.c        ****         for(j=0; j<4000; j++)
- 833               		.stabn	68,0,287,.LM106-.LFBB10
- 834               	.LM106:
- 835 029a 01F4      		brne .L62
- 286:main.c        ****         for(j=0; j<4000; j++)
- 836               		.stabn	68,0,286,.LM107-.LFBB10
- 837               	.LM107:
- 838 029c 2F5F      		subi r18,-1
- 839 029e 3F4F      		sbci r19,-1
- 840 02a0 00C0      		rjmp .L61
- 841               		.size	delay_ms, .-delay_ms
- 842               		.stabs	"i:r(5,4)",64,0,285,18
-GAS LISTING /tmp/ccmqXGgj.s 			page 22
+ 801 0294 81E0      		ldi r24,lo8(1)
+ 802 0296 8093 0000 		sts rx_state,r24
+ 803               	/* epilogue start */
+ 318:main.c        **** }
+ 804               		.stabn	68,0,318,.LM102-.LFBB9
+ 805               	.LM102:
+ 806 029a 0895      		ret
+ 807               		.size	flow_on, .-flow_on
+ 808               	.Lscope9:
+ 809               		.stabs	"",36,0,0,.Lscope9-.LFBB9
+ 810               		.stabd	78,0,0
+ 811               		.stabs	"is_flow_on:F(5,2)",36,0,320,is_flow_on
+ 812               	.global	is_flow_on
+ 813               		.type	is_flow_on, @function
+ 814               	is_flow_on:
+ 815               		.stabd	46,0,0
+ 319:main.c        **** 
+GAS LISTING /tmp/ccfeYjiW.s 			page 22
 
 
- 843               		.stabn	192,0,0,.LFBB10-.LFBB10
- 844               		.stabn	224,0,0,.Lscope10-.LFBB10
- 845               	.Lscope10:
- 846               		.stabs	"",36,0,0,.Lscope10-.LFBB10
- 847               		.stabd	78,0,0
- 848               		.stabs	"blink_led:F(0,50)",36,0,291,blink_led
- 849               	.global	blink_led
- 850               		.type	blink_led, @function
- 851               	blink_led:
- 852               		.stabd	46,0,0
- 290:main.c        **** 
- 291:main.c        **** void blink_led(void) {
- 853               		.stabn	68,0,291,.LM108-.LFBB11
- 854               	.LM108:
- 855               	.LFBB11:
- 856 02a2 CF93      		push r28
- 857 02a4 DF93      		push r29
- 858               	/* prologue: function */
- 859               	/* frame size = 0 */
- 860               	/* stack size = 2 */
- 861               	.L__stack_usage = 2
- 292:main.c        ****     uint8_t k = 5;
- 293:main.c        ****     while (k--) {
- 862               		.stabn	68,0,293,.LM109-.LFBB11
- 863               	.LM109:
- 864 02a6 C6E0      		ldi r28,lo8(6)
- 294:main.c        ****         PINB = (1 << PB5);
- 865               		.stabn	68,0,294,.LM110-.LFBB11
- 866               	.LM110:
- 867 02a8 D0E2      		ldi r29,lo8(32)
- 868               	.L66:
- 869 02aa C150      		subi r28,lo8(-(-1))
- 293:main.c        ****         PINB = (1 << PB5);
- 870               		.stabn	68,0,293,.LM111-.LFBB11
- 871               	.LM111:
- 872 02ac 01F4      		brne .L67
- 873               	/* epilogue start */
- 295:main.c        ****         delay_ms(1000);
- 296:main.c        ****     }
- 297:main.c        **** }
- 874               		.stabn	68,0,297,.LM112-.LFBB11
- 875               	.LM112:
- 876 02ae DF91      		pop r29
- 877 02b0 CF91      		pop r28
- 878 02b2 0895      		ret
- 879               	.L67:
- 294:main.c        ****         delay_ms(1000);
- 880               		.stabn	68,0,294,.LM113-.LFBB11
- 881               	.LM113:
- 882 02b4 D3B9      		out 0x3,r29
- 295:main.c        ****         delay_ms(1000);
- 883               		.stabn	68,0,295,.LM114-.LFBB11
- 884               	.LM114:
- 885 02b6 88EE      		ldi r24,lo8(-24)
- 886 02b8 93E0      		ldi r25,lo8(3)
- 887 02ba 0E94 0000 		call delay_ms
- 888 02be 00C0      		rjmp .L66
-GAS LISTING /tmp/ccmqXGgj.s 			page 23
+ 320:main.c        **** uint8_t is_flow_on(void) {
+ 816               		.stabn	68,0,320,.LM103-.LFBB10
+ 817               	.LM103:
+ 818               	.LFBB10:
+ 819               	/* prologue: function */
+ 820               	/* frame size = 0 */
+ 821               	/* stack size = 0 */
+ 822               	.L__stack_usage = 0
+ 321:main.c        ****     return tx_state;
+ 322:main.c        **** }
+ 823               		.stabn	68,0,322,.LM104-.LFBB10
+ 824               	.LM104:
+ 825 029c 8091 0000 		lds r24,tx_state
+ 826               	/* epilogue start */
+ 827 02a0 0895      		ret
+ 828               		.size	is_flow_on, .-is_flow_on
+ 829               	.Lscope10:
+ 830               		.stabs	"",36,0,0,.Lscope10-.LFBB10
+ 831               		.stabd	78,0,0
+ 832               		.stabs	"delay_ms:F(0,50)",36,0,324,delay_ms
+ 833               		.stabs	"ms:P(5,4)",64,0,324,24
+ 834               	.global	delay_ms
+ 835               		.type	delay_ms, @function
+ 836               	delay_ms:
+ 837               		.stabd	46,0,0
+ 323:main.c        **** 
+ 324:main.c        **** void delay_ms(uint16_t ms)
+ 325:main.c        **** {
+ 838               		.stabn	68,0,325,.LM105-.LFBB11
+ 839               	.LM105:
+ 840               	.LFBB11:
+ 841               	/* prologue: function */
+ 842               	/* frame size = 0 */
+ 843               	/* stack size = 0 */
+ 844               	.L__stack_usage = 0
+ 326:main.c        ****     uint16_t i, j;
+ 327:main.c        ****     for(i=0; i<ms; i++)
+ 845               		.stabn	68,0,327,.LM106-.LFBB11
+ 846               	.LM106:
+ 847 02a2 30E0      		ldi r19,0
+ 848 02a4 20E0      		ldi r18,0
+ 849               	.L63:
+ 850               		.stabn	68,0,327,.LM107-.LFBB11
+ 851               	.LM107:
+ 852 02a6 2817      		cp r18,r24
+ 853 02a8 3907      		cpc r19,r25
+ 854 02aa 01F4      		brne .L65
+ 855               	/* epilogue start */
+ 328:main.c        ****         for(j=0; j<4000; j++)
+ 329:main.c        ****             _NOP();
+ 330:main.c        **** }
+ 856               		.stabn	68,0,330,.LM108-.LFBB11
+ 857               	.LM108:
+ 858 02ac 0895      		ret
+ 859               	.L65:
+ 860 02ae 40EA      		ldi r20,lo8(-96)
+ 861 02b0 5FE0      		ldi r21,lo8(15)
+GAS LISTING /tmp/ccfeYjiW.s 			page 23
 
 
- 889               		.size	blink_led, .-blink_led
- 890               	.Lscope11:
- 891               		.stabs	"",36,0,0,.Lscope11-.LFBB11
- 892               		.stabd	78,0,0
- 893               		.stabs	"turn_led_on:F(0,50)",36,0,299,turn_led_on
- 894               	.global	turn_led_on
- 895               		.type	turn_led_on, @function
- 896               	turn_led_on:
- 897               		.stabd	46,0,0
- 298:main.c        **** 
- 299:main.c        **** void turn_led_on(void) {
- 898               		.stabn	68,0,299,.LM115-.LFBB12
- 899               	.LM115:
- 900               	.LFBB12:
- 901               	/* prologue: function */
- 902               	/* frame size = 0 */
- 903               	/* stack size = 0 */
- 904               	.L__stack_usage = 0
- 300:main.c        ****     PORTB |= (1 << PB5);
- 905               		.stabn	68,0,300,.LM116-.LFBB12
- 906               	.LM116:
- 907 02c0 2D9A      		sbi 0x5,5
- 301:main.c        ****     delay_ms(5000);
- 908               		.stabn	68,0,301,.LM117-.LFBB12
- 909               	.LM117:
- 910 02c2 88E8      		ldi r24,lo8(-120)
- 911 02c4 93E1      		ldi r25,lo8(19)
- 912 02c6 0E94 0000 		call delay_ms
- 302:main.c        ****     PORTB &= ~(1 << PB5);
- 913               		.stabn	68,0,302,.LM118-.LFBB12
- 914               	.LM118:
- 915 02ca 2D98      		cbi 0x5,5
- 916               	/* epilogue start */
- 303:main.c        **** }...
- 917               		.stabn	68,0,303,.LM119-.LFBB12
- 918               	.LM119:
- 919 02cc 0895      		ret
- 920               		.size	turn_led_on, .-turn_led_on
- 921               	.Lscope12:
- 922               		.stabs	"",36,0,0,.Lscope12-.LFBB12
- 923               		.stabd	78,0,0
- 924               		.section	.rodata.str1.1,"aMS",@progbits,1
- 925               	.LC1:
- 926 0000 556E 6976 		.string	"Universidade Federal de Pernambuco\nDepartamento de Eletr\303\264nica e Sistemas"
- 926      6572 7369 
- 926      6461 6465 
- 926      2046 6564 
- 926      6572 616C 
- 927               		.section	.rodata
- 928               	.LC0:
- 929 0000 00        		.byte	0
- 930 0001 01        		.byte	1
- 931 0002 11        		.byte	17
- 932 0003 02        		.byte	2
- 933 0004 13        		.byte	19
- 934 0005 04        		.byte	4
- 935 0006 7E        		.byte	126
-GAS LISTING /tmp/ccmqXGgj.s 			page 24
+ 862               	.L64:
+ 329:main.c        **** }
+ 863               		.stabn	68,0,329,.LM109-.LFBB11
+ 864               	.LM109:
+ 865               	/* #APP */
+ 866               	 ;  329 "main.c" 1
+ 867 02b2 0000      		nop
+ 868               	 ;  0 "" 2
+ 869               	/* #NOAPP */
+ 870 02b4 4150      		subi r20,1
+ 871 02b6 5109      		sbc r21,__zero_reg__
+ 328:main.c        ****         for(j=0; j<4000; j++)
+ 872               		.stabn	68,0,328,.LM110-.LFBB11
+ 873               	.LM110:
+ 874 02b8 01F4      		brne .L64
+ 327:main.c        ****         for(j=0; j<4000; j++)
+ 875               		.stabn	68,0,327,.LM111-.LFBB11
+ 876               	.LM111:
+ 877 02ba 2F5F      		subi r18,-1
+ 878 02bc 3F4F      		sbci r19,-1
+ 879 02be 00C0      		rjmp .L63
+ 880               		.size	delay_ms, .-delay_ms
+ 881               		.stabs	"i:r(5,4)",64,0,326,18
+ 882               		.stabn	192,0,0,.LFBB11-.LFBB11
+ 883               		.stabn	224,0,0,.Lscope11-.LFBB11
+ 884               	.Lscope11:
+ 885               		.stabs	"",36,0,0,.Lscope11-.LFBB11
+ 886               		.stabd	78,0,0
+ 887               		.stabs	"blink_led:F(0,50)",36,0,332,blink_led
+ 888               	.global	blink_led
+ 889               		.type	blink_led, @function
+ 890               	blink_led:
+ 891               		.stabd	46,0,0
+ 331:main.c        **** 
+ 332:main.c        **** void blink_led(void) {
+ 892               		.stabn	68,0,332,.LM112-.LFBB12
+ 893               	.LM112:
+ 894               	.LFBB12:
+ 895 02c0 CF93      		push r28
+ 896 02c2 DF93      		push r29
+ 897               	/* prologue: function */
+ 898               	/* frame size = 0 */
+ 899               	/* stack size = 2 */
+ 900               	.L__stack_usage = 2
+ 333:main.c        ****     uint8_t k = 5;
+ 334:main.c        ****     while (k--) {
+ 901               		.stabn	68,0,334,.LM113-.LFBB12
+ 902               	.LM113:
+ 903 02c4 C6E0      		ldi r28,lo8(6)
+ 335:main.c        ****         PINB = (1 << PB5);
+ 904               		.stabn	68,0,335,.LM114-.LFBB12
+ 905               	.LM114:
+ 906 02c6 D0E2      		ldi r29,lo8(32)
+ 907               	.L68:
+ 908 02c8 C150      		subi r28,lo8(-(-1))
+ 334:main.c        ****         PINB = (1 << PB5);
+ 909               		.stabn	68,0,334,.LM115-.LFBB12
+GAS LISTING /tmp/ccfeYjiW.s 			page 24
 
 
- 936 0007 05        		.byte	5
- 937 0008 7D        		.byte	125
- 938 0009 06        		.byte	6
- 939               		.section	.text.startup,"ax",@progbits
- 940               		.stabs	"main:F(0,1)",36,0,92,main
- 941               	.global	main
- 942               		.type	main, @function
- 943               	main:
- 944               		.stabd	46,0,0
-  92:main.c        **** int main(void) {
- 945               		.stabn	68,0,92,.LM120-.LFBB13
- 946               	.LM120:
- 947               	.LFBB13:
- 948 0000 CF93      		push r28
- 949 0002 DF93      		push r29
- 950 0004 CDB7      		in r28,__SP_L__
- 951 0006 DEB7      		in r29,__SP_H__
- 952 0008 C355      		subi r28,83
- 953 000a D140      		sbci r29,1
- 954 000c 0FB6      		in __tmp_reg__,__SREG__
- 955 000e F894      		cli
- 956 0010 DEBF      		out __SP_H__,r29
- 957 0012 0FBE      		out __SREG__,__tmp_reg__
- 958 0014 CDBF      		out __SP_L__,r28
- 959               	/* prologue: function */
- 960               	/* frame size = 339 */
- 961               	/* stack size = 341 */
- 962               	.L__stack_usage = 341
-  95:main.c        ****     UCSR0A = (1 << U2X0); /* double speed */
- 963               		.stabn	68,0,95,.LM121-.LFBB13
- 964               	.LM121:
- 965 0016 82E0      		ldi r24,lo8(2)
- 966 0018 8093 C000 		sts 192,r24
-  96:main.c        ****     UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt,
- 967               		.stabn	68,0,96,.LM122-.LFBB13
- 968               	.LM122:
- 969 001c 88E9      		ldi r24,lo8(-104)
- 970 001e 8093 C100 		sts 193,r24
-  97:main.c        ****     UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); /* Set frame format: 8N1 */
- 971               		.stabn	68,0,97,.LM123-.LFBB13
- 972               	.LM123:
- 973 0022 86E0      		ldi r24,lo8(6)
- 974 0024 8093 C200 		sts 194,r24
-  98:main.c        ****     UBRR0H = (MYUBRR>>8); /* Set baud rate */
- 975               		.stabn	68,0,98,.LM124-.LFBB13
- 976               	.LM124:
- 977 0028 1092 C500 		sts 197,__zero_reg__
-  99:main.c        ****     UBRR0L = MYUBRR; /* Set baud rate */
- 978               		.stabn	68,0,99,.LM125-.LFBB13
- 979               	.LM125:
- 980 002c 81E2      		ldi r24,lo8(33)
- 981 002e 8093 C400 		sts 196,r24
- 101:main.c        ****     DDRB |= (1 << PB5); // Configura PB5 como saída (LED)
- 982               		.stabn	68,0,101,.LM126-.LFBB13
- 983               	.LM126:
- 984 0032 259A      		sbi 0x4,5
- 102:main.c        ****     PORTB &= ~(1 << PB5); // Garante que o LED está apagado no início   
-GAS LISTING /tmp/ccmqXGgj.s 			page 25
+ 910               	.LM115:
+ 911 02ca 01F4      		brne .L69
+ 912               	/* epilogue start */
+ 336:main.c        ****         delay_ms(1000);
+ 337:main.c        ****     }
+ 338:main.c        **** }
+ 913               		.stabn	68,0,338,.LM116-.LFBB12
+ 914               	.LM116:
+ 915 02cc DF91      		pop r29
+ 916 02ce CF91      		pop r28
+ 917 02d0 0895      		ret
+ 918               	.L69:
+ 335:main.c        ****         delay_ms(1000);
+ 919               		.stabn	68,0,335,.LM117-.LFBB12
+ 920               	.LM117:
+ 921 02d2 D3B9      		out 0x3,r29
+ 336:main.c        ****         delay_ms(1000);
+ 922               		.stabn	68,0,336,.LM118-.LFBB12
+ 923               	.LM118:
+ 924 02d4 88EE      		ldi r24,lo8(-24)
+ 925 02d6 93E0      		ldi r25,lo8(3)
+ 926 02d8 0E94 0000 		call delay_ms
+ 927 02dc 00C0      		rjmp .L68
+ 928               		.size	blink_led, .-blink_led
+ 929               	.Lscope12:
+ 930               		.stabs	"",36,0,0,.Lscope12-.LFBB12
+ 931               		.stabd	78,0,0
+ 932               		.stabs	"turn_led_on:F(0,50)",36,0,340,turn_led_on
+ 933               	.global	turn_led_on
+ 934               		.type	turn_led_on, @function
+ 935               	turn_led_on:
+ 936               		.stabd	46,0,0
+ 339:main.c        **** 
+ 340:main.c        **** void turn_led_on(void) {
+ 937               		.stabn	68,0,340,.LM119-.LFBB13
+ 938               	.LM119:
+ 939               	.LFBB13:
+ 940               	/* prologue: function */
+ 941               	/* frame size = 0 */
+ 942               	/* stack size = 0 */
+ 943               	.L__stack_usage = 0
+ 341:main.c        ****     PORTB |= (1 << PB5);
+ 944               		.stabn	68,0,341,.LM120-.LFBB13
+ 945               	.LM120:
+ 946 02de 2D9A      		sbi 0x5,5
+ 342:main.c        ****     delay_ms(5000);
+ 947               		.stabn	68,0,342,.LM121-.LFBB13
+ 948               	.LM121:
+ 949 02e0 88E8      		ldi r24,lo8(-120)
+ 950 02e2 93E1      		ldi r25,lo8(19)
+ 951 02e4 0E94 0000 		call delay_ms
+ 343:main.c        ****     PORTB &= ~(1 << PB5);
+ 952               		.stabn	68,0,343,.LM122-.LFBB13
+ 953               	.LM122:
+ 954 02e8 2D98      		cbi 0x5,5
+ 955               	/* epilogue start */
+ 344:main.c        **** }
+GAS LISTING /tmp/ccfeYjiW.s 			page 25
 
 
- 985               		.stabn	68,0,102,.LM127-.LFBB13
- 986               	.LM127:
- 987 0034 2D98      		cbi 0x5,5
- 104:main.c        ****     sei();
- 988               		.stabn	68,0,104,.LM128-.LFBB13
- 989               	.LM128:
- 990               	/* #APP */
- 991               	 ;  104 "main.c" 1
- 992 0036 7894      		sei
- 993               	 ;  0 "" 2
- 109:main.c        ****     uint8_t str_test[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistema
- 994               		.stabn	68,0,109,.LM129-.LFBB13
- 995               	.LM129:
- 996               	/* #NOAPP */
- 997 0038 8AE4      		ldi r24,lo8(74)
- 998 003a E0E0      		ldi r30,lo8(.LC1)
- 999 003c F0E0      		ldi r31,hi8(.LC1)
- 1000 003e DE01      		movw r26,r28
- 1001 0040 B395      		inc r27
- 1002               		0:
- 1003 0042 0190      		ld r0,Z+
- 1004 0044 0D92      		st X+,r0
- 1005 0046 8A95      		dec r24
- 1006 0048 01F4      		brne 0b
- 110:main.c        ****     write(str_test, sizeof(str_test)-1, 1);
- 1007               		.stabn	68,0,110,.LM130-.LFBB13
- 1008               	.LM130:
- 1009 004a 41E0      		ldi r20,lo8(1)
- 1010 004c 69E4      		ldi r22,lo8(73)
- 1011 004e CE01      		movw r24,r28
- 1012 0050 9395      		inc r25
- 1013 0052 0E94 0000 		call write
- 114:main.c        ****     uint8_t j = 0;
- 1014               		.stabn	68,0,114,.LM131-.LFBB13
- 1015               	.LM131:
- 1016 0056 00E0      		ldi r16,0
- 113:main.c        ****     uint8_t i = sizeof(str_test);
- 1017               		.stabn	68,0,113,.LM132-.LFBB13
- 1018               	.LM132:
- 1019 0058 1AE4      		ldi r17,lo8(74)
- 1020               	.L70:
- 117:main.c        ****             i -= write(str_test+j, 10, 0);
- 1021               		.stabn	68,0,117,.LM133-.LFBB13
- 1022               	.LM133:
- 1023 005a 40E0      		ldi r20,0
- 1024 005c 6AE0      		ldi r22,lo8(10)
- 1025 005e 80E0      		ldi r24,0
- 1026 0060 91E0      		ldi r25,lo8(1)
- 1027 0062 8C0F      		add r24,r28
- 1028 0064 9D1F      		adc r25,r29
- 1029 0066 800F      		add r24,r16
- 1030 0068 911D      		adc r25,__zero_reg__
- 1031 006a 0E94 0000 		call write
- 1032 006e 181B      		sub r17,r24
- 118:main.c        ****             j += 10;
- 1033               		.stabn	68,0,118,.LM134-.LFBB13
- 1034               	.LM134:
-GAS LISTING /tmp/ccmqXGgj.s 			page 26
+ 956               		.stabn	68,0,344,.LM123-.LFBB13
+ 957               	.LM123:
+ 958 02ea 0895      		ret
+ 959               		.size	turn_led_on, .-turn_led_on
+ 960               	.Lscope13:
+ 961               		.stabs	"",36,0,0,.Lscope13-.LFBB13
+ 962               		.stabd	78,0,0
+ 963               		.section	.rodata.str1.1,"aMS",@progbits,1
+ 964               	.LC1:
+ 965 0000 556E 6976 		.string	"Universidade Federal de Pernambuco\nDepartamento de Eletr\303\264nica e Sistemas"
+ 965      6572 7369 
+ 965      6461 6465 
+ 965      2046 6564 
+ 965      6572 616C 
+ 966               		.section	.rodata
+ 967               	.LC0:
+ 968 0000 00        		.byte	0
+ 969 0001 01        		.byte	1
+ 970 0002 11        		.byte	17
+ 971 0003 02        		.byte	2
+ 972 0004 13        		.byte	19
+ 973 0005 04        		.byte	4
+ 974 0006 7E        		.byte	126
+ 975 0007 05        		.byte	5
+ 976 0008 7D        		.byte	125
+ 977 0009 06        		.byte	6
+ 978               		.section	.rodata.str1.1
+ 979               	.LC2:
+ 980 004a 4465 7365 		.string	"Desenvolvimento de sistemas embarcados"
+ 980      6E76 6F6C 
+ 980      7669 6D65 
+ 980      6E74 6F20 
+ 980      6465 2073 
+ 981               		.section	.text.startup,"ax",@progbits
+ 982               		.stabs	"main:F(0,1)",36,0,84,main
+ 983               	.global	main
+ 984               		.type	main, @function
+ 985               	main:
+ 986               		.stabd	46,0,0
+  84:main.c        ****     /* Faça a configuração do que for necessário aqui */
+ 987               		.stabn	68,0,84,.LM124-.LFBB14
+ 988               	.LM124:
+ 989               	.LFBB14:
+ 990 0000 CF93      		push r28
+ 991 0002 DF93      		push r29
+ 992 0004 CDB7      		in r28,__SP_L__
+ 993 0006 DEB7      		in r29,__SP_H__
+ 994 0008 C15A      		subi r28,-95
+ 995 000a D140      		sbci r29,1
+ 996 000c 0FB6      		in __tmp_reg__,__SREG__
+ 997 000e F894      		cli
+ 998 0010 DEBF      		out __SP_H__,r29
+ 999 0012 0FBE      		out __SREG__,__tmp_reg__
+ 1000 0014 CDBF      		out __SP_L__,r28
+ 1001               	/* prologue: function */
+ 1002               	/* frame size = 417 */
+ 1003               	/* stack size = 419 */
+GAS LISTING /tmp/ccfeYjiW.s 			page 26
 
 
- 1035 0070 065F      		subi r16,lo8(-(10))
- 115:main.c        ****     while (i) {
- 1036               		.stabn	68,0,115,.LM135-.LFBB13
- 1037               	.LM135:
- 1038 0072 1111      		cpse r17,__zero_reg__
- 1039 0074 00C0      		rjmp .L72
- 1040               	.L73:
- 113:main.c        ****     uint8_t i = sizeof(str_test);
- 1041               		.stabn	68,0,113,.LM136-.LFBB13
- 1042               	.LM136:
- 1043 0076 10E0      		ldi r17,0
- 1044 0078 00E0      		ldi r16,0
- 1045               	.L75:
- 128:main.c        ****     while (nbytes < 300) {
- 1046               		.stabn	68,0,128,.LM137-.LFBB13
- 1047               	.LM137:
- 1048 007a 0C32      		cpi r16,44
- 1049 007c 81E0      		ldi r24,1
- 1050 007e 1807      		cpc r17,r24
- 1051 0080 00F4      		brsh .+2
- 1052 0082 00C0      		rjmp .L76
- 134:main.c        ****     flow_off();
- 1053               		.stabn	68,0,134,.LM138-.LFBB13
- 1054               	.LM138:
- 1055 0084 0E94 0000 		call flow_off
- 135:main.c        ****     if (is_flow_on()) {
- 1056               		.stabn	68,0,135,.LM139-.LFBB13
- 1057               	.LM139:
- 1058 0088 8091 0000 		lds r24,tx_state
- 1059 008c 8823      		tst r24
- 1060 008e 01F4      		brne .+2
- 1061 0090 00C0      		rjmp .L77
- 136:main.c        ****         turn_led_on();
- 1062               		.stabn	68,0,136,.LM140-.LFBB13
- 1063               	.LM140:
- 1064 0092 0E94 0000 		call turn_led_on
- 1065               	.L78:
- 142:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
- 1066               		.stabn	68,0,142,.LM141-.LFBB13
- 1067               	.LM141:
- 1068 0096 2D98      		cbi 0x5,5
- 143:main.c        ****     nbytes = 0;
- 1069               		.stabn	68,0,143,.LM142-.LFBB13
- 1070               	.LM142:
- 1071 0098 10E0      		ldi r17,0
- 1072 009a 00E0      		ldi r16,0
- 1073               	.L80:
- 144:main.c        ****     while (nbytes < 300) {
- 1074               		.stabn	68,0,144,.LM143-.LFBB13
- 1075               	.LM143:
- 1076 009c 0C32      		cpi r16,44
- 1077 009e 81E0      		ldi r24,1
- 1078 00a0 1807      		cpc r17,r24
- 1079 00a2 00F4      		brsh .+2
- 1080 00a4 00C0      		rjmp .L81
- 151:main.c        ****     flow_off();
- 1081               		.stabn	68,0,151,.LM144-.LFBB13
-GAS LISTING /tmp/ccmqXGgj.s 			page 27
+ 1004               	.L__stack_usage = 419
+  87:main.c        ****     UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt,
+ 1005               		.stabn	68,0,87,.LM125-.LFBB14
+ 1006               	.LM125:
+ 1007 0016 82E0      		ldi r24,lo8(2)
+ 1008 0018 8093 C000 		sts 192,r24
+  88:main.c        ****     UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); /* Set frame format: 8N1 */
+ 1009               		.stabn	68,0,88,.LM126-.LFBB14
+ 1010               	.LM126:
+ 1011 001c 88E9      		ldi r24,lo8(-104)
+ 1012 001e 8093 C100 		sts 193,r24
+  89:main.c        ****     UBRR0H = (MYUBRR>>8); /* Set baud rate */
+ 1013               		.stabn	68,0,89,.LM127-.LFBB14
+ 1014               	.LM127:
+ 1015 0022 86E0      		ldi r24,lo8(6)
+ 1016 0024 8093 C200 		sts 194,r24
+  90:main.c        ****     UBRR0L = MYUBRR; /* Set baud rate */
+ 1017               		.stabn	68,0,90,.LM128-.LFBB14
+ 1018               	.LM128:
+ 1019 0028 1092 C500 		sts 197,__zero_reg__
+  91:main.c        **** 
+ 1020               		.stabn	68,0,91,.LM129-.LFBB14
+ 1021               	.LM129:
+ 1022 002c 81E2      		ldi r24,lo8(33)
+ 1023 002e 8093 C400 		sts 196,r24
+  93:main.c        ****     PORTB &= ~(1 << PB5); // Garante que o LED está apagado no início   
+ 1024               		.stabn	68,0,93,.LM130-.LFBB14
+ 1025               	.LM130:
+ 1026 0032 259A      		sbi 0x4,5
+  94:main.c        **** 
+ 1027               		.stabn	68,0,94,.LM131-.LFBB14
+ 1028               	.LM131:
+ 1029 0034 2D98      		cbi 0x5,5
+  96:main.c        **** 
+ 1030               		.stabn	68,0,96,.LM132-.LFBB14
+ 1031               	.LM132:
+ 1032               	/* #APP */
+ 1033               	 ;  96 "main.c" 1
+ 1034 0036 7894      		sei
+ 1035               	 ;  0 "" 2
+ 101:main.c        ****     write(str_test, sizeof(str_test)-1, 1);
+ 1036               		.stabn	68,0,101,.LM133-.LFBB14
+ 1037               	.LM133:
+ 1038               	/* #NOAPP */
+ 1039 0038 8AE4      		ldi r24,lo8(74)
+ 1040 003a E0E0      		ldi r30,lo8(.LC1)
+ 1041 003c F0E0      		ldi r31,hi8(.LC1)
+ 1042 003e DE01      		movw r26,r28
+ 1043 0040 B395      		inc r27
+ 1044               		0:
+ 1045 0042 0190      		ld r0,Z+
+ 1046 0044 0D92      		st X+,r0
+ 1047 0046 8A95      		dec r24
+ 1048 0048 01F4      		brne 0b
+ 102:main.c        **** 
+ 1049               		.stabn	68,0,102,.LM134-.LFBB14
+ 1050               	.LM134:
+GAS LISTING /tmp/ccfeYjiW.s 			page 27
 
 
- 1082               	.LM144:
- 1083 00a6 0E94 0000 		call flow_off
- 152:main.c        ****     if (is_flow_on()) {
- 1084               		.stabn	68,0,152,.LM145-.LFBB13
- 1085               	.LM145:
- 1086 00aa 8091 0000 		lds r24,tx_state
- 1087 00ae 8823      		tst r24
- 1088 00b0 01F4      		brne .+2
- 1089 00b2 00C0      		rjmp .L82
- 153:main.c        ****         turn_led_on();
- 1090               		.stabn	68,0,153,.LM146-.LFBB13
- 1091               	.LM146:
- 1092 00b4 0E94 0000 		call turn_led_on
- 1093               	.L83:
- 159:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
- 1094               		.stabn	68,0,159,.LM147-.LFBB13
- 1095               	.LM147:
- 1096 00b8 2D98      		cbi 0x5,5
- 161:main.c        ****     uint8_t binary_string[] = {0x00, 0x01, 0x11, 0x02, 0x13, 0x04, 0x7e, 0x05, 0x7d, 0x06};
- 1097               		.stabn	68,0,161,.LM148-.LFBB13
- 1098               	.LM148:
- 1099 00ba 8AE0      		ldi r24,lo8(10)
- 1100 00bc E0E0      		ldi r30,lo8(.LC0)
- 1101 00be F0E0      		ldi r31,hi8(.LC0)
- 1102 00c0 DE01      		movw r26,r28
- 1103 00c2 A65B      		subi r26,-74
- 1104 00c4 BE4F      		sbci r27,-2
- 1105               		0:
- 1106 00c6 0190      		ld r0,Z+
- 1107 00c8 0D92      		st X+,r0
- 1108 00ca 8A95      		dec r24
- 1109 00cc 01F4      		brne 0b
- 162:main.c        ****     i = 0;
- 1110               		.stabn	68,0,162,.LM149-.LFBB13
- 1111               	.LM149:
- 1112 00ce 10E0      		ldi r17,0
- 1113               	.L86:
- 165:main.c        ****         if (!write(binary_string[i], 1, 0)) {
- 1114               		.stabn	68,0,165,.LM150-.LFBB13
- 1115               	.LM150:
- 1116 00d0 EAE4      		ldi r30,lo8(74)
- 1117 00d2 F1E0      		ldi r31,lo8(1)
- 1118 00d4 EC0F      		add r30,r28
- 1119 00d6 FD1F      		adc r31,r29
- 1120 00d8 E10F      		add r30,r17
- 1121 00da F11D      		adc r31,__zero_reg__
- 1122 00dc 8081      		ld r24,Z
- 1123 00de 40E0      		ldi r20,0
- 1124 00e0 61E0      		ldi r22,lo8(1)
- 1125 00e2 90E0      		ldi r25,0
- 1126 00e4 0E94 0000 		call write
- 1127 00e8 8111      		cpse r24,__zero_reg__
- 1128 00ea 00C0      		rjmp .L84
- 166:main.c        ****             PORTB |= (1 << PB5);
- 1129               		.stabn	68,0,166,.LM151-.LFBB13
- 1130               	.LM151:
- 1131 00ec 2D9A      		sbi 0x5,5
-GAS LISTING /tmp/ccmqXGgj.s 			page 28
+ 1051 004a 41E0      		ldi r20,lo8(1)
+ 1052 004c 69E4      		ldi r22,lo8(73)
+ 1053 004e CE01      		movw r24,r28
+ 1054 0050 9395      		inc r25
+ 1055 0052 0E94 0000 		call write
+ 106:main.c        ****     while (i) {
+ 1056               		.stabn	68,0,106,.LM135-.LFBB14
+ 1057               	.LM135:
+ 1058 0056 00E0      		ldi r16,0
+ 105:main.c        ****     uint8_t j = 0;
+ 1059               		.stabn	68,0,105,.LM136-.LFBB14
+ 1060               	.LM136:
+ 1061 0058 1AE4      		ldi r17,lo8(74)
+ 1062               	.L72:
+ 109:main.c        ****             j += 10;
+ 1063               		.stabn	68,0,109,.LM137-.LFBB14
+ 1064               	.LM137:
+ 1065 005a 40E0      		ldi r20,0
+ 1066 005c 6AE0      		ldi r22,lo8(10)
+ 1067 005e 80E0      		ldi r24,0
+ 1068 0060 91E0      		ldi r25,lo8(1)
+ 1069 0062 8C0F      		add r24,r28
+ 1070 0064 9D1F      		adc r25,r29
+ 1071 0066 800F      		add r24,r16
+ 1072 0068 911D      		adc r25,__zero_reg__
+ 1073 006a 0E94 0000 		call write
+ 1074 006e 181B      		sub r17,r24
+ 110:main.c        ****         } else {
+ 1075               		.stabn	68,0,110,.LM138-.LFBB14
+ 1076               	.LM138:
+ 1077 0070 065F      		subi r16,lo8(-(10))
+ 107:main.c        ****         if (i >= 10) {
+ 1078               		.stabn	68,0,107,.LM139-.LFBB14
+ 1079               	.LM139:
+ 1080 0072 1111      		cpse r17,__zero_reg__
+ 1081 0074 00C0      		rjmp .L74
+ 1082               	.L75:
+ 105:main.c        ****     uint8_t j = 0;
+ 1083               		.stabn	68,0,105,.LM140-.LFBB14
+ 1084               	.LM140:
+ 1085 0076 10E0      		ldi r17,0
+ 1086 0078 00E0      		ldi r16,0
+ 121:main.c        ****     }
+ 1087               		.stabn	68,0,121,.LM141-.LFBB14
+ 1088               	.LM141:
+ 1089 007a 2CE2      		ldi r18,lo8(44)
+ 1090 007c E22E      		mov r14,r18
+ 1091 007e FF24      		clr r15
+ 1092 0080 F394      		inc r15
+ 1093               	.L77:
+ 1094 0082 B701      		movw r22,r14
+ 1095 0084 601B      		sub r22,r16
+ 1096 0086 710B      		sbc r23,r17
+ 1097 0088 6F3F      		cpi r22,-1
+ 1098 008a 7105      		cpc r23,__zero_reg__
+ 1099 008c 00F0      		brlo .L76
+ 1100 008e 6EEF      		ldi r22,lo8(-2)
+GAS LISTING /tmp/ccfeYjiW.s 			page 28
 
 
- 1132               	.L85:
- 171:main.c        ****         delay_ms(1000);
- 1133               		.stabn	68,0,171,.LM152-.LFBB13
- 1134               	.LM152:
- 1135 00ee 88EE      		ldi r24,lo8(-24)
- 1136 00f0 93E0      		ldi r25,lo8(3)
- 1137 00f2 0E94 0000 		call delay_ms
- 164:main.c        ****     while (i < sizeof(binary_string)) {
- 1138               		.stabn	68,0,164,.LM153-.LFBB13
- 1139               	.LM153:
- 1140 00f6 1A30      		cpi r17,lo8(10)
- 1141 00f8 01F4      		brne .L86
- 1142               	.L87:
- 1143 00fa 00C0      		rjmp .L87
- 1144               	.L72:
- 116:main.c        ****         if (i >= 10) {
- 1145               		.stabn	68,0,116,.LM154-.LFBB13
- 1146               	.LM154:
- 1147 00fc 1A30      		cpi r17,lo8(10)
- 1148 00fe 00F0      		brlo .+2
- 1149 0100 00C0      		rjmp .L70
- 120:main.c        ****             write(str_test+j, i, 1);
- 1150               		.stabn	68,0,120,.LM155-.LFBB13
- 1151               	.LM155:
- 1152 0102 41E0      		ldi r20,lo8(1)
- 1153 0104 612F      		mov r22,r17
- 1154 0106 80E0      		ldi r24,0
- 1155 0108 91E0      		ldi r25,lo8(1)
- 1156 010a 8C0F      		add r24,r28
- 1157 010c 9D1F      		adc r25,r29
- 1158 010e 800F      		add r24,r16
- 1159 0110 911D      		adc r25,__zero_reg__
- 1160 0112 0E94 0000 		call write
- 1161 0116 00C0      		rjmp .L73
- 1162               	.L76:
- 129:main.c        ****         if (rcvd_byte) {
- 1163               		.stabn	68,0,129,.LM156-.LFBB13
- 1164               	.LM156:
- 1165 0118 8091 0000 		lds r24,rcvd_byte
- 1166 011c 8823      		tst r24
- 1167 011e 01F4      		brne .+2
- 1168 0120 00C0      		rjmp .L75
- 130:main.c        ****             nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
- 1169               		.stabn	68,0,130,.LM157-.LFBB13
- 1170               	.LM157:
- 1171 0122 61E0      		ldi r22,lo8(1)
- 1172 0124 CE01      		movw r24,r28
- 1173 0126 0196      		adiw r24,1
- 1174 0128 0E94 0000 		call read
- 1175 012c 8150      		subi r24,1
- 1176 012e 990B      		sbc r25,r25
- 1177 0130 080F      		add r16,r24
- 1178 0132 191F      		adc r17,r25
- 131:main.c        ****             rcvd_byte = 0;
- 1179               		.stabn	68,0,131,.LM158-.LFBB13
- 1180               	.LM158:
- 1181 0134 1092 0000 		sts rcvd_byte,__zero_reg__
-GAS LISTING /tmp/ccmqXGgj.s 			page 29
+ 1101 0090 70E0      		ldi r23,0
+ 1102               	.L76:
+ 1103 0092 CE01      		movw r24,r28
+ 1104 0094 0196      		adiw r24,1
+ 1105 0096 0E94 0000 		call read
+ 1106 009a 8150      		subi r24,1
+ 1107 009c 990B      		sbc r25,r25
+ 1108 009e 080F      		add r16,r24
+ 1109 00a0 191F      		adc r17,r25
+ 120:main.c        ****         nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa des
+ 1110               		.stabn	68,0,120,.LM142-.LFBB14
+ 1111               	.LM142:
+ 1112 00a2 0C32      		cpi r16,44
+ 1113 00a4 81E0      		ldi r24,1
+ 1114 00a6 1807      		cpc r17,r24
+ 1115 00a8 00F0      		brlo .L77
+ 123:main.c        ****     if (is_flow_on()) {
+ 1116               		.stabn	68,0,123,.LM143-.LFBB14
+ 1117               	.LM143:
+ 1118 00aa 0E94 0000 		call flow_off
+ 124:main.c        ****         turn_led_on();
+ 1119               		.stabn	68,0,124,.LM144-.LFBB14
+ 1120               	.LM144:
+ 1121 00ae 8091 0000 		lds r24,tx_state
+ 1122 00b2 8823      		tst r24
+ 1123 00b4 01F4      		brne .+2
+ 1124 00b6 00C0      		rjmp .L78
+ 125:main.c        ****     } else {
+ 1125               		.stabn	68,0,125,.LM145-.LFBB14
+ 1126               	.LM145:
+ 1127 00b8 0E94 0000 		call turn_led_on
+ 1128               	.L79:
+ 131:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
+ 1129               		.stabn	68,0,131,.LM146-.LFBB14
+ 1130               	.LM146:
+ 1131 00bc 0E94 0000 		call flow_on
+ 132:main.c        ****     nbytes = 0;
+ 1132               		.stabn	68,0,132,.LM147-.LFBB14
+ 1133               	.LM147:
+ 1134 00c0 2D98      		cbi 0x5,5
+ 133:main.c        ****     while (nbytes < 300) {
+ 1135               		.stabn	68,0,133,.LM148-.LFBB14
+ 1136               	.LM148:
+ 1137 00c2 10E0      		ldi r17,0
+ 1138 00c4 00E0      		ldi r16,0
+ 135:main.c        ****     }
+ 1139               		.stabn	68,0,135,.LM149-.LFBB14
+ 1140               	.LM149:
+ 1141 00c6 9CE2      		ldi r25,lo8(44)
+ 1142 00c8 E92E      		mov r14,r25
+ 1143 00ca FF24      		clr r15
+ 1144 00cc F394      		inc r15
+ 1145               	.L81:
+ 1146 00ce B701      		movw r22,r14
+ 1147 00d0 601B      		sub r22,r16
+ 1148 00d2 710B      		sbc r23,r17
+ 1149 00d4 6F3F      		cpi r22,-1
+GAS LISTING /tmp/ccfeYjiW.s 			page 29
 
 
- 1182 0138 00C0      		rjmp .L75
- 1183               	.L77:
- 138:main.c        ****         blink_led();
- 1184               		.stabn	68,0,138,.LM159-.LFBB13
- 1185               	.LM159:
- 1186 013a 0E94 0000 		call blink_led
- 1187 013e 00C0      		rjmp .L78
- 1188               	.L81:
- 145:main.c        ****         if (rcvd_byte) {
- 1189               		.stabn	68,0,145,.LM160-.LFBB13
- 1190               	.LM160:
- 1191 0140 8091 0000 		lds r24,rcvd_byte
- 1192 0144 8823      		tst r24
- 1193 0146 01F4      		brne .+2
- 1194 0148 00C0      		rjmp .L80
- 146:main.c        ****             nbytes += read(buffer, 1) - 1; /* Conferir se precisa desse -1 */
- 1195               		.stabn	68,0,146,.LM161-.LFBB13
- 1196               	.LM161:
- 1197 014a 61E0      		ldi r22,lo8(1)
- 1198 014c CE01      		movw r24,r28
- 1199 014e 0196      		adiw r24,1
- 1200 0150 0E94 0000 		call read
- 1201 0154 8150      		subi r24,1
- 1202 0156 990B      		sbc r25,r25
- 1203 0158 080F      		add r16,r24
- 1204 015a 191F      		adc r17,r25
- 147:main.c        ****             rcvd_byte = 0;
- 1205               		.stabn	68,0,147,.LM162-.LFBB13
- 1206               	.LM162:
- 1207 015c 1092 0000 		sts rcvd_byte,__zero_reg__
- 1208 0160 00C0      		rjmp .L80
- 1209               	.L82:
- 155:main.c        ****         blink_led();
- 1210               		.stabn	68,0,155,.LM163-.LFBB13
- 1211               	.LM163:
- 1212 0162 0E94 0000 		call blink_led
- 1213 0166 00C0      		rjmp .L83
- 1214               	.L84:
- 168:main.c        ****             PORTB &= ~(1 << PB5);
- 1215               		.stabn	68,0,168,.LM164-.LFBB13
- 1216               	.LM164:
- 1217 0168 2D98      		cbi 0x5,5
- 169:main.c        ****             i++;
- 1218               		.stabn	68,0,169,.LM165-.LFBB13
- 1219               	.LM165:
- 1220 016a 1F5F      		subi r17,lo8(-(1))
- 1221 016c 00C0      		rjmp .L85
- 1222               		.size	main, .-main
- 1223               		.stabs	"str_test:(0,52)=ar(0,53)=r(0,53);0;0177777;;0;73;(5,2)",128,0,109,256
- 1224               		.stabs	"j:r(5,2)",64,0,114,16
- 1225               		.stabs	"buffer:(0,54)=ar(0,53);0;254;(5,2)",128,0,127,1
- 1226               		.stabs	"binary_string:(0,55)=ar(0,53);0;9;(5,2)",128,0,161,330
- 1227               		.stabn	192,0,0,.LFBB13-.LFBB13
- 1228               		.stabn	224,0,0,.Lscope13-.LFBB13
- 1229               	.Lscope13:
- 1230               		.stabs	"",36,0,0,.Lscope13-.LFBB13
- 1231               		.stabd	78,0,0
-GAS LISTING /tmp/ccmqXGgj.s 			page 30
+ 1150 00d6 7105      		cpc r23,__zero_reg__
+ 1151 00d8 00F0      		brlo .L80
+ 1152 00da 6EEF      		ldi r22,lo8(-2)
+ 1153 00dc 70E0      		ldi r23,0
+ 1154               	.L80:
+ 1155 00de CE01      		movw r24,r28
+ 1156 00e0 0196      		adiw r24,1
+ 1157 00e2 0E94 0000 		call read
+ 1158 00e6 8150      		subi r24,1
+ 1159 00e8 990B      		sbc r25,r25
+ 1160 00ea 080F      		add r16,r24
+ 1161 00ec 191F      		adc r17,r25
+ 134:main.c        ****         nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa des
+ 1162               		.stabn	68,0,134,.LM150-.LFBB14
+ 1163               	.LM150:
+ 1164 00ee 0C32      		cpi r16,44
+ 1165 00f0 E1E0      		ldi r30,1
+ 1166 00f2 1E07      		cpc r17,r30
+ 1167 00f4 00F0      		brlo .L81
+ 138:main.c        ****     if (is_flow_on()) {
+ 1168               		.stabn	68,0,138,.LM151-.LFBB14
+ 1169               	.LM151:
+ 1170 00f6 0E94 0000 		call flow_off
+ 139:main.c        ****         turn_led_on();
+ 1171               		.stabn	68,0,139,.LM152-.LFBB14
+ 1172               	.LM152:
+ 1173 00fa 8091 0000 		lds r24,tx_state
+ 1174 00fe 8823      		tst r24
+ 1175 0100 01F4      		brne .+2
+ 1176 0102 00C0      		rjmp .L82
+ 140:main.c        ****     } else {
+ 1177               		.stabn	68,0,140,.LM153-.LFBB14
+ 1178               	.LM153:
+ 1179 0104 0E94 0000 		call turn_led_on
+ 1180               	.L83:
+ 146:main.c        ****     PORTB &= ~(1 << PB5); /* Apaga o LED */
+ 1181               		.stabn	68,0,146,.LM154-.LFBB14
+ 1182               	.LM154:
+ 1183 0108 0E94 0000 		call flow_on
+ 147:main.c        ****     
+ 1184               		.stabn	68,0,147,.LM155-.LFBB14
+ 1185               	.LM155:
+ 1186 010c 2D98      		cbi 0x5,5
+ 149:main.c        ****     i = 0;
+ 1187               		.stabn	68,0,149,.LM156-.LFBB14
+ 1188               	.LM156:
+ 1189 010e 8AE0      		ldi r24,lo8(10)
+ 1190 0110 E0E0      		ldi r30,lo8(.LC0)
+ 1191 0112 F0E0      		ldi r31,hi8(.LC0)
+ 1192 0114 DE01      		movw r26,r28
+ 1193 0116 A856      		subi r26,104
+ 1194 0118 BE4F      		sbci r27,-2
+ 1195               		0:
+ 1196 011a 0190      		ld r0,Z+
+ 1197 011c 0D92      		st X+,r0
+ 1198 011e 8A95      		dec r24
+ 1199 0120 01F4      		brne 0b
+GAS LISTING /tmp/ccfeYjiW.s 			page 30
 
 
- 1232               		.local	byte_pos.1585
- 1233               		.comm	byte_pos.1585,1,1
- 1234               		.stabs	"byte_pos:V(5,2)",38,0,203,byte_pos.1585
- 1235               	.global	rcvd_byte
- 1236               		.section .bss
- 1237               		.type	rcvd_byte, @object
- 1238               		.size	rcvd_byte, 1
- 1239               	rcvd_byte:
- 1240 0000 00        		.zero	1
- 1241               		.stabs	"rcvd_byte:G(0,56)=B(5,2)",32,0,43,0
- 1242               		.comm	usart_transmitting,1,1
- 1243               		.stabs	"usart_transmitting:G(5,2)",32,0,41,0
- 1244               		.comm	tx_tail,1,1
- 1245               		.stabs	"tx_tail:G(5,2)",32,0,40,0
- 1246               		.comm	tx_head,1,1
- 1247               		.stabs	"tx_head:G(5,2)",32,0,40,0
- 1248               		.comm	tx_buffer,255,1
- 1249               		.stabs	"tx_buffer:G(0,54)",32,0,39,0
- 1250               		.comm	rx_tail,1,1
- 1251               		.stabs	"rx_tail:G(5,2)",32,0,38,0
- 1252               		.comm	rx_head,1,1
- 1253               		.stabs	"rx_head:G(5,2)",32,0,38,0
- 1254               		.comm	rx_buffer,255,1
- 1255               		.stabs	"rx_buffer:G(0,54)",32,0,37,0
- 1256               	.global	tx_state
- 1257               		.data
- 1258               		.type	tx_state, @object
- 1259               		.size	tx_state, 1
- 1260               	tx_state:
- 1261 0000 01        		.byte	1
- 1262               		.stabs	"tx_state:G(5,2)",32,0,36,0
- 1263               		.comm	rx_sinc,1,1
- 1264               		.stabs	"rx_sinc:G(5,2)",32,0,36,0
- 1265               	.global	rx_state
- 1266               		.type	rx_state, @object
- 1267               		.size	rx_state, 1
- 1268               	rx_state:
- 1269 0001 01        		.byte	1
- 1270               		.stabs	"rx_state:G(5,2)",32,0,36,0
- 1271               		.comm	rx_esc,1,1
- 1272               		.stabs	"rx_esc:G(5,2)",32,0,36,0
- 1273               		.comm	tx_byte_cnt,1,1
- 1274               		.stabs	"tx_byte_cnt:G(5,2)",32,0,35,0
- 1275               		.comm	rx_byte_cnt,1,1
- 1276               		.stabs	"rx_byte_cnt:G(5,2)",32,0,35,0
- 1277               		.text
- 1278               		.stabs	"",100,0,0,.Letext0
- 1279               	.Letext0:
- 1280               		.ident	"GCC: (GNU) 7.3.0"
- 1281               	.global __do_copy_data
- 1282               	.global __do_clear_bss
-GAS LISTING /tmp/ccmqXGgj.s 			page 31
+ 150:main.c        ****     
+ 1200               		.stabn	68,0,150,.LM157-.LFBB14
+ 1201               	.LM157:
+ 1202 0122 10E0      		ldi r17,0
+ 1203               	.L86:
+ 154:main.c        ****             PORTB |= (1 << PB5); /* Acende o LED */
+ 1204               		.stabn	68,0,154,.LM158-.LFBB14
+ 1205               	.LM158:
+ 1206 0124 40E0      		ldi r20,0
+ 1207 0126 61E0      		ldi r22,lo8(1)
+ 1208 0128 88E9      		ldi r24,lo8(-104)
+ 1209 012a 91E0      		ldi r25,lo8(1)
+ 1210 012c 8C0F      		add r24,r28
+ 1211 012e 9D1F      		adc r25,r29
+ 1212 0130 810F      		add r24,r17
+ 1213 0132 911D      		adc r25,__zero_reg__
+ 1214 0134 0E94 0000 		call write
+ 1215 0138 8111      		cpse r24,__zero_reg__
+ 1216 013a 00C0      		rjmp .L84
+ 155:main.c        ****         } else {
+ 1217               		.stabn	68,0,155,.LM159-.LFBB14
+ 1218               	.LM159:
+ 1219 013c 2D9A      		sbi 0x5,5
+ 1220               	.L85:
+ 153:main.c        ****         if (!write(binary_string+i, 1, 0)) {
+ 1221               		.stabn	68,0,153,.LM160-.LFBB14
+ 1222               	.LM160:
+ 1223 013e 1A30      		cpi r17,lo8(10)
+ 1224 0140 01F4      		brne .L86
+ 163:main.c        ****     uint8_t comp_buffer[sizeof(comp_str)];
+ 1225               		.stabn	68,0,163,.LM161-.LFBB14
+ 1226               	.LM161:
+ 1227 0142 7E01      		movw r14,r28
+ 1228 0144 FFE8      		ldi r31,-113
+ 1229 0146 EF1A      		sub r14,r31
+ 1230 0148 FEEF      		ldi r31,-2
+ 1231 014a FF0A      		sbc r15,r31
+ 1232 014c 87E2      		ldi r24,lo8(39)
+ 1233 014e E0E0      		ldi r30,lo8(.LC2)
+ 1234 0150 F0E0      		ldi r31,hi8(.LC2)
+ 1235 0152 D701      		movw r26,r14
+ 1236               		0:
+ 1237 0154 0190      		ld r0,Z+
+ 1238 0156 0D92      		st X+,r0
+ 1239 0158 8A95      		dec r24
+ 1240 015a 01F4      		brne 0b
+ 170:main.c        ****         read(comp_buffer, 254);
+ 1241               		.stabn	68,0,170,.LM162-.LFBB14
+ 1242               	.LM162:
+ 1243 015c 8E01      		movw r16,r28
+ 1244 015e 065B      		subi r16,-74
+ 1245 0160 1E4F      		sbci r17,-2
+ 1246 0162 87E2      		ldi r24,lo8(39)
+ 1247 0164 782E      		mov r7,r24
+ 1248               	.L87:
+ 1249 0166 F801      		movw r30,r16
+ 1250 0168 872D      		mov r24,r7
+GAS LISTING /tmp/ccfeYjiW.s 			page 31
+
+
+ 1251               		0:
+ 1252 016a 1192      		st Z+,__zero_reg__
+ 1253 016c 8A95      		dec r24
+ 1254 016e 01F4      		brne 0b
+ 171:main.c        **** 
+ 1255               		.stabn	68,0,171,.LM163-.LFBB14
+ 1256               	.LM163:
+ 1257 0170 6EEF      		ldi r22,lo8(-2)
+ 1258 0172 C801      		movw r24,r16
+ 1259 0174 0E94 0000 		call read
+ 1260 0178 5801      		movw r10,r16
+ 1261 017a 4801      		movw r8,r16
+ 1262 017c E7E2      		ldi r30,39
+ 1263 017e 8E0E      		add r8,r30
+ 1264 0180 911C      		adc r9,__zero_reg__
+ 1265               	.LBB14:
+ 173:main.c        ****             write_tx_buffer(comp_buffer[z]);
+ 1266               		.stabn	68,0,173,.LM164-.LFBB14
+ 1267               	.LM164:
+ 1268 0182 6801      		movw r12,r16
+ 1269               	.L88:
+ 173:main.c        ****             write_tx_buffer(comp_buffer[z]);
+ 1270               		.stabn	68,0,173,.LM165-.LFBB14
+ 1271               	.LM165:
+ 1272 0184 8C14      		cp r8,r12
+ 1273 0186 9D04      		cpc r9,r13
+ 1274 0188 01F0      		breq .+2
+ 1275 018a 00C0      		rjmp .L89
+ 1276               	.LBE14:
+ 176:main.c        ****         
+ 1277               		.stabn	68,0,176,.LM166-.LFBB14
+ 1278               	.LM166:
+ 1279 018c 8AE0      		ldi r24,lo8(10)
+ 1280 018e 0E94 0000 		call write_tx_buffer
+ 178:main.c        ****             PORTB |= (1 << PB5);
+ 1281               		.stabn	68,0,178,.LM167-.LFBB14
+ 1282               	.LM167:
+ 1283 0192 F701      		movw r30,r14
+ 1284               		0:
+ 1285 0194 0190      		ld __tmp_reg__,Z+
+ 1286 0196 0020      		tst __tmp_reg__
+ 1287 0198 01F4      		brne 0b
+ 1288 019a AF01      		movw r20,r30
+ 1289 019c 4E19      		sub r20,r14
+ 1290 019e 5F09      		sbc r21,r15
+ 1291 01a0 B701      		movw r22,r14
+ 1292 01a2 C801      		movw r24,r16
+ 1293 01a4 0E94 0000 		call memcmp
+ 1294 01a8 892B      		or r24,r25
+ 1295 01aa 01F0      		breq .+2
+ 1296 01ac 00C0      		rjmp .L90
+ 179:main.c        ****         } else {
+ 1297               		.stabn	68,0,179,.LM168-.LFBB14
+ 1298               	.LM168:
+ 1299 01ae 2D9A      		sbi 0x5,5
+ 1300               	.L91:
+ 184:main.c        ****         while (read(comp_buffer+k, 10) == 11) {
+GAS LISTING /tmp/ccfeYjiW.s 			page 32
+
+
+ 1301               		.stabn	68,0,184,.LM169-.LFBB14
+ 1302               	.LM169:
+ 1303 01b0 F801      		movw r30,r16
+ 1304 01b2 872D      		mov r24,r7
+ 1305               		0:
+ 1306 01b4 1192      		st Z+,__zero_reg__
+ 1307 01b6 8A95      		dec r24
+ 1308 01b8 01F4      		brne 0b
+ 185:main.c        ****             k += 10;
+ 1309               		.stabn	68,0,185,.LM170-.LFBB14
+ 1310               	.LM170:
+ 1311 01ba 912C      		mov r9,__zero_reg__
+ 1312               	.L92:
+ 1313 01bc 6AE0      		ldi r22,lo8(10)
+ 1314 01be C801      		movw r24,r16
+ 1315 01c0 890D      		add r24,r9
+ 1316 01c2 911D      		adc r25,__zero_reg__
+ 1317 01c4 0E94 0000 		call read
+ 1318 01c8 8B30      		cpi r24,lo8(11)
+ 1319 01ca 01F0      		breq .L93
+ 1320               	.L94:
+ 1321               	.LBB15:
+ 190:main.c        ****             write_tx_buffer(comp_buffer[z]);
+ 1322               		.stabn	68,0,190,.LM171-.LFBB14
+ 1323               	.LM171:
+ 1324 01cc AC14      		cp r10,r12
+ 1325 01ce BD04      		cpc r11,r13
+ 1326 01d0 01F4      		brne .L95
+ 1327               	.LBE15:
+ 193:main.c        **** 
+ 1328               		.stabn	68,0,193,.LM172-.LFBB14
+ 1329               	.LM172:
+ 1330 01d2 8AE0      		ldi r24,lo8(10)
+ 1331 01d4 0E94 0000 		call write_tx_buffer
+ 195:main.c        ****             PORTB |= (1 << PB5);
+ 1332               		.stabn	68,0,195,.LM173-.LFBB14
+ 1333               	.LM173:
+ 1334 01d8 F701      		movw r30,r14
+ 1335               		0:
+ 1336 01da 0190      		ld __tmp_reg__,Z+
+ 1337 01dc 0020      		tst __tmp_reg__
+ 1338 01de 01F4      		brne 0b
+ 1339 01e0 AF01      		movw r20,r30
+ 1340 01e2 4E19      		sub r20,r14
+ 1341 01e4 5F09      		sbc r21,r15
+ 1342 01e6 B701      		movw r22,r14
+ 1343 01e8 C801      		movw r24,r16
+ 1344 01ea 0E94 0000 		call memcmp
+ 1345 01ee 892B      		or r24,r25
+ 1346 01f0 01F4      		brne .L96
+ 196:main.c        ****         } else {
+ 1347               		.stabn	68,0,196,.LM174-.LFBB14
+ 1348               	.LM174:
+ 1349 01f2 2D9A      		sbi 0x5,5
+ 1350 01f4 00C0      		rjmp .L87
+ 1351               	.L74:
+ 108:main.c        ****             i -= write(str_test+j, 10, 0);
+GAS LISTING /tmp/ccfeYjiW.s 			page 33
+
+
+ 1352               		.stabn	68,0,108,.LM175-.LFBB14
+ 1353               	.LM175:
+ 1354 01f6 1A30      		cpi r17,lo8(10)
+ 1355 01f8 00F0      		brlo .+2
+ 1356 01fa 00C0      		rjmp .L72
+ 112:main.c        ****             i = 0;
+ 1357               		.stabn	68,0,112,.LM176-.LFBB14
+ 1358               	.LM176:
+ 1359 01fc 41E0      		ldi r20,lo8(1)
+ 1360 01fe 612F      		mov r22,r17
+ 1361 0200 80E0      		ldi r24,0
+ 1362 0202 91E0      		ldi r25,lo8(1)
+ 1363 0204 8C0F      		add r24,r28
+ 1364 0206 9D1F      		adc r25,r29
+ 1365 0208 800F      		add r24,r16
+ 1366 020a 911D      		adc r25,__zero_reg__
+ 1367 020c 0E94 0000 		call write
+ 1368 0210 00C0      		rjmp .L75
+ 1369               	.L78:
+ 127:main.c        ****     }
+ 1370               		.stabn	68,0,127,.LM177-.LFBB14
+ 1371               	.LM177:
+ 1372 0212 0E94 0000 		call blink_led
+ 1373 0216 00C0      		rjmp .L79
+ 1374               	.L82:
+ 142:main.c        ****     }
+ 1375               		.stabn	68,0,142,.LM178-.LFBB14
+ 1376               	.LM178:
+ 1377 0218 0E94 0000 		call blink_led
+ 1378 021c 00C0      		rjmp .L83
+ 1379               	.L84:
+ 157:main.c        ****             i++;
+ 1380               		.stabn	68,0,157,.LM179-.LFBB14
+ 1381               	.LM179:
+ 1382 021e 2D98      		cbi 0x5,5
+ 158:main.c        ****         }
+ 1383               		.stabn	68,0,158,.LM180-.LFBB14
+ 1384               	.LM180:
+ 1385 0220 1F5F      		subi r17,lo8(-(1))
+ 1386 0222 00C0      		rjmp .L85
+ 1387               	.L89:
+ 1388               	.LBB16:
+ 174:main.c        ****         }
+ 1389               		.stabn	68,0,174,.LM181-.LFBB14
+ 1390               	.LM181:
+ 1391 0224 F601      		movw r30,r12
+ 1392 0226 8191      		ld r24,Z+
+ 1393 0228 6F01      		movw r12,r30
+ 1394 022a 0E94 0000 		call write_tx_buffer
+ 1395 022e 00C0      		rjmp .L88
+ 1396               	.L90:
+ 1397               	.LBE16:
+ 181:main.c        ****         }
+ 1398               		.stabn	68,0,181,.LM182-.LFBB14
+ 1399               	.LM182:
+ 1400 0230 2D98      		cbi 0x5,5
+ 1401 0232 00C0      		rjmp .L91
+GAS LISTING /tmp/ccfeYjiW.s 			page 34
+
+
+ 1402               	.L93:
+ 186:main.c        ****         };
+ 1403               		.stabn	68,0,186,.LM183-.LFBB14
+ 1404               	.LM183:
+ 1405 0234 EAE0      		ldi r30,lo8(10)
+ 1406 0236 9E0E      		add r9,r30
+ 1407 0238 00C0      		rjmp .L92
+ 1408               	.L95:
+ 1409               	.LBB17:
+ 191:main.c        ****         }
+ 1410               		.stabn	68,0,191,.LM184-.LFBB14
+ 1411               	.LM184:
+ 1412 023a F501      		movw r30,r10
+ 1413 023c 8191      		ld r24,Z+
+ 1414 023e 5F01      		movw r10,r30
+ 1415 0240 0E94 0000 		call write_tx_buffer
+ 1416 0244 00C0      		rjmp .L94
+ 1417               	.L96:
+ 1418               	.LBE17:
+ 198:main.c        ****         }
+ 1419               		.stabn	68,0,198,.LM185-.LFBB14
+ 1420               	.LM185:
+ 1421 0246 2D98      		cbi 0x5,5
+ 1422 0248 00C0      		rjmp .L87
+ 1423               		.size	main, .-main
+ 1424               		.stabs	"str_test:(0,52)=ar(0,53)=r(0,53);0;0177777;;0;73;(5,2)",128,0,101,256
+ 1425               		.stabs	"j:r(5,2)",64,0,106,16
+ 1426               		.stabs	"buffer:(0,54)=ar(0,53);0;254;(5,2)",128,0,119,1
+ 1427               		.stabs	"binary_string:(0,55)=ar(0,53);0;9;(5,2)",128,0,149,408
+ 1428               		.stabs	"comp_str:(0,56)=ar(0,53);0;38;(5,2)",128,0,163,369
+ 1429               		.stabs	"comp_buffer:(0,56)",128,0,164,330
+ 1430               		.stabs	"k:r(5,2)",64,0,165,9
+ 1431               		.stabn	192,0,0,.LFBB14-.LFBB14
+ 1432               		.stabn	224,0,0,.Lscope14-.LFBB14
+ 1433               	.Lscope14:
+ 1434               		.stabs	"",36,0,0,.Lscope14-.LFBB14
+ 1435               		.stabd	78,0,0
+ 1436               	.global	rcvd_byte
+ 1437               		.section .bss
+ 1438               		.type	rcvd_byte, @object
+ 1439               		.size	rcvd_byte, 1
+ 1440               	rcvd_byte:
+ 1441 0000 00        		.zero	1
+ 1442               		.stabs	"rcvd_byte:G(0,57)=B(5,2)",32,0,44,0
+ 1443               		.comm	usart_transmitting,1,1
+ 1444               		.stabs	"usart_transmitting:G(5,2)",32,0,42,0
+ 1445               		.comm	tx_tail,1,1
+ 1446               		.stabs	"tx_tail:G(5,2)",32,0,41,0
+ 1447               		.comm	tx_head,1,1
+ 1448               		.stabs	"tx_head:G(5,2)",32,0,41,0
+ 1449               		.comm	tx_buffer,255,1
+ 1450               		.stabs	"tx_buffer:G(0,54)",32,0,40,0
+ 1451               		.comm	rx_tail,1,1
+ 1452               		.stabs	"rx_tail:G(5,2)",32,0,39,0
+ 1453               		.comm	rx_head,1,1
+ 1454               		.stabs	"rx_head:G(5,2)",32,0,39,0
+ 1455               		.comm	rx_buffer,255,1
+GAS LISTING /tmp/ccfeYjiW.s 			page 35
+
+
+ 1456               		.stabs	"rx_buffer:G(0,54)",32,0,38,0
+ 1457               	.global	tx_state
+ 1458               		.data
+ 1459               		.type	tx_state, @object
+ 1460               		.size	tx_state, 1
+ 1461               	tx_state:
+ 1462 0000 01        		.byte	1
+ 1463               		.stabs	"tx_state:G(5,2)",32,0,37,0
+ 1464               		.comm	rx_sinc,1,1
+ 1465               		.stabs	"rx_sinc:G(5,2)",32,0,37,0
+ 1466               	.global	rx_state
+ 1467               		.type	rx_state, @object
+ 1468               		.size	rx_state, 1
+ 1469               	rx_state:
+ 1470 0001 01        		.byte	1
+ 1471               		.stabs	"rx_state:G(5,2)",32,0,37,0
+ 1472               		.comm	rx_esc,1,1
+ 1473               		.stabs	"rx_esc:G(5,2)",32,0,37,0
+ 1474               		.comm	tx_byte_cnt,1,1
+ 1475               		.stabs	"tx_byte_cnt:G(5,2)",32,0,36,0
+ 1476               		.comm	rx_byte_cnt,1,1
+ 1477               		.stabs	"rx_byte_cnt:G(5,2)",32,0,36,0
+ 1478               		.text
+ 1479               		.stabs	"",100,0,0,.Letext0
+ 1480               	.Letext0:
+ 1481               		.ident	"GCC: (GNU) 7.3.0"
+ 1482               	.global __do_copy_data
+ 1483               	.global __do_clear_bss
+GAS LISTING /tmp/ccfeYjiW.s 			page 36
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccmqXGgj.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccmqXGgj.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccmqXGgj.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccmqXGgj.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccmqXGgj.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccmqXGgj.s:108    .text:0000000000000000 __vector_18
-                            *COM*:0000000000000001 rx_esc
-     /tmp/ccmqXGgj.s:1260   .data:0000000000000000 tx_state
-                            *COM*:0000000000000001 rx_sinc
-                            *COM*:0000000000000001 rx_head
-                            *COM*:00000000000000ff rx_buffer
-                            *COM*:0000000000000001 rx_tail
-     /tmp/ccmqXGgj.s:1239   .bss:0000000000000000 rcvd_byte
-     /tmp/ccmqXGgj.s:273    .text:00000000000000b2 __vector_19
+     /tmp/ccfeYjiW.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccfeYjiW.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccfeYjiW.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccfeYjiW.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccfeYjiW.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccfeYjiW.s:113    .text:0000000000000000 __vector_19
                             *COM*:0000000000000001 tx_tail
                             *COM*:0000000000000001 tx_head
                             *COM*:0000000000000001 usart_transmitting
                             *COM*:00000000000000ff tx_buffer
-     /tmp/ccmqXGgj.s:346    .text:000000000000010e read_rx_buffer
-     /tmp/ccmqXGgj.s:424    .text:0000000000000144 read
-     /tmp/ccmqXGgj.s:1268   .data:0000000000000001 rx_state
-                             .bss:0000000000000001 byte_pos.1585
-     /tmp/ccmqXGgj.s:530    .text:00000000000001b2 write_tx_buffer
-     /tmp/ccmqXGgj.s:636    .text:0000000000000200 write
+     /tmp/ccfeYjiW.s:186    .text:000000000000005c read_rx_buffer
+                            *COM*:0000000000000001 rx_tail
+                            *COM*:0000000000000001 rx_head
+                            *COM*:00000000000000ff rx_buffer
+     /tmp/ccfeYjiW.s:264    .text:0000000000000092 read
+     /tmp/ccfeYjiW.s:1469   .data:0000000000000001 rx_state
+     /tmp/ccfeYjiW.s:1440   .bss:0000000000000000 rcvd_byte
+                            *COM*:0000000000000001 rx_sinc
+     /tmp/ccfeYjiW.s:358    .text:00000000000000e6 write_tx_buffer
+     /tmp/ccfeYjiW.s:464    .text:0000000000000134 write
                             *COM*:0000000000000001 tx_byte_cnt
-     /tmp/ccmqXGgj.s:720    .text:0000000000000264 flow_off
-     /tmp/ccmqXGgj.s:747    .text:0000000000000270 flow_on
-     /tmp/ccmqXGgj.s:775    .text:000000000000027e is_flow_on
-     /tmp/ccmqXGgj.s:797    .text:0000000000000284 delay_ms
-     /tmp/ccmqXGgj.s:851    .text:00000000000002a2 blink_led
-     /tmp/ccmqXGgj.s:896    .text:00000000000002c0 turn_led_on
-     /tmp/ccmqXGgj.s:943    .text.startup:0000000000000000 main
+     /tmp/ccfeYjiW.s:1461   .data:0000000000000000 tx_state
+     /tmp/ccfeYjiW.s:569    .text:00000000000001b8 enqueue_rx_buffer
+     /tmp/ccfeYjiW.s:639    .text:00000000000001f2 __vector_18
+                            *COM*:0000000000000001 rx_esc
+     /tmp/ccfeYjiW.s:759    .text:0000000000000282 flow_off
+     /tmp/ccfeYjiW.s:786    .text:000000000000028e flow_on
+     /tmp/ccfeYjiW.s:814    .text:000000000000029c is_flow_on
+     /tmp/ccfeYjiW.s:836    .text:00000000000002a2 delay_ms
+     /tmp/ccfeYjiW.s:890    .text:00000000000002c0 blink_led
+     /tmp/ccfeYjiW.s:935    .text:00000000000002de turn_led_on
+     /tmp/ccfeYjiW.s:985    .text.startup:0000000000000000 main
                             *COM*:0000000000000001 rx_byte_cnt
 
 UNDEFINED SYMBOLS
+memcmp
 __do_copy_data
 __do_clear_bss
