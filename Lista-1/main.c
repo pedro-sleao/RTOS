@@ -170,10 +170,12 @@ int main(void) {
         memset(comp_buffer, 0, sizeof(comp_buffer));
         read(comp_buffer, 254);
 
+        /*
         for (int z = 0; z < sizeof(comp_buffer); z++){
             write_tx_buffer(comp_buffer[z]);
         }
         write_tx_buffer('\n');
+        */
         
         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
             PORTB |= (1 << PB5);
@@ -181,16 +183,19 @@ int main(void) {
             PORTB &= ~(1 << PB5);
         }
 
+        /* Letra b */
         memset(comp_buffer, 0, sizeof(comp_buffer));
+        k = 0;
         while (read(comp_buffer+k, 10) == 11) {
             k += 10;
         };
-        k = 0;
 
+        /*
         for (int z = 0; z < sizeof(comp_buffer); z++){
             write_tx_buffer(comp_buffer[z]);
         }
         write_tx_buffer('\n');
+        */
 
         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
             PORTB |= (1 << PB5);
@@ -241,6 +246,7 @@ uint8_t read(uint8_t* buf, uint8_t n) {
         if (rx_sinc) {
             buf[byte_cnt] = '\0';
             rx_sinc = 0;
+            rcvd_byte = 0;
             return byte_cnt;
         }
 
