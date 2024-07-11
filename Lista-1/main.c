@@ -9,7 +9,7 @@
 #include <string.h>
 
 #define FOSC 16000000ul
-#define BAUD 57600
+#define BAUD 9600
 #define MYUBRR (FOSC/(8ul*BAUD) - 1)
 #define BUFFER_SIZE 255
 
@@ -31,6 +31,7 @@ uint8_t is_flow_on(void);
 void delay_ms(uint16_t ms);
 void blink_led(void);
 void turn_led_on(void);
+uint8_t received_data(void);
 
 /* Variáveis globais */
 uint8_t rx_byte_cnt, tx_byte_cnt;
@@ -85,7 +86,7 @@ int main(void) {
     /* Faça a configuração do que for necessário aqui */
     /* Seu código aqui */
     UCSR0A = (1 << U2X0); /* double speed */
-    UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt, and data register empty interrupt */
+    UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt */
     UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); /* Set frame format: 8N1 */
     UBRR0H = (MYUBRR>>8); /* Set baud rate */
     UBRR0L = MYUBRR; /* Set baud rate */
@@ -121,7 +122,7 @@ int main(void) {
         nbytes += read(buffer, 300-nbytes > 254 ? 254 : 300-nbytes) - 1; /* Conferir se precisa desse -1 */
     }
     flow_off();
-    if (is_flow_on()) {
+    if (received_data()) {
         turn_led_on();
     } else {
         blink_led();
@@ -136,7 +137,7 @@ int main(void) {
     }
 
     flow_off();
-    if (is_flow_on()) {
+    if (received_data()) {
         turn_led_on();
     } else {
         blink_led();
@@ -167,15 +168,15 @@ int main(void) {
        embarcados */
     while (1) {
         /* Letra a */
-        memset(comp_buffer, 0, sizeof(comp_buffer));
+        //memset(comp_buffer, 0, sizeof(comp_buffer));
         read(comp_buffer, 254);
 
-        /*
-        for (int z = 0; z < sizeof(comp_buffer); z++){
+        
+        for (int z = 0; z < strlen((const char *)comp_buffer); z++){
             write_tx_buffer(comp_buffer[z]);
         }
         write_tx_buffer('\n');
-        */
+        
         
         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
             PORTB |= (1 << PB5);
@@ -184,18 +185,18 @@ int main(void) {
         }
 
         /* Letra b */
-        memset(comp_buffer, 0, sizeof(comp_buffer));
+        //memset(comp_buffer, 0, sizeof(comp_buffer));
         k = 0;
         while (read(comp_buffer+k, 10) == 11) {
             k += 10;
         };
 
-        /*
-        for (int z = 0; z < sizeof(comp_buffer); z++){
+        
+        for (int z = 0; z < strlen((const char *)comp_buffer); z++){
             write_tx_buffer(comp_buffer[z]);
         }
         write_tx_buffer('\n');
-        */
+        
 
         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
             PORTB |= (1 << PB5);
@@ -347,4 +348,18 @@ void turn_led_on(void) {
     PORTB |= (1 << PB5);
     delay_ms(5000);
     PORTB &= ~(1 << PB5);
+}
+
+uint8_t received_data(void) {
+    uint8_t rx_flag = 0;
+    uint8_t check_cnt = 0;
+
+    cli();
+    while (!(UCSR0A & (1<<RXC0)) & (check_cnt < 5)){
+        check_cnt++;
+        delay_ms(1);
+    }
+    sei();
+    rx_flag = check_cnt < 5 ? 1 : 0;
+    return rx_flag;
 }
