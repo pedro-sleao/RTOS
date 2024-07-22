@@ -32,6 +32,7 @@ void delay_ms(uint16_t ms);
 void blink_led(void);
 void turn_led_on(void);
 uint8_t received_data(void);
+void reset_rxbuffer(void);
 
 /* Variáveis globais */
 uint8_t rx_byte_cnt, tx_byte_cnt;
@@ -102,6 +103,8 @@ int main(void) {
     uint8_t str_test[] = "Universidade Federal de Pernambuco\nDepartamento de Eletrônica e Sistemas";
     write(str_test, sizeof(str_test)-1, 1);
 
+    delay_ms(1000); /* Delay necessário para o código de teste */
+
     /* Teste 3*/
     uint8_t i = sizeof(str_test);
     uint8_t j = 0;
@@ -110,12 +113,13 @@ int main(void) {
             i -= write(str_test+j, 10, 0);
             j += 10;
         } else {
-            write(str_test+j, i, 1);
+            write(str_test+j, i-1, 1);
             i = 0;
         }
     }
 
     /* Teste 4 */
+    reset_rxbuffer(); /* Limpa o buffer de rx */
     uint16_t nbytes = 0;
     uint8_t buffer[255];
     while (nbytes < 300) {
@@ -129,6 +133,7 @@ int main(void) {
     }
 
     /* Teste 5 */
+    reset_rxbuffer(); /* Limpa o buffer de rx */
     flow_on(); /* Precisa do flow_on()? */
     PORTB &= ~(1 << PB5); /* Apaga o LED */
     nbytes = 0;
@@ -161,6 +166,7 @@ int main(void) {
     }
     
     /* Teste 7 */
+    reset_rxbuffer(); /* Limpa o buffer de rx */
     uint8_t comp_str[] = "Desenvolvimento de sistemas embarcados";
     uint8_t comp_buffer[sizeof(comp_str)];
     uint8_t k = 0;
@@ -168,15 +174,14 @@ int main(void) {
        embarcados */
     while (1) {
         /* Letra a */
-        //memset(comp_buffer, 0, sizeof(comp_buffer));
         read(comp_buffer, 254);
 
-        
+        /*
         for (int z = 0; z < strlen((const char *)comp_buffer); z++){
             write_tx_buffer(comp_buffer[z]);
         }
         write_tx_buffer('\n');
-        
+        */
         
         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
             PORTB |= (1 << PB5);
@@ -185,18 +190,17 @@ int main(void) {
         }
 
         /* Letra b */
-        //memset(comp_buffer, 0, sizeof(comp_buffer));
         k = 0;
         while (read(comp_buffer+k, 10) == 11) {
             k += 10;
         };
-
         
+        /*
         for (int z = 0; z < strlen((const char *)comp_buffer); z++){
             write_tx_buffer(comp_buffer[z]);
         }
         write_tx_buffer('\n');
-        
+        */
 
         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
             PORTB |= (1 << PB5);
@@ -362,4 +366,13 @@ uint8_t received_data(void) {
     sei();
     rx_flag = check_cnt < 5 ? 1 : 0;
     return rx_flag;
+}
+
+void reset_rxbuffer(void) {
+    cli();
+    memset(rx_buffer, 0, sizeof(rx_buffer));
+    rx_head = 0;
+    rx_tail = 0;
+    rcvd_byte = 0;
+    sei();
 }
