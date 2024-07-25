@@ -86,8 +86,18 @@ def rx_process_event(ev):
         if g_rx_state == "S0":
             if ev == EV_ESC:
                 g_rx_state = "S1"
-            elif ev == EV_CHAR or ev == EV_XOFF or ev == EV_XON:
+            elif ev == EV_CHAR:
                 g_idle_buffer.append(g_data)
+            elif ev == EV_XOFF:
+                g_xoff_active_ev.set()
+                logging.info(f"Recebido um caractere XOFF no estado S0")
+                tx_process_event(EV_RX_XOFF)
+            elif ev == EV_XON:
+                g_xoff_active_ev.clear()
+                logging.info(f"Recebido um caractere XON no estado S0")
+                tx_process_event(EV_RX_XON)
+            elif ev == EV_SYN:
+                g_idle_buffer.clear()
             elif ev == EV_READ:
                 g_rx_state = "S2"
                 if g_idle_buffer:
@@ -100,53 +110,68 @@ def rx_process_event(ev):
                         g_read_end_ev.set()
                     g_idle_buffer = bytearray()
         elif g_rx_state == "S1":
+            g_rx_state = "S0"
             if ev == EV_XON:
-                g_xoff_active_ev.clear()
-                logging.debug(f"Recebido um XON no estado S1")
-                tx_process_event(EV_RX_XON)
-                g_rx_state = "S0"
+                g_idle_buffer.append(XON)
             elif ev == EV_XOFF:
-                g_xoff_active_ev.set()
-                logging.debug(f"Recebido um XOFF no estado S1")
-                tx_process_event(EV_RX_XOFF)
-                g_rx_state = "S0"
+                g_idle_buffer.append(XOFF)
+            elif ev == EV_ESC:
+                g_idle_buffer.append(ESC)
+            elif ev == EV_SYN:
+                g_idle_buffer.append(SYN)
             elif ev == EV_READ:
                 g_rx_state = "S4"
         elif g_rx_state == "S4":
             if ev == EV_XON:
-                g_xoff_active_ev.clear()
-                logging.debug(f"Recebido um XON no estado S4")
-                tx_process_event(EV_RX_XON)
-                g_rx_state = "S2"
+                g_idle_buffer.append(XON)
             elif ev == EV_XOFF:
-                g_xoff_active_ev.set()
-                logging.debug(f"Recebido um XOFF no estado S4")
-                tx_process_event(EV_RX_XOFF)
+                g_idle_buffer.append(XOFF)
+            elif ev == EV_ESC:
+                g_idle_buffer.append(ESC)
+            elif ev == EV_SYN:
+                g_idle_buffer.append(SYN)
+            if ev != EV_READ:
                 g_rx_state = "S2"
+                if g_idle_buffer:
+                    if len(g_idle_buffer) < g_max_n_recvd:
+                        g_recvd = g_idle_buffer
+                    else:
+                        g_recvd = g_idle_buffer[1-g_max_n_recvd:]
+                        g_n_recvd = g_max_n_recvd + 1
+                        g_rx_state = "S0"
+                        g_read_end_ev.set()
+                    g_idle_buffer = bytearray()
         elif g_rx_state == "S2":
             if ev == EV_ESC:
                 g_rx_state = "S3"
             elif ev == EV_SYN:
-                logging.debug("Recebido um SYN")
+                logging.info("Recebido um caractere SYN")
                 g_n_recvd = len(g_recvd)
                 g_rx_state = "S0"
                 g_read_end_ev.set()
-            elif ev == EV_CHAR or ev == EV_XOFF or ev == EV_XON:
+            elif ev == EV_XON:
+                g_xoff_active_ev.clear()
+                logging.info(f"Recebido um caractere XON no estado S2")
+                tx_process_event(EV_RX_XON)
+            elif ev == EV_XOFF:
+                g_xoff_active_ev.set()
+                logging.info(f"Recebido um caractere XOFF no estado S2")
+                tx_process_event(EV_RX_XOFF)
+            elif ev == EV_CHAR:
                 g_recvd.append(g_data)
                 if len(g_recvd) == g_max_n_recvd:
                     g_n_recvd = g_max_n_recvd + 1
                     g_rx_state = "S0"
                     g_read_end_ev.set()
         elif g_rx_state == "S3":
-            g_rx_state = "S2"
-            if ev == EV_XON:
-                g_xoff_active_ev.clear()
-                logging.debug(f"Recebido um XON no estado S3")
-            elif ev == EV_XOFF:
-                g_xoff_active_ev.set()
-                logging.debug(f"Recebido um XOFF no estado S3")
-            elif ev == EV_SYN or ev == EV_ESC:
-                g_recvd.append(g_data)
+            if ev != EV_READ:
+                g_rx_state = "S2"
+                if ev != EV_CHAR:
+                    g_recvd.append(g_data)
+                    if len(g_recvd) == g_max_n_recvd:
+                        g_n_recvd = g_max_n_recvd + 1
+                        g_rx_state = "S0"
+                        g_read_end_ev.set()
         else:
             logging.warning(f"Estado desconhecido ({g_rx_state})")
             g_rx_state = "S0"
@@ -180,9 +205,9 @@ def tx_process_event(ev):
     logging.debug("Entrando na função tx_process_event()")
 
     if ev == EV_TX_XOFF:
-        logging.info(f"Recebido evento TX_OFF no estado {g_tx_state}")
+        logging.info(f"Evento TX_OFF a ser processado no estado {g_tx_state} (tx)")
     elif ev == EV_TX_XON:
-        logging.info(f"Recebido evento TX_OFF no estado {g_tx_state}")
+        logging.info(f"Evento TX_ON a ser processado no estado {g_tx_state} (tx)")
 
     with g_tx_sm_mtx:
         if g_tx_state == "T0a":
@@ -190,18 +215,16 @@ def tx_process_event(ev):
                 g_tx_state = "T1a"
                 g_is_xoff_recvd = True
             elif ev == EV_TX_XOFF:
-                g_tx_state = "T2b"
+                g_tx_state = "T2a"
                 g_is_xoff_recvd = False
                 g_is_xoff_sent = True
-                g_tx_data = ESC
-                g_2nd_char = XOFF
+                g_tx_data = XOFF
                 g_tx_char_ev.set()
             elif ev == EV_TX_XON:
-                g_tx_state = "T2b"
+                g_tx_state = "T2a"
                 g_is_xoff_recvd = False
                 g_is_xoff_sent = False
-                g_tx_data = ESC
-                g_2nd_char = XON
+                g_tx_data = XON
                 g_tx_char_ev.set()
             elif ev == EV_WRITE:
                 ch = g_trmtd[g_n_trmtd]
@@ -218,12 +241,15 @@ def tx_process_event(ev):
                 g_is_xoff_recvd = True
             elif ev == EV_TX_XOFF:
                 g_tx_state = "T2c"
+                g_2nd_char = XOFF
                 g_is_xoff_sent = True
             elif ev == EV_TX_XON:
                 g_tx_state = "T2c"
+                g_2nd_char = XON
                 g_is_xoff_sent = False
         elif g_tx_state == "T0c":
             if ev == EV_TX_READY:
+                g_tx_state = "T0b"
                 g_tx_data = g_2nd_char
                 g_tx_char_ev.set()
             elif ev == EV_RX_XOFF:
@@ -240,13 +266,13 @@ def tx_process_event(ev):
                 g_tx_state = "T0a"
                 g_is_xoff_recvd = False
             elif ev == EV_TX_XOFF:
-                g_tx_state = "T2b"
+                g_tx_state = "T2a"
                 g_tx_data = ESC
                 g_2nd_char = XOFF
                 g_is_xoff_sent = True
                 g_tx_char_ev.set()
             elif ev == EV_TX_XON:
-                g_tx_state = "T2b"
+                g_tx_state = "T2a"
                 g_tx_data = ESC
                 g_2nd_char = XON
                 g_is_xoff_sent = False
@@ -288,24 +314,13 @@ def tx_process_event(ev):
                 g_is_xoff_recvd = False
             elif ev == EV_RX_XOFF:
                 g_is_xoff_recvd = True
-        elif g_tx_state == "T2b":
-            if ev == EV_TX_READY:
-                g_tx_state = "T2a"
-                g_tx_data = g_2nd_char
-                g_tx_char_ev.set()
-            elif ev == EV_RX_XON:
-                g_is_xoff_recvd = False
-            elif ev == EV_RX_XOFF:
-                g_is_xoff_recvd = True
         elif g_tx_state == "T2c":
             if ev == EV_TX_READY:
-                g_tx_state = "T2b"
-                g_tx_data = ESC
-                g_2nd_char = XOFF if g_is_xoff_sent else XON
+                g_tx_state = "T2a"
+                g_tx_data = XOFF if g_is_xoff_sent else XON
                 g_tx_char_ev.set()
-            elif ev == EV_TX_XON and g_is_xoff_sent:
-                g_tx_state = "T1b" if g_is_xoff_recvd else "T0b"
-            elif ev == EV_TX_XOFF and not g_is_xoff_sent:
+            elif (ev == EV_TX_XON and g_is_xoff_sent) or \
+                 (ev == EV_TX_XOFF and not g_is_xoff_sent):
                 g_tx_state = "T1b" if g_is_xoff_recvd else "T0b"
             elif ev == EV_RX_XON:
                 g_is_xoff_recvd = False
@@ -316,9 +331,8 @@ def tx_process_event(ev):
                 g_tx_state = "T2c"
                 g_tx_data = g_2nd_char
                 g_tx_char_ev.set()
-            elif ev == EV_TX_XON and g_is_xoff_sent:
-                g_tx_state = "T1c" if g_is_xoff_recvd else "T0c"
-            elif ev == EV_TX_XOFF and not g_is_xoff_sent:
+            elif (ev == EV_TX_XON and g_is_xoff_sent) or \
+                 (ev == EV_TX_XOFF and not g_is_xoff_sent):
                 g_tx_state = "T1c" if g_is_xoff_recvd else "T0c"
             elif ev == EV_RX_XON:
                 g_is_xoff_recvd = False
@@ -326,7 +340,7 @@ def tx_process_event(ev):
                 g_is_xoff_recvd = True
         elif g_tx_state == "T2e":
             if ev == EV_TX_READY:
-                g_tx_state = "T2f"
+                g_tx_state = "T2g"
                 g_tx_data = g_2nd_char
                 g_tx_char_ev.set()
             elif ev == EV_RX_XOFF:
@@ -335,11 +349,10 @@ def tx_process_event(ev):
             elif (ev == EV_TX_XON and g_is_xoff_sent) or \
                  (ev == EV_TX_XOFF and not g_is_xoff_sent):
                 g_tx_state = "T4"
-        elif g_tx_state == "T2f":
+        elif g_tx_state == "T2g":
             if ev == EV_TX_READY:
-                g_tx_state = "T2g"
-                g_tx_data = ESC
-                g_2nd_char = XOFF if g_is_xoff_sent else XON
+                g_tx_state = "T3"
+                g_tx_data = XOFF if g_is_xoff_sent else XON
                 g_tx_char_ev.set()
             elif ev == EV_RX_XOFF:
                 g_tx_state = "T2c"
@@ -347,14 +360,6 @@ def tx_process_event(ev):
             elif (ev == EV_TX_XON and g_is_xoff_sent) or \
                  (ev == EV_TX_XOFF and not g_is_xoff_sent):
                 g_tx_state = "T3"
-        elif g_tx_state == "T2g":
-            if ev == EV_TX_READY:
-                g_tx_state = "T3"
-                g_tx_data = g_2nd_char
-                g_tx_char_ev.set()
-            elif ev == EV_RX_XOFF:
-                g_tx_state = "T2b"
-                g_is_xoff_recvd = True
         elif g_tx_state == "T3":
             if ev == EV_TX_READY:
                 if g_n_trmtd == g_max_n_trmtd:
@@ -368,7 +373,7 @@ def tx_process_event(ev):
                 else:
                     ch = g_trmtd[g_n_trmtd]
                     g_n_trmtd += 1
-                    if ch == SYN or ch == ESC:
+                    if ch == SYN or ch == ESC or ch == XON or ch == XOFF:
                         logging.debug(f"Transmitting {ch}")
                         g_tx_state = "T4"
                         g_tx_data = ESC
@@ -381,10 +386,10 @@ def tx_process_event(ev):
                 g_tx_state = "T1b"
                 g_is_xoff_recvd = True
             elif ev == EV_TX_XOFF:
-                g_tx_state = "T2f"
+                g_tx_state = "T2g"
                 g_is_xoff_sent = True
             elif ev == EV_TX_XON:
-                g_tx_state = "T2f"
+                g_tx_state = "T2g"
                 g_is_xoff_sent = False
         elif g_tx_state == "T4":
             if ev == EV_TX_READY:
@@ -392,10 +397,10 @@ def tx_process_event(ev):
                 g_tx_data = g_2nd_char
                 g_tx_char_ev.set()
             elif ev == EV_TX_XOFF:
-                g_tx_state = "T2a"
+                g_tx_state = "T2e"
                 g_is_xoff_sent = True
             elif ev == EV_TX_XON:
-                g_tx_state = "T2a"
+                g_tx_state = "T2e"
                 g_is_xoff_sent = False
             elif ev == EV_RX_XOFF:
                 g_tx_state = "T1c"
@@ -563,6 +568,7 @@ try:
                 n_total += n
                 logging.info(f"{n} bytes transmitidos na rodada #{idx//PCKT_SZ}")
             n = write_bytes(msg2[upper_limit:], close_packet=True)
+            n_total += n
             logging.info(f"Escrito {n_total} bytes - parte b")
 finally:
     g_stop_all_ev.set()

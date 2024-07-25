@@ -1,3 +1,8 @@
+/**
+ * Lista 1
+ * Autor: Pedro Lucas de Souza Leão
+ */
+
 /* Necessário para funções e macros básicas */
 #include <avr/io.h>
 
@@ -356,15 +361,24 @@ void turn_led_on(void) {
 
 uint8_t received_data(void) {
     uint8_t rx_flag = 0;
+    uint8_t received_cnt = 0;
     uint8_t check_cnt = 0;
+    uint8_t limit = 30;
+    uint8_t _ = 0;
 
     cli();
-    while (!(UCSR0A & (1<<RXC0)) & (check_cnt < 5)){
-        check_cnt++;
-        delay_ms(1);
+    while ((received_cnt < limit) && check_cnt < 2) {
+        if ((UCSR0A & (1<<RXC0))) {
+            received_cnt++;
+            _ = UDR0;
+            ++_; /* Para parar o warning do compilador */
+        } else {
+            check_cnt++;
+        }
+        delay_ms(2);
     }
     sei();
-    rx_flag = check_cnt < 5 ? 1 : 0;
+    rx_flag = received_cnt < limit ? 0 : 1;
     return rx_flag;
 }
 
