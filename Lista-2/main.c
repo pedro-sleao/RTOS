@@ -10,18 +10,14 @@ uint8_t g_state = ST_READING;
 
 int main(void) {
 
-    uint8_t input[100];
-    uint8_t output[100];
+    uint8_t input[101];
+    uint8_t output[101];
 
     while (1) {
-        printf("Insira o texto (ou 'exit' para sair): ");
+        printf("Insira o texto (100 caracteres): ");
         if (fgets(input, sizeof(input), stdin) == NULL) {
             printf("Falha ao ler a entrada\n");
             return 1;
-        }
-
-        if (strcmp((char *)input, "exit") == 0) {
-            break;
         }
 
         uint8_t *pInput = input;
