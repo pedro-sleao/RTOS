@@ -6,13 +6,7 @@ enum {
     ST_READING = 0, ST_OPEN, ST_COMMENT, ST_CLOSE
 };
 
-enum {
-    EV_BAR, EV_STAR
-};
-
 uint8_t g_state = ST_READING;
-
-uint8_t process_event(uint8_t ev);
 
 int main(void) {
 
@@ -21,7 +15,7 @@ int main(void) {
 
     while (1) {
         printf("Insira o texto (ou 'exit' para sair): ");
-        if (scanf("%100s", input) != 1) {
+        if (fgets(input, sizeof(input), stdin) == NULL) {
             printf("Falha ao ler a entrada\n");
             return 1;
         }
@@ -32,24 +26,44 @@ int main(void) {
 
         uint8_t *pInput = input;
         uint8_t *pOutput = output;
-        
-        uint8_t ev;
-        uint8_t c = 0;
 
         g_state = ST_READING;
 
         while (*pInput) {
-            if (*pInput == '/') {
-                ev = EV_BAR;
-            } else if (*pInput == '*') {
-                ev = EV_STAR;
-            } else {
-                ev = *pInput;
-            }
-            c = process_event(ev);
-            if (c != 0) {
-                *pOutput = c;
-                pOutput++;
+            switch (g_state) {
+                case ST_READING:
+                    if (*pInput == '/') {
+                        g_state = ST_OPEN;
+                    } else {
+                        *pOutput = *pInput;
+                        pOutput++;
+                    }
+                    break;
+                case ST_OPEN:
+                    if (*pInput == '*') {
+                        g_state = ST_COMMENT;
+                    } else {
+                        *pOutput = '/';
+                        pOutput++;
+                        *pOutput = *pInput;
+                        pOutput++;
+                        g_state = ST_READING;
+                    }
+                    break;
+                case ST_COMMENT:
+                    if (*pInput == '*') {
+                        g_state = ST_CLOSE;
+                    }
+                    break;
+                case ST_CLOSE:
+                    if (*pInput == '/') {
+                        g_state = ST_READING;
+                    } else {
+                        g_state = ST_COMMENT;
+                    }
+                    break;
+                default:
+                    break;
             }
             pInput++;
         }
@@ -59,55 +73,4 @@ int main(void) {
     }
 
     return 0;
-}
-
-uint8_t process_event(uint8_t ev) {
-    uint8_t output = 0;
-
-    switch (g_state) {
-        case ST_READING:
-            if (ev == EV_BAR) {
-                g_state = ST_OPEN;
-                output = 0;
-                break;
-            } else if (ev == EV_STAR) {
-                output = '*';
-                break;
-            }
-            output = ev;
-            break;
-        case ST_OPEN:
-            if (ev == EV_STAR) {
-                g_state = ST_COMMENT;
-                output = 0;
-                break;
-            } else if (ev == EV_BAR) {
-                g_state = ST_OPEN;
-                output = '/';
-                break;
-            }
-            g_state = ST_READING;
-            output = ev;
-            break;
-        case ST_COMMENT:
-            if (ev == EV_STAR) {
-                g_state = ST_CLOSE;
-                output = 0;
-                break;
-            } 
-            output = 0; 
-            break;
-        case ST_CLOSE:
-            if (ev == EV_BAR) {
-                g_state = ST_READING;
-                output = 0;
-                break;
-            }
-            g_state = ST_COMMENT;
-            output = 0;
-            break;
-        default:
-            output = ev;
-    }
-    return output;
 }
