@@ -1,4 +1,4 @@
-GAS LISTING /tmp/ccsBKM5i.s 			page 1
+GAS LISTING /tmp/ccoigQyo.s 			page 1
 
 
    1               		.file	"main.c"
@@ -7,7 +7,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
    4               	__SREG__ = 0x3f
    5               	__tmp_reg__ = 0
    6               	__zero_reg__ = 1
-   7               		.stabs	"/home/pedro/Documentos/2024.1/RTOS/Lista-1/",100,0,2,.Ltext0
+   7               		.stabs	"/home/pedro/RTOS/Lista-1/",100,0,2,.Ltext0
    8               		.stabs	"main.c",100,0,2,.Ltext0
    9               		.text
   10               	.Ltext0:
@@ -58,7 +58,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
   55               		.stabs	"_Sat long _Accum:t(0,44)=r(0,1);8;0;",128,0,0,0
   56               		.stabs	"_Sat long long _Accum:t(0,45)=r(0,1);8;0;",128,0,0,0
   57               		.stabs	"_Sat unsigned short _Accum:t(0,46)=r(0,1);2;0;",128,0,0,0
-GAS LISTING /tmp/ccsBKM5i.s 			page 2
+GAS LISTING /tmp/ccoigQyo.s 			page 2
 
 
   58               		.stabs	"_Sat unsigned _Accum:t(0,47)=r(0,1);4;0;",128,0,0,0
@@ -118,7 +118,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  112               		.type	__vector_19, @function
  113               	__vector_19:
  114               		.stabd	46,0,0
-GAS LISTING /tmp/ccsBKM5i.s 			page 3
+GAS LISTING /tmp/ccoigQyo.s 			page 3
 
 
    1:main.c        **** /**
@@ -178,7 +178,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
   55:main.c        ****     if (!rx_esc) {
   56:main.c        ****         if (received_data == ESC) {
   57:main.c        ****             rx_esc = 1;
-GAS LISTING /tmp/ccsBKM5i.s 			page 4
+GAS LISTING /tmp/ccoigQyo.s 			page 4
 
 
   58:main.c        ****         } else if (received_data == XOFF) {
@@ -238,7 +238,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  143 0026 1092 0000 		sts usart_transmitting,__zero_reg__
  144               	.L1:
  145               	/* epilogue start */
-GAS LISTING /tmp/ccsBKM5i.s 			page 5
+GAS LISTING /tmp/ccoigQyo.s 			page 5
 
 
   84:main.c        ****     } else {
@@ -298,7 +298,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
   93:main.c        ****     /* Seu código aqui */
   94:main.c        ****     UCSR0A = (1 << U2X0); /* double speed */
   95:main.c        ****     UCSR0B = (1<<RXEN0) | (1 << TXEN0) | (1 << RXCIE0); /* Enable rx and tx, rx complete interrupt 
-GAS LISTING /tmp/ccsBKM5i.s 			page 6
+GAS LISTING /tmp/ccoigQyo.s 			page 6
 
 
   96:main.c        ****     UCSR0C = (1<<UCSZ01) | (1<<UCSZ00); /* Set frame format: 8N1 */
@@ -358,7 +358,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  150:main.c        ****     if (received_data()) {
  151:main.c        ****         turn_led_on();
  152:main.c        ****     } else {
-GAS LISTING /tmp/ccsBKM5i.s 			page 7
+GAS LISTING /tmp/ccoigQyo.s 			page 7
 
 
  153:main.c        ****         blink_led();
@@ -418,7 +418,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  207:main.c        ****         write_tx_buffer('\n');
  208:main.c        ****         */
  209:main.c        **** 
-GAS LISTING /tmp/ccsBKM5i.s 			page 8
+GAS LISTING /tmp/ccoigQyo.s 			page 8
 
 
  210:main.c        ****         if (memcmp(comp_buffer, comp_str, strlen((const char *)comp_str)+1) == 0) {
@@ -478,7 +478,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  264:main.c        ****         byte_cnt++;
  265:main.c        **** 
  266:main.c        ****         rcvd_byte = 0;
-GAS LISTING /tmp/ccsBKM5i.s 			page 9
+GAS LISTING /tmp/ccoigQyo.s 			page 9
 
 
  267:main.c        ****     }
@@ -538,7 +538,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  282:main.c        ****     sei();
  226               		.stabn	68,0,282,.LM15-.LFBB2
  227               	.LM15:
-GAS LISTING /tmp/ccsBKM5i.s 			page 10
+GAS LISTING /tmp/ccoigQyo.s 			page 10
 
 
  228               	/* #APP */
@@ -598,7 +598,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  276               	.L__stack_usage = 4
  277 009a D62F      		mov r29,r22
  278 009c 8C01      		movw r16,r24
-GAS LISTING /tmp/ccsBKM5i.s 			page 11
+GAS LISTING /tmp/ccoigQyo.s 			page 11
 
 
  246:main.c        **** 
@@ -658,7 +658,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  322 00ca 1092 0000 		sts rx_sinc,__zero_reg__
  259:main.c        ****             return byte_cnt;
  323               		.stabn	68,0,259,.LM32-.LFBB3
-GAS LISTING /tmp/ccsBKM5i.s 			page 12
+GAS LISTING /tmp/ccoigQyo.s 			page 12
 
 
  324               	.LM32:
@@ -718,7 +718,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  287:main.c        ****     uint8_t rc = 0;
  288:main.c        **** 
  289:main.c        ****     cli();
-GAS LISTING /tmp/ccsBKM5i.s 			page 13
+GAS LISTING /tmp/ccoigQyo.s 			page 13
 
 
  371               		.stabn	68,0,289,.LM39-.LFBB4
@@ -778,7 +778,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  407               	.L22:
  408               	.LBB2:
  296:main.c        ****         if (next >= BUFFER_SIZE)
-GAS LISTING /tmp/ccsBKM5i.s 			page 14
+GAS LISTING /tmp/ccoigQyo.s 			page 14
 
 
  409               		.stabn	68,0,296,.LM46-.LFBB4
@@ -838,7 +838,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  456               		.stabn	224,0,0,.LBE3-.LFBB4
  457               		.stabn	224,0,0,.Lscope4-.LFBB4
  458               	.Lscope4:
-GAS LISTING /tmp/ccsBKM5i.s 			page 15
+GAS LISTING /tmp/ccoigQyo.s 			page 15
 
 
  459               		.stabs	"",36,0,0,.Lscope4-.LFBB4
@@ -898,7 +898,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  508 0162 8081      		ld r24,Z
  509 0164 982F      		mov r25,r24
  510 0166 9D7F      		andi r25,lo8(-3)
-GAS LISTING /tmp/ccsBKM5i.s 			page 16
+GAS LISTING /tmp/ccoigQyo.s 			page 16
 
 
  511 0168 9131      		cpi r25,lo8(17)
@@ -958,7 +958,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  558               	.LM65:
  559 01b4 8EE7      		ldi r24,lo8(126)
  560 01b6 0E94 0000 		call write_tx_buffer
-GAS LISTING /tmp/ccsBKM5i.s 			page 17
+GAS LISTING /tmp/ccoigQyo.s 			page 17
 
 
  561 01ba 00C0      		rjmp .L33
@@ -1018,7 +1018,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  604               	.LM72:
  605 01d6 8091 0000 		lds r24,rx_tail
  606 01da 8913      		cpse r24,r25
-GAS LISTING /tmp/ccsBKM5i.s 			page 18
+GAS LISTING /tmp/ccoigQyo.s 			page 18
 
 
  607 01dc 00C0      		rjmp .L49
@@ -1078,7 +1078,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  652 0200 2F93      		push r18
  653 0202 3F93      		push r19
  654 0204 4F93      		push r20
-GAS LISTING /tmp/ccsBKM5i.s 			page 19
+GAS LISTING /tmp/ccoigQyo.s 			page 19
 
 
  655 0206 5F93      		push r21
@@ -1138,7 +1138,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  704 024e 1895      		reti
  705               	.L54:
   58:main.c        ****             tx_state = 0;
-GAS LISTING /tmp/ccsBKM5i.s 			page 20
+GAS LISTING /tmp/ccoigQyo.s 			page 20
 
 
  706               		.stabn	68,0,58,.LM85-.LFBB7
@@ -1198,7 +1198,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  750               	.LM95:
  751 0284 00C0      		rjmp .L52
  752               		.size	__vector_18, .-__vector_18
-GAS LISTING /tmp/ccsBKM5i.s 			page 21
+GAS LISTING /tmp/ccoigQyo.s 			page 21
 
 
  753               		.stabs	"received_data:r(5,2)",64,0,53,24
@@ -1258,7 +1258,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  799               	.LM101:
  800 0292 81E1      		ldi r24,lo8(17)
  801 0294 0E94 0000 		call write_tx_buffer
-GAS LISTING /tmp/ccsBKM5i.s 			page 22
+GAS LISTING /tmp/ccoigQyo.s 			page 22
 
 
  333:main.c        ****     rx_state = 1;
@@ -1318,7 +1318,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  847               	.L__stack_usage = 0
  342:main.c        ****     uint16_t i, j;
  343:main.c        ****     for(i=0; i<ms; i++)
-GAS LISTING /tmp/ccsBKM5i.s 			page 23
+GAS LISTING /tmp/ccoigQyo.s 			page 23
 
 
  848               		.stabn	68,0,343,.LM107-.LFBB11
@@ -1378,7 +1378,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  348:main.c        **** void blink_led(void) {
  895               		.stabn	68,0,348,.LM113-.LFBB12
  896               	.LM113:
-GAS LISTING /tmp/ccsBKM5i.s 			page 24
+GAS LISTING /tmp/ccoigQyo.s 			page 24
 
 
  897               	.LFBB12:
@@ -1438,7 +1438,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  940               		.stabn	68,0,356,.LM120-.LFBB13
  941               	.LM120:
  942               	.LFBB13:
-GAS LISTING /tmp/ccsBKM5i.s 			page 25
+GAS LISTING /tmp/ccoigQyo.s 			page 25
 
 
  943               	/* prologue: function */
@@ -1498,7 +1498,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  984 02f4 F894      		cli
  985               	 ;  0 "" 2
  365:main.c        ****     uint8_t limit = 30;
-GAS LISTING /tmp/ccsBKM5i.s 			page 26
+GAS LISTING /tmp/ccoigQyo.s 			page 26
 
 
  986               		.stabn	68,0,365,.LM127-.LFBB14
@@ -1558,7 +1558,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  381:main.c        ****     rx_flag = received_cnt < limit ? 0 : 1;
  1026               		.stabn	68,0,381,.LM136-.LFBB14
  1027               	.LM136:
-GAS LISTING /tmp/ccsBKM5i.s 			page 27
+GAS LISTING /tmp/ccoigQyo.s 			page 27
 
 
  1028               	/* #NOAPP */
@@ -1618,7 +1618,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1075 032e E0E0      		ldi r30,lo8(rx_buffer)
  1076 0330 F0E0      		ldi r31,hi8(rx_buffer)
  1077 0332 8FEF      		ldi r24,lo8(-1)
-GAS LISTING /tmp/ccsBKM5i.s 			page 28
+GAS LISTING /tmp/ccoigQyo.s 			page 28
 
 
  1078 0334 DF01      		movw r26,r30
@@ -1678,7 +1678,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1123               	.LC2:
  1124 004a 4465 7365 		.string	"Desenvolvimento de sistemas embarcados"
  1124      6E76 6F6C 
-GAS LISTING /tmp/ccsBKM5i.s 			page 29
+GAS LISTING /tmp/ccoigQyo.s 			page 29
 
 
  1124      7669 6D65 
@@ -1738,7 +1738,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1169               	.LM153:
  1170 0032 259A      		sbi 0x4,5
  101:main.c        ****     PORTB &= ~(1 << PB5); // Garante que o LED está apagado no início   
-GAS LISTING /tmp/ccsBKM5i.s 			page 30
+GAS LISTING /tmp/ccoigQyo.s 			page 30
 
 
  1171               		.stabn	68,0,101,.LM154-.LFBB16
@@ -1798,7 +1798,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1218 006a 8C0F      		add r24,r28
  1219 006c 9D1F      		adc r25,r29
  1220 006e 800F      		add r24,r16
-GAS LISTING /tmp/ccsBKM5i.s 			page 31
+GAS LISTING /tmp/ccoigQyo.s 			page 31
 
 
  1221 0070 911D      		adc r25,__zero_reg__
@@ -1858,7 +1858,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1268               		.stabn	68,0,133,.LM168-.LFBB16
  1269               	.LM168:
  1270 00b6 0E94 0000 		call flow_off
-GAS LISTING /tmp/ccsBKM5i.s 			page 32
+GAS LISTING /tmp/ccoigQyo.s 			page 32
 
 
  134:main.c        ****     if (received_data()) {
@@ -1918,7 +1918,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1317               		.stabn	68,0,145,.LM176-.LFBB16
  1318               	.LM176:
  1319 00fe 0C32      		cpi r16,44
-GAS LISTING /tmp/ccsBKM5i.s 			page 33
+GAS LISTING /tmp/ccoigQyo.s 			page 33
 
 
  1320 0100 E1E0      		ldi r30,1
@@ -1978,7 +1978,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1366 013e 9D1F      		adc r25,r29
  1367 0140 810F      		add r24,r17
  1368 0142 911D      		adc r25,__zero_reg__
-GAS LISTING /tmp/ccsBKM5i.s 			page 34
+GAS LISTING /tmp/ccoigQyo.s 			page 34
 
 
  1369 0144 0E94 0000 		call write
@@ -2038,7 +2038,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1417 018a 865B      		subi r24,-74
  1418 018c 9E4F      		sbci r25,-2
  1419 018e 0E94 0000 		call memcmp
-GAS LISTING /tmp/ccsBKM5i.s 			page 35
+GAS LISTING /tmp/ccoigQyo.s 			page 35
 
 
  1420 0192 892B      		or r24,r25
@@ -2098,7 +2098,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1468 01d6 00C0      		rjmp .L83
  121:main.c        ****             write(str_test+j, i-1, 1);
  1469               		.stabn	68,0,121,.LM197-.LFBB16
-GAS LISTING /tmp/ccsBKM5i.s 			page 36
+GAS LISTING /tmp/ccoigQyo.s 			page 36
 
 
  1470               	.LM197:
@@ -2158,7 +2158,7 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1517               		.stabs	"str_test:(0,52)=ar(0,53)=r(0,53);0;0177777;;0;73;(5,2)",128,0,108,256
  1518               		.stabs	"j:r(5,2)",64,0,115,16
  1519               		.stabs	"buffer:(0,54)=ar(0,53);0;254;(5,2)",128,0,129,1
-GAS LISTING /tmp/ccsBKM5i.s 			page 37
+GAS LISTING /tmp/ccoigQyo.s 			page 37
 
 
  1520               		.stabs	"binary_string:(0,55)=ar(0,53);0;9;(5,2)",128,0,160,408
@@ -2218,48 +2218,48 @@ GAS LISTING /tmp/ccsBKM5i.s 			page 1
  1574               		.ident	"GCC: (GNU) 7.3.0"
  1575               	.global __do_copy_data
  1576               	.global __do_clear_bss
-GAS LISTING /tmp/ccsBKM5i.s 			page 38
+GAS LISTING /tmp/ccoigQyo.s 			page 38
 
 
-GAS LISTING /tmp/ccsBKM5i.s 			page 39
+GAS LISTING /tmp/ccoigQyo.s 			page 39
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccsBKM5i.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccsBKM5i.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccsBKM5i.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccsBKM5i.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccsBKM5i.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccsBKM5i.s:113    .text:0000000000000000 __vector_19
+     /tmp/ccoigQyo.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccoigQyo.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccoigQyo.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccoigQyo.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccoigQyo.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccoigQyo.s:113    .text:0000000000000000 __vector_19
                             *COM*:0000000000000001 tx_tail
                             *COM*:0000000000000001 tx_head
                             *COM*:0000000000000001 usart_transmitting
                             *COM*:00000000000000ff tx_buffer
-     /tmp/ccsBKM5i.s:186    .text:000000000000005c read_rx_buffer
+     /tmp/ccoigQyo.s:186    .text:000000000000005c read_rx_buffer
                             *COM*:0000000000000001 rx_tail
                             *COM*:0000000000000001 rx_head
                             *COM*:00000000000000ff rx_buffer
-     /tmp/ccsBKM5i.s:264    .text:0000000000000092 read
-     /tmp/ccsBKM5i.s:1562   .data:0000000000000001 rx_state
-     /tmp/ccsBKM5i.s:1533   .bss:0000000000000000 rcvd_byte
+     /tmp/ccoigQyo.s:264    .text:0000000000000092 read
+     /tmp/ccoigQyo.s:1562   .data:0000000000000001 rx_state
+     /tmp/ccoigQyo.s:1533   .bss:0000000000000000 rcvd_byte
                             *COM*:0000000000000001 rx_sinc
-     /tmp/ccsBKM5i.s:361    .text:00000000000000ea write_tx_buffer
-     /tmp/ccsBKM5i.s:467    .text:0000000000000138 write
+     /tmp/ccoigQyo.s:361    .text:00000000000000ea write_tx_buffer
+     /tmp/ccoigQyo.s:467    .text:0000000000000138 write
                             *COM*:0000000000000001 tx_byte_cnt
-     /tmp/ccsBKM5i.s:1554   .data:0000000000000000 tx_state
-     /tmp/ccsBKM5i.s:572    .text:00000000000001bc enqueue_rx_buffer
-     /tmp/ccsBKM5i.s:642    .text:00000000000001f6 __vector_18
+     /tmp/ccoigQyo.s:1554   .data:0000000000000000 tx_state
+     /tmp/ccoigQyo.s:572    .text:00000000000001bc enqueue_rx_buffer
+     /tmp/ccoigQyo.s:642    .text:00000000000001f6 __vector_18
                             *COM*:0000000000000001 rx_esc
-     /tmp/ccsBKM5i.s:762    .text:0000000000000286 flow_off
-     /tmp/ccsBKM5i.s:789    .text:0000000000000292 flow_on
-     /tmp/ccsBKM5i.s:817    .text:00000000000002a0 is_flow_on
-     /tmp/ccsBKM5i.s:839    .text:00000000000002a6 delay_ms
-     /tmp/ccsBKM5i.s:893    .text:00000000000002c4 blink_led
-     /tmp/ccsBKM5i.s:938    .text:00000000000002e2 turn_led_on
-     /tmp/ccsBKM5i.s:969    .text:00000000000002f0 received_data
-     /tmp/ccsBKM5i.s:1057   .text:000000000000032c reset_rxbuffer
-     /tmp/ccsBKM5i.s:1129   .text.startup:0000000000000000 main
+     /tmp/ccoigQyo.s:762    .text:0000000000000286 flow_off
+     /tmp/ccoigQyo.s:789    .text:0000000000000292 flow_on
+     /tmp/ccoigQyo.s:817    .text:00000000000002a0 is_flow_on
+     /tmp/ccoigQyo.s:839    .text:00000000000002a6 delay_ms
+     /tmp/ccoigQyo.s:893    .text:00000000000002c4 blink_led
+     /tmp/ccoigQyo.s:938    .text:00000000000002e2 turn_led_on
+     /tmp/ccoigQyo.s:969    .text:00000000000002f0 received_data
+     /tmp/ccoigQyo.s:1057   .text:000000000000032c reset_rxbuffer
+     /tmp/ccoigQyo.s:1129   .text.startup:0000000000000000 main
                             *COM*:0000000000000001 rx_byte_cnt
 
 UNDEFINED SYMBOLS

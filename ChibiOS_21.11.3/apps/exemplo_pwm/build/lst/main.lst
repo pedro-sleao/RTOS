@@ -1,0 +1,141 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.startup.main,"ax",@progbits
+  11               	.global	main
+  13               	main:
+  14               	.LFB243:
+  15               		.file 1 "main.c"
+   1:main.c        **** /*
+   2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:main.c        **** 
+   4:main.c        ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:main.c        ****     you may not use this file except in compliance with the License.
+   6:main.c        ****     You may obtain a copy of the License at
+   7:main.c        **** 
+   8:main.c        ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:main.c        **** 
+  10:main.c        ****     Unless required by applicable law or agreed to in writing, software
+  11:main.c        ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:main.c        ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:main.c        ****     See the License for the specific language governing permissions and
+  14:main.c        ****     limitations under the License.
+  15:main.c        **** */
+  16:main.c        **** 
+  17:main.c        **** #include "ch.h"
+  18:main.c        **** #include "hal.h"
+  19:main.c        **** 
+  20:main.c        **** /*
+  21:main.c        ****  * Application entry point.
+  22:main.c        ****  */
+  23:main.c        **** int main(void) {
+  16               		.loc 1 23 0
+  17               		.cfi_startproc
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+  24:main.c        **** 
+  25:main.c        ****   static PWMConfig pwmcfg = { .frequency = 15625,
+  26:main.c        ****                               .period = 255,
+  27:main.c        ****                               .channels = {{PWM_OUTPUT_ACTIVE_HIGH, 0},
+  28:main.c        ****                                 {PWM_OUTPUT_DISABLED, 0}},
+  29:main.c        ****   };
+  30:main.c        **** 
+  31:main.c        ****   /*
+  32:main.c        ****    * System initializations.
+  33:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  34:main.c        ****    *   and performs the board-specific initializations.
+  35:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  36:main.c        ****    *   RTOS is active.
+  37:main.c        ****    */
+  38:main.c        ****   halInit();
+  22               		.loc 1 38 0
+  23 0000 0E94 0000 		call halInit
+  24               	.LVL0:
+  39:main.c        ****   chSysInit();
+  25               		.loc 1 39 0
+  26 0004 0E94 0000 		call chSysInit
+  27               	.LVL1:
+  40:main.c        **** 
+  41:main.c        ****   pwmStart(&PWMD3, &pwmcfg);
+  28               		.loc 1 41 0
+  29 0008 60E0      		ldi r22,lo8(pwmcfg.4098)
+  30 000a 70E0      		ldi r23,hi8(pwmcfg.4098)
+  31 000c 80E0      		ldi r24,lo8(PWMD3)
+  32 000e 90E0      		ldi r25,hi8(PWMD3)
+  33 0010 0E94 0000 		call pwmStart
+  34               	.LVL2:
+  42:main.c        ****   pwmEnableChannel(&PWMD3, 0, 0);
+  35               		.loc 1 42 0
+  36 0014 50E0      		ldi r21,0
+  37 0016 40E0      		ldi r20,0
+  38 0018 60E0      		ldi r22,0
+  39 001a 80E0      		ldi r24,lo8(PWMD3)
+  40 001c 90E0      		ldi r25,hi8(PWMD3)
+  41 001e 0E94 0000 		call pwmEnableChannel
+  42               	.LVL3:
+  43               	.L2:
+  44 0022 00C0      		rjmp .L2
+  45               		.cfi_endproc
+  46               	.LFE243:
+  48               		.section	.data.pwmcfg.4098,"aw",@progbits
+  51               	pwmcfg.4098:
+  52 0000 09        		.byte	9
+  53 0001 3D        		.byte	61
+  54 0002 00        		.byte	0
+  55 0003 00        		.byte	0
+  56 0004 FF00      		.word	255
+  57 0006 0000      		.zero	2
+  58 0008 01        		.byte	1
+  59 0009 0000      		.word	0
+  60 000b 00        		.byte	0
+  61 000c 0000      		.word	0
+  62               		.text
+  63               	.Letext0:
+  64               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+  65               		.file 3 "/usr/lib/avr/include/stdint.h"
+  66               		.file 4 "../../os/common/ports/AVR/compilers/GCC/chtypes.h"
+  67               		.file 5 "../../os/rt/include/chearly.h"
+  68               		.file 6 "../../os/rt/include/chobjects.h"
+  69               		.file 7 "../../os/rt/include/chrfcu.h"
+  70               		.file 8 "../../os/rt/include/chdebug.h"
+  71               		.file 9 "../../os/rt/include/chtime.h"
+  72               		.file 10 "../../os/rt/include/chlists.h"
+  73               		.file 11 "../../os/common/ports/AVR/chcore.h"
+  74               		.file 12 "../../os/rt/include/chsem.h"
+  75               		.file 13 "../../os/rt/include/chmtx.h"
+  76               		.file 14 "../../os/rt/include/chsys.h"
+  77               		.file 15 "../../os/rt/include/chregistry.h"
+  78               		.file 16 "../../os/rt/include/chevents.h"
+  79               		.file 17 "../../os/oslib/include/chmemcore.h"
+  80               		.file 18 "../../os/hal/include/hal_queues.h"
+  81               		.file 19 "../../os/hal/ports/AVR/MEGA/LLD/GPIOv1/hal_pal_lld.h"
+  82               		.file 20 "../../os/hal/include/hal_pwm.h"
+  83               		.file 21 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_pwm_lld.h"
+  84               		.file 22 "../../os/hal/include/hal_serial.h"
+  85               		.file 23 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
+  86               		.file 24 "../../os/hal/include/hal.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccfYKPxk.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccfYKPxk.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccfYKPxk.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccfYKPxk.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccfYKPxk.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccfYKPxk.s:13     .text.startup.main:0000000000000000 main
+     /tmp/ccfYKPxk.s:51     .data.pwmcfg.4098:0000000000000000 pwmcfg.4098
+
+UNDEFINED SYMBOLS
+halInit
+chSysInit
+PWMD3
+pwmStart
+pwmEnableChannel
+__do_copy_data

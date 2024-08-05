@@ -3,5 +3,6 @@
         "interrupt.h": "c",
         "io.h": "c",
         "cpufunc.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
