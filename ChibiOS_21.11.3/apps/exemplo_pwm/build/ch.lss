@@ -1,7 +1,7 @@
 
-build/ch.elf:     file format elf32-avr
+build/ch.elf: formato do arquivo elf32-avr
 
-Sections:
+Seções:
 Idx Name          Size      VMA       LMA       File off  Algn
   0 .data         0000006e  00800100  00002074  00002108  2**0
                   CONTENTS, ALLOC, LOAD, DATA
@@ -23,14 +23,14 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  00001758  00000000  00000000  0002c558  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000022da  00000000  00000000  0002dcb0  2**0
+ 10 .debug_str    000022b6  00000000  00000000  0002dcb0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000749b  00000000  00000000  0002ff8a  2**0
+ 11 .debug_loc    0000749b  00000000  00000000  0002ff66  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000b90  00000000  00000000  00037425  2**0
+ 12 .debug_ranges 00000b90  00000000  00000000  00037401  2**0
                   CONTENTS, READONLY, DEBUGGING
 
-Disassembly of section .text:
+Desmontagem da seção .text:
 
 00000000 <__vectors>:
        0:	44 c0       	rjmp	.+136    	; 0x8a <__ctors_end>
@@ -139,41 +139,134 @@ Disassembly of section .text:
       c4:	9d cf       	rjmp	.-198    	; 0x0 <__vectors>
 
 000000c6 <halInit>:
+
+  /* Initializes the OS Abstraction Layer.*/
+  osalInit();
+
+  /* Platform low level initializations.*/
+  hal_lld_init();
       c6:	37 d3       	rcall	.+1646   	; 0x736 <hal_lld_init>
+
+#if (HAL_USE_PAL == TRUE) || defined(__DOXYGEN__)
+#if defined(PAL_NEW_INIT)
+  palInit();
+#else
+  palInit(&pal_default_config);
       c8:	8e e2       	ldi	r24, 0x2E	; 46
       ca:	91 e0       	ldi	r25, 0x01	; 1
+#endif
+#if (HAL_USE_MAC == TRUE) || defined(__DOXYGEN__)
+  macInit();
+#endif
+#if (HAL_USE_PWM == TRUE) || defined(__DOXYGEN__)
+  pwmInit();
       cc:	35 d3       	rcall	.+1642   	; 0x738 <_pal_lld_init>
+#endif
+#if (HAL_USE_SERIAL == TRUE) || defined(__DOXYGEN__)
+  sdInit();
       ce:	70 d2       	rcall	.+1248   	; 0x5b0 <pwmInit>
       d0:	c1 d2       	rcall	.+1410   	; 0x654 <sdInit>
+  halCommunityInit();
+#endif
+#endif
+
+  /* Board specific initialization.*/
+  boardInit();
       d2:	2d d3       	rcall	.+1626   	; 0x72e <boardInit>
       d4:	00 c0       	rjmp	.+0      	; 0xd6 <stInit>
 
 000000d6 <stInit>:
+
+  for (i = 0U; i < (unsigned)ST_LLD_NUM_ALARMS; i++) {
+    st_callbacks[i] = NULL;
+  }
+#endif
+  st_lld_init();
       d6:	69 c3       	rjmp	.+1746   	; 0x7aa <st_lld_init>
 
 000000d8 <stGetCounter>:
+ *
+ * @notapi
+ */
+static inline systime_t st_lld_get_counter(void) {
+
+  return (systime_t) TCNT1;
       d8:	80 91 84 00 	lds	r24, 0x0084	; 0x800084 <__TEXT_REGION_LENGTH__+0x7f8084>
       dc:	90 91 85 00 	lds	r25, 0x0085	; 0x800085 <__TEXT_REGION_LENGTH__+0x7f8085>
+ * @api
+ */
+systime_t stGetCounter(void) {
+
+  return st_lld_get_counter();
+}
       e0:	08 95       	ret
 
 000000e2 <stStartAlarm>:
+ *
+ * @notapi
+ */
+static inline void st_lld_start_alarm(systime_t time) {
+
+  OCR1A = (uint16_t) time;
       e2:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__TEXT_REGION_LENGTH__+0x7f8089>
       e6:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__TEXT_REGION_LENGTH__+0x7f8088>
+
+  /* Reset pending. */
+  TIFR_REG = _BV(OCF1A);
       ea:	82 e0       	ldi	r24, 0x02	; 2
       ec:	86 bb       	out	0x16, r24	; 22
+
+  /* Enable interrupt. */
+  TIMSK_REG = _BV(OCIE1A);
       ee:	80 93 6f 00 	sts	0x006F, r24	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
+void stStartAlarm(systime_t abstime) {
+
+  osalDbgAssert(stIsAlarmActive() == false, "already active");
+
+  st_lld_start_alarm(abstime);
+}
       f2:	08 95       	ret
 
 000000f4 <stStopAlarm>:
+ *
+ * @notapi
+ */
+static inline void st_lld_stop_alarm(void) {
+
+  TIMSK_REG = 0;
       f4:	10 92 6f 00 	sts	0x006F, r1	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
+ * @api
+ */
+void stStopAlarm(void) {
+
+  st_lld_stop_alarm();
+}
       f8:	08 95       	ret
 
 000000fa <stSetAlarm>:
+ *
+ * @notapi
+ */
+static inline void st_lld_set_alarm(systime_t time) {
+
+  OCR1A = (uint16_t) time;
       fa:	90 93 89 00 	sts	0x0089, r25	; 0x800089 <__TEXT_REGION_LENGTH__+0x7f8089>
       fe:	80 93 88 00 	sts	0x0088, r24	; 0x800088 <__TEXT_REGION_LENGTH__+0x7f8088>
+void stSetAlarm(systime_t abstime) {
+
+  osalDbgAssert(stIsAlarmActive() != false, "not active");
+
+  st_lld_set_alarm(abstime);
+}
      102:	08 95       	ret
 
 00000104 <iq_read>:
+  if ((wr > (size_t)0) && (nfy != NULL)) {
+    nfy(oqp);
+  }
+
+  return wr;
+}
      104:	af 92       	push	r10
      106:	bf 92       	push	r11
      108:	cf 92       	push	r12
@@ -702,6 +795,12 @@ Disassembly of section .text:
      518:	08 95       	ret
 
 0000051a <oqWriteTimeout>:
+ * @return              The number of bytes effectively transferred.
+ *
+ * @api
+ */
+size_t oqWriteTimeout(output_queue_t *oqp, const uint8_t *bp,
+                      size_t n, sysinterval_t timeout) {
      51a:	6f 92       	push	r6
      51c:	7f 92       	push	r7
      51e:	8f 92       	push	r8
@@ -720,38 +819,99 @@ Disassembly of section .text:
      538:	7b 01       	movw	r14, r22
      53a:	4a 01       	movw	r8, r20
      53c:	39 01       	movw	r6, r18
+  qnotify_t nfy = oqp->q_notify;
      53e:	fc 01       	movw	r30, r24
      540:	a6 84       	ldd	r10, Z+14	; 0x0e
      542:	b7 84       	ldd	r11, Z+15	; 0x0f
+ * @details Usually this function just disables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_lock(void) {
+
+  asm volatile ("cli" : : : "memory");
      544:	f8 94       	cli
+
+  osalDbgCheck(n > 0U);
+
+  osalSysLock();
+
+  while (n > 0U) {
      546:	41 15       	cp	r20, r1
      548:	51 05       	cpc	r21, r1
      54a:	b9 f0       	breq	.+46     	; 0x57a <oqWriteTimeout+0x60>
      54c:	8a 01       	movw	r16, r20
+    size_t done;
+
+    done = oq_write(oqp, bp, n);
      54e:	a8 01       	movw	r20, r16
      550:	b7 01       	movw	r22, r14
      552:	c6 01       	movw	r24, r12
      554:	32 de       	rcall	.-924    	; 0x1ba <oq_write>
      556:	ec 01       	movw	r28, r24
+    if (done == (size_t)0) {
      558:	89 2b       	or	r24, r25
      55a:	01 f1       	breq	.+64     	; 0x59c <oqWriteTimeout+0x82>
+      }
+    }
+    else {
+      /* Inform the low side that the queue has at least one character
+         available.*/
+      if (nfy != NULL) {
      55c:	a1 14       	cp	r10, r1
      55e:	b1 04       	cpc	r11, r1
      560:	19 f0       	breq	.+6      	; 0x568 <oqWriteTimeout+0x4e>
+        nfy(oqp);
      562:	c6 01       	movw	r24, r12
      564:	f5 01       	movw	r30, r10
      566:	09 95       	icall
+ * @details Usually this function just enables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_unlock(void) {
+
+  asm volatile ("sei" : : : "memory");
      568:	78 94       	sei
+      }
+
+      /* Giving a preemption chance in a controlled point.*/
+      osalSysUnlock();
+
+      n  -= done;
      56a:	0c 1b       	sub	r16, r28
      56c:	1d 0b       	sbc	r17, r29
+      bp += done;
      56e:	ec 0e       	add	r14, r28
      570:	fd 1e       	adc	r15, r29
+ * @details Usually this function just disables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_lock(void) {
+
+  asm volatile ("cli" : : : "memory");
      572:	f8 94       	cli
+
+  osalDbgCheck(n > 0U);
+
+  osalSysLock();
+
+  while (n > 0U) {
      574:	01 15       	cp	r16, r1
      576:	11 05       	cpc	r17, r1
      578:	51 f7       	brne	.-44     	; 0x54e <oqWriteTimeout+0x34>
      57a:	c4 01       	movw	r24, r8
+ * @details Usually this function just enables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_unlock(void) {
+
+  asm volatile ("sei" : : : "memory");
      57c:	78 94       	sei
+    }
+  }
+
+  osalSysUnlock();
+  return max - n;
+}
      57e:	df 91       	pop	r29
      580:	cf 91       	pop	r28
      582:	1f 91       	pop	r17
@@ -767,9 +927,21 @@ Disassembly of section .text:
      596:	7f 90       	pop	r7
      598:	6f 90       	pop	r6
      59a:	08 95       	ret
+ * @sclass
+ */
+static inline msg_t osalThreadEnqueueTimeoutS(threads_queue_t *tqp,
+                                              sysinterval_t timeout) {
+
+  return chThdEnqueueTimeoutS(tqp, timeout);
      59c:	b3 01       	movw	r22, r6
      59e:	c6 01       	movw	r24, r12
      5a0:	0e 94 3f 0b 	call	0x167e	; 0x167e <chThdEnqueueTimeoutS>
+    done = oq_write(oqp, bp, n);
+    if (done == (size_t)0) {
+      msg_t msg = osalThreadEnqueueTimeoutS(&oqp->q_waiting, timeout);
+
+      /* Anything except MSG_OK causes the operation to stop.*/
+      if (msg != MSG_OK) {
      5a4:	89 2b       	or	r24, r25
      5a6:	99 f2       	breq	.-90     	; 0x54e <oqWriteTimeout+0x34>
      5a8:	c4 01       	movw	r24, r8
@@ -778,6 +950,12 @@ Disassembly of section .text:
      5ae:	e6 cf       	rjmp	.-52     	; 0x57c <oqWriteTimeout+0x62>
 
 000005b0 <pwmInit>:
+
+  osalSysLock();
+  osalDbgAssert(pwmp->state == PWM_READY, "invalid state");
+  pwmChangePeriodI(pwmp, period);
+  osalSysUnlock();
+}
      5b0:	af c1       	rjmp	.+862    	; 0x910 <pwm_lld_init>
 
 000005b2 <pwmObjectInit>:
@@ -815,7 +993,19 @@ Disassembly of section .text:
      5ec:	08 95       	ret
 
 000005ee <pwmEnableChannel>:
+ * @details Usually this function just disables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_lock(void) {
+
+  asm volatile ("cli" : : : "memory");
      5ee:	f8 94       	cli
+
+  osalSysLock();
+
+  osalDbgAssert(pwmp->state == PWM_READY, "not ready");
+
+  pwmEnableChannelI(pwmp, channel, width);
      5f0:	e1 e0       	ldi	r30, 0x01	; 1
      5f2:	f0 e0       	ldi	r31, 0x00	; 0
      5f4:	06 2e       	mov	r0, r22
@@ -831,10 +1021,25 @@ Disassembly of section .text:
      608:	15 96       	adiw	r26, 0x05	; 5
      60a:	2c 93       	st	X, r18
      60c:	40 d2       	rcall	.+1152   	; 0xa8e <pwm_lld_enable_channel>
+ * @details Usually this function just enables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_unlock(void) {
+
+  asm volatile ("sei" : : : "memory");
      60e:	78 94       	sei
+
+  osalSysUnlock();
+}
      610:	08 95       	ret
 
 00000612 <_readt>:
+  oqResetI(&sdp->oqueue);
+  iqResetI(&sdp->iqueue);
+  osalOsRescheduleS();
+
+  osalSysUnlock();
+}
      612:	05 96       	adiw	r24, 0x05	; 5
      614:	ae ce       	rjmp	.-676    	; 0x372 <iqReadTimeout>
 
@@ -934,29 +1139,56 @@ Disassembly of section .text:
      6aa:	08 95       	ret
 
 000006ac <sdIncomingDataI>:
+ * @param[in] sdp       pointer to a @p SerialDriver structure
+ * @param[in] b         the byte to be written in the driver's Input Queue
+ *
+ * @iclass
+ */
+void sdIncomingDataI(SerialDriver *sdp, uint8_t b) {
      6ac:	1f 93       	push	r17
      6ae:	cf 93       	push	r28
      6b0:	df 93       	push	r29
      6b2:	ec 01       	movw	r28, r24
      6b4:	16 2f       	mov	r17, r22
+
+  osalDbgCheckClassI();
+  osalDbgCheck(sdp != NULL);
+
+  if (iqIsEmptyI(&sdp->iqueue))
      6b6:	89 85       	ldd	r24, Y+9	; 0x09
      6b8:	9a 85       	ldd	r25, Y+10	; 0x0a
      6ba:	89 2b       	or	r24, r25
      6bc:	51 f0       	breq	.+20     	; 0x6d2 <sdIncomingDataI+0x26>
+    chnAddFlagsI(sdp, CHN_INPUT_AVAILABLE);
+  if (iqPutI(&sdp->iqueue, b) < MSG_OK)
      6be:	61 2f       	mov	r22, r17
      6c0:	ce 01       	movw	r24, r28
      6c2:	05 96       	adiw	r24, 0x05	; 5
      6c4:	ef dd       	rcall	.-1058   	; 0x2a4 <iqPutI>
      6c6:	97 fd       	sbrc	r25, 7
      6c8:	0f c0       	rjmp	.+30     	; 0x6e8 <sdIncomingDataI+0x3c>
+    chnAddFlagsI(sdp, SD_QUEUE_FULL_ERROR);
+}
      6ca:	df 91       	pop	r29
      6cc:	cf 91       	pop	r28
      6ce:	1f 91       	pop	r17
      6d0:	08 95       	ret
+ * @iclass
+ */
+static inline void osalEventBroadcastFlagsI(event_source_t *esp,
+                                            eventflags_t flags) {
+
+  chEvtBroadcastFlagsI(esp, flags);
      6d2:	64 e0       	ldi	r22, 0x04	; 4
      6d4:	ce 01       	movw	r24, r28
      6d6:	02 96       	adiw	r24, 0x02	; 2
      6d8:	0e 94 93 0b 	call	0x1726	; 0x1726 <chEvtBroadcastFlagsI>
+  osalDbgCheckClassI();
+  osalDbgCheck(sdp != NULL);
+
+  if (iqIsEmptyI(&sdp->iqueue))
+    chnAddFlagsI(sdp, CHN_INPUT_AVAILABLE);
+  if (iqPutI(&sdp->iqueue, b) < MSG_OK)
      6dc:	61 2f       	mov	r22, r17
      6de:	ce 01       	movw	r24, r28
      6e0:	05 96       	adiw	r24, 0x05	; 5
@@ -966,22 +1198,40 @@ Disassembly of section .text:
      6e8:	60 e0       	ldi	r22, 0x00	; 0
      6ea:	ce 01       	movw	r24, r28
      6ec:	02 96       	adiw	r24, 0x02	; 2
+    chnAddFlagsI(sdp, SD_QUEUE_FULL_ERROR);
+}
      6ee:	df 91       	pop	r29
      6f0:	cf 91       	pop	r28
      6f2:	1f 91       	pop	r17
      6f4:	0c 94 93 0b 	jmp	0x1726	; 0x1726 <chEvtBroadcastFlagsI>
 
 000006f8 <sdRequestDataI>:
+ * @retval MSG_TIMEOUT  if the queue is empty (the lower driver usually
+ *                      disables the interrupt source when this happens).
+ *
+ * @iclass
+ */
+msg_t sdRequestDataI(SerialDriver *sdp) {
      6f8:	0f 93       	push	r16
      6fa:	1f 93       	push	r17
      6fc:	cf 93       	push	r28
      6fe:	df 93       	push	r29
      700:	8c 01       	movw	r16, r24
+  msg_t  b;
+
+  osalDbgCheckClassI();
+  osalDbgCheck(sdp != NULL);
+
+  b = oqGetI(&sdp->oqueue);
      702:	47 96       	adiw	r24, 0x17	; 23
      704:	dc de       	rcall	.-584    	; 0x4be <oqGetI>
      706:	ec 01       	movw	r28, r24
+  if (b < MSG_OK)
      708:	97 fd       	sbrc	r25, 7
      70a:	06 c0       	rjmp	.+12     	; 0x718 <sdRequestDataI+0x20>
+    chnAddFlagsI(sdp, CHN_OUTPUT_EMPTY);
+  return b;
+}
      70c:	ce 01       	movw	r24, r28
      70e:	df 91       	pop	r29
      710:	cf 91       	pop	r28
@@ -1000,30 +1250,80 @@ Disassembly of section .text:
      72c:	08 95       	ret
 
 0000072e <boardInit>:
+void boardInit(void) {
+
+  /*
+   * External interrupts setup, all disabled initially.
+   */
+  EICRA  = 0x00;
      72e:	10 92 69 00 	sts	0x0069, r1	; 0x800069 <__TEXT_REGION_LENGTH__+0x7f8069>
+  EIMSK  = 0x00;
      732:	1d ba       	out	0x1d, r1	; 29
+
+}
      734:	08 95       	ret
 
 00000736 <hal_lld_init>:
+ * @brief   Low level HAL driver initialization.
+ *
+ * @notapi
+ */
+void hal_lld_init(void) {
+}
      736:	08 95       	ret
 
 00000738 <_pal_lld_init>:
+ *
+ * @param[in] config    the AVR ports configuration
+ *
+ * @notapi
+ */
+void _pal_lld_init(const PALConfig *config) {
      738:	fc 01       	movw	r30, r24
+  PORTA = config->porta.out;
+  DDRA = config->porta.dir;
+#endif
+
+#if defined(PORTB) || defined(__DOXYGEN__)
+  PORTB = config->portb.out;
      73a:	80 81       	ld	r24, Z
      73c:	85 b9       	out	0x05, r24	; 5
+  DDRB = config->portb.dir;
      73e:	81 81       	ldd	r24, Z+1	; 0x01
      740:	84 b9       	out	0x04, r24	; 4
+#endif
+
+#if defined(PORTC) || defined(__DOXYGEN__)
+  PORTC = config->portc.out;
      742:	82 81       	ldd	r24, Z+2	; 0x02
      744:	88 b9       	out	0x08, r24	; 8
+  DDRC = config->portc.dir;
      746:	83 81       	ldd	r24, Z+3	; 0x03
      748:	87 b9       	out	0x07, r24	; 7
+#endif
+
+#if defined(PORTD) || defined(__DOXYGEN__)
+  PORTD = config->portd.out;
      74a:	84 81       	ldd	r24, Z+4	; 0x04
      74c:	8b b9       	out	0x0b, r24	; 11
+  DDRD = config->portd.dir;
      74e:	85 81       	ldd	r24, Z+5	; 0x05
      750:	8a b9       	out	0x0a, r24	; 10
+
+#if defined(PORTL) || defined(__DOXYGEN__)
+  PORTL = config->portl.out;
+  DDRL = config->portl.dir;
+#endif
+}
      752:	08 95       	ret
 
 00000754 <__vector_11>:
+#if (OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING) || defined(__DOXYGEN__)
+
+/**
+ * @brief Timer handler for free running mode.
+ */
+OSAL_IRQ_HANDLER(TIMER1_COMPA_vect) {
      754:	1f 92       	push	r1
      756:	0f 92       	push	r0
      758:	0f b6       	in	r0, 0x3f	; 63
@@ -1041,13 +1341,28 @@ Disassembly of section .text:
      770:	bf 93       	push	r27
      772:	ef 93       	push	r30
      774:	ff 93       	push	r31
+
+  OSAL_IRQ_PROLOGUE();
      776:	81 e0       	ldi	r24, 0x01	; 1
      778:	80 93 01 03 	sts	0x0301, r24	; 0x800301 <__avr_in_isr>
+ *          service from the HAL.
+ */
+#if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) || defined(__DOXYGEN__)
+static inline void osalOsTimerHandlerI(void) {
+
+  chSysTimerHandlerI();
      77c:	e4 d2       	rcall	.+1480   	; 0xd46 <chSysTimerHandlerI>
+
+  osalSysLockFromISR();
+  osalOsTimerHandlerI();
+  osalSysUnlockFromISR();
+
+  OSAL_IRQ_EPILOGUE();
      77e:	10 92 01 03 	sts	0x0301, r1	; 0x800301 <__avr_in_isr>
      782:	ee d5       	rcall	.+3036   	; 0x1360 <chSchIsPreemptionRequired>
      784:	81 11       	cpse	r24, r1
      786:	fc d5       	rcall	.+3064   	; 0x1380 <chSchDoPreemption>
+}
      788:	ff 91       	pop	r31
      78a:	ef 91       	pop	r30
      78c:	bf 91       	pop	r27
@@ -1067,24 +1382,51 @@ Disassembly of section .text:
      7a8:	18 95       	reti
 
 000007aa <st_lld_init>:
+  /*
+   * Periodic mode uses Timer 1 (16 bit).
+   */
+
+  /* CTC mode, no clock source. */
+  TCCR1A     = 0;
      7aa:	10 92 80 00 	sts	0x0080, r1	; 0x800080 <__TEXT_REGION_LENGTH__+0x7f8080>
+  TCCR1B     = _BV(WGM12);
      7ae:	e1 e8       	ldi	r30, 0x81	; 129
      7b0:	f0 e0       	ldi	r31, 0x00	; 0
      7b2:	88 e0       	ldi	r24, 0x08	; 8
      7b4:	80 83       	st	Z, r24
+
+  /* Start disabled. */
+  TCCR1C     = 0;
      7b6:	10 92 82 00 	sts	0x0082, r1	; 0x800082 <__TEXT_REGION_LENGTH__+0x7f8082>
+  OCR1A      = 0;
      7ba:	10 92 89 00 	sts	0x0089, r1	; 0x800089 <__TEXT_REGION_LENGTH__+0x7f8089>
      7be:	10 92 88 00 	sts	0x0088, r1	; 0x800088 <__TEXT_REGION_LENGTH__+0x7f8088>
+  TCNT1      = 0;
      7c2:	10 92 85 00 	sts	0x0085, r1	; 0x800085 <__TEXT_REGION_LENGTH__+0x7f8085>
      7c6:	10 92 84 00 	sts	0x0084, r1	; 0x800084 <__TEXT_REGION_LENGTH__+0x7f8084>
+  TIFR_REG   = _BV(OCF1A);                              /* Reset pending.   */
      7ca:	82 e0       	ldi	r24, 0x02	; 2
      7cc:	86 bb       	out	0x16, r24	; 22
+  TIMSK_REG  = 0;
      7ce:	10 92 6f 00 	sts	0x006F, r1	; 0x80006f <__TEXT_REGION_LENGTH__+0x7f806f>
+  TCCR1B     = PRESCALER;
      7d2:	85 e0       	ldi	r24, 0x05	; 5
      7d4:	80 83       	st	Z, r24
+#else
+  #error "Neither TCCR0A nor TCCR0 registers are defined"
+#endif
+
+#endif /* OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC */
+}
      7d6:	08 95       	ret
 
 000007d8 <__vector_9>:
+
+#if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+  /* Can't change period in timer2. */
+  if (pwmp == &PWMD2) {
+    PWMD2.period = 0xFF;
+    return;
      7d8:	1f 92       	push	r1
      7da:	0f 92       	push	r0
      7dc:	0f b6       	in	r0, 0x3f	; 63
@@ -1416,6 +1758,12 @@ Disassembly of section .text:
      a8c:	a1 cf       	rjmp	.-190    	; 0x9d0 <pwm_lld_start+0xb2>
 
 00000a8e <pwm_lld_enable_channel>:
+ *
+ * @notapi
+ */
+void pwm_lld_enable_channel(PWMDriver *pwmp,
+                            pwmchannel_t channel,
+                            pwmcnt_t width) {
      a8e:	df 92       	push	r13
      a90:	ef 92       	push	r14
      a92:	ff 92       	push	r15
@@ -1452,11 +1800,22 @@ Disassembly of section .text:
      ad0:	d8 2a       	or	r13, r24
      ad2:	7d 2d       	mov	r23, r13
      ad4:	70 95       	com	r23
+
+  uint16_t val = width;
+
+#if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+  if (pwmp == &PWMD2) {
      ad6:	32 e0       	ldi	r19, 0x02	; 2
      ad8:	c7 36       	cpi	r28, 0x67	; 103
      ada:	d3 07       	cpc	r29, r19
      adc:	09 f4       	brne	.+2      	; 0xae0 <pwm_lld_enable_channel+0x52>
      ade:	48 c0       	rjmp	.+144    	; 0xb70 <pwm_lld_enable_channel+0xe2>
+    return;
+  }
+#endif
+
+  uint8_t i = timer_index(pwmp);
+  config_channel(regs_table[i].tccra,
      ae0:	09 81       	ldd	r16, Y+1	; 0x01
      ae2:	1a 81       	ldd	r17, Y+2	; 0x02
      ae4:	9d 01       	movw	r18, r26
@@ -1469,23 +1828,47 @@ Disassembly of section .text:
      af2:	1f 1d       	adc	r17, r15
      af4:	f8 01       	movw	r30, r16
      af6:	10 85       	ldd	r17, Z+8	; 0x08
+static void config_channel(volatile uint8_t *tccra,
+                           uint8_t com1,
+                           uint8_t com0,
+                           pwmmode_t mode) {
+
+  *tccra &= ~((1 << com1) | (1 << com0));
      af8:	60 91 00 00 	lds	r22, 0x0000	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
      afc:	67 23       	and	r22, r23
      afe:	60 93 00 00 	sts	0x0000, r22	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
+  if (mode == PWM_OUTPUT_ACTIVE_HIGH)
      b02:	11 30       	cpi	r17, 0x01	; 1
      b04:	49 f0       	breq	.+18     	; 0xb18 <pwm_lld_enable_channel+0x8a>
+    *tccra |= ((1 << com1) | (0 << com0)); /* Non inverting mode. */
+  else if (mode == PWM_OUTPUT_ACTIVE_LOW)
      b06:	12 30       	cpi	r17, 0x02	; 2
      b08:	61 f4       	brne	.+24     	; 0xb22 <pwm_lld_enable_channel+0x94>
+    *tccra |= (1 << com1) | (1 << com0);   /* Inverting mode.     */
      b0a:	80 91 00 00 	lds	r24, 0x0000	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
      b0e:	ed 2d       	mov	r30, r13
      b10:	e8 2b       	or	r30, r24
      b12:	e0 93 00 00 	sts	0x0000, r30	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
      b16:	05 c0       	rjmp	.+10     	; 0xb22 <pwm_lld_enable_channel+0x94>
+                           uint8_t com0,
+                           pwmmode_t mode) {
+
+  *tccra &= ~((1 << com1) | (1 << com0));
+  if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+    *tccra |= ((1 << com1) | (0 << com0)); /* Non inverting mode. */
      b18:	90 91 00 00 	lds	r25, 0x0000	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
      b1c:	89 2b       	or	r24, r25
      b1e:	80 93 00 00 	sts	0x0000, r24	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
+    break;
+  default:
+    ocrh = regs_table[i].ocrah;
+    ocrl = regs_table[i].ocral;
+  }
+  *ocrh = val >> 8;
      b22:	50 93 00 00 	sts	0x0000, r21	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
+  *ocrl = val & 0xFF;
      b26:	40 93 00 00 	sts	0x0000, r20	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
+  *regs_table[i].tifr = (1 << (channel + 1));
      b2a:	ad 01       	movw	r20, r26
      b2c:	4f 5f       	subi	r20, 0xFF	; 255
      b2e:	5f 4f       	sbci	r21, 0xFF	; 255
@@ -1496,6 +1879,7 @@ Disassembly of section .text:
      b38:	4a 95       	dec	r20
      b3a:	ea f7       	brpl	.-6      	; 0xb36 <pwm_lld_enable_channel+0xa8>
      b3c:	80 93 00 00 	sts	0x0000, r24	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
+  if (pwmp->config->channels[channel].callback != NULL)
      b40:	49 81       	ldd	r20, Y+1	; 0x01
      b42:	5a 81       	ldd	r21, Y+2	; 0x02
      b44:	a2 0f       	add	r26, r18
@@ -1507,9 +1891,11 @@ Disassembly of section .text:
      b50:	3c 91       	ld	r19, X
      b52:	23 2b       	or	r18, r19
      b54:	29 f0       	breq	.+10     	; 0xb60 <pwm_lld_enable_channel+0xd2>
+    *regs_table[i].timsk |= (1 << (channel + 1));
      b56:	90 91 00 00 	lds	r25, 0x0000	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
      b5a:	89 2b       	or	r24, r25
      b5c:	80 93 00 00 	sts	0x0000, r24	; 0x800000 <__TEXT_REGION_LENGTH__+0x7f8000>
+}
      b60:	df 91       	pop	r29
      b62:	cf 91       	pop	r28
      b64:	1f 91       	pop	r17
@@ -1518,6 +1904,12 @@ Disassembly of section .text:
      b6a:	ef 90       	pop	r14
      b6c:	df 90       	pop	r13
      b6e:	08 95       	ret
+
+  uint16_t val = width;
+
+#if AVR_PWM_USE_TIM2 || defined(__DOXYGEN__)
+  if (pwmp == &PWMD2) {
+    config_channel(&TCCR2A,
      b70:	e0 90 68 02 	lds	r14, 0x0268	; 0x800268 <PWMD2+0x1>
      b74:	f0 90 69 02 	lds	r15, 0x0269	; 0x800269 <PWMD2+0x2>
      b78:	9d 01       	movw	r18, r26
@@ -1530,13 +1922,23 @@ Disassembly of section .text:
      b86:	1f 1d       	adc	r17, r15
      b88:	e8 01       	movw	r28, r16
      b8a:	18 85       	ldd	r17, Y+8	; 0x08
+static void config_channel(volatile uint8_t *tccra,
+                           uint8_t com1,
+                           uint8_t com0,
+                           pwmmode_t mode) {
+
+  *tccra &= ~((1 << com1) | (1 << com0));
      b8c:	f0 91 b0 00 	lds	r31, 0x00B0	; 0x8000b0 <__TEXT_REGION_LENGTH__+0x7f80b0>
      b90:	7f 23       	and	r23, r31
      b92:	70 93 b0 00 	sts	0x00B0, r23	; 0x8000b0 <__TEXT_REGION_LENGTH__+0x7f80b0>
+  if (mode == PWM_OUTPUT_ACTIVE_HIGH)
      b96:	11 30       	cpi	r17, 0x01	; 1
      b98:	b1 f1       	breq	.+108    	; 0xc06 <pwm_lld_enable_channel+0x178>
+    *tccra |= ((1 << com1) | (0 << com0)); /* Non inverting mode. */
+  else if (mode == PWM_OUTPUT_ACTIVE_LOW)
      b9a:	12 30       	cpi	r17, 0x02	; 2
      b9c:	31 f4       	brne	.+12     	; 0xbaa <pwm_lld_enable_channel+0x11c>
+    *tccra |= (1 << com1) | (1 << com0);   /* Inverting mode.     */
      b9e:	80 91 b0 00 	lds	r24, 0x00B0	; 0x8000b0 <__TEXT_REGION_LENGTH__+0x7f80b0>
      ba2:	ed 2d       	mov	r30, r13
      ba4:	e8 2b       	or	r30, r24
@@ -1548,11 +1950,21 @@ Disassembly of section .text:
      bb2:	10 f0       	brcs	.+4      	; 0xbb8 <pwm_lld_enable_channel+0x12a>
      bb4:	8f ef       	ldi	r24, 0xFF	; 255
      bb6:	90 e0       	ldi	r25, 0x00	; 0
+                   6 - 2*channel,
+                   pwmp->config->channels[channel].mode);
+    /* Timer 2 is 8 bit. */
+    if (val > 0xFF)
+      val = 0xFF;
+    switch (channel) {
      bb8:	66 23       	and	r22, r22
      bba:	59 f1       	breq	.+86     	; 0xc12 <pwm_lld_enable_channel+0x184>
      bbc:	61 30       	cpi	r22, 0x01	; 1
      bbe:	11 f4       	brne	.+4      	; 0xbc4 <pwm_lld_enable_channel+0x136>
+    case 0: OCR2A = val; break;
+    case 1: OCR2B = val; break;
      bc0:	80 93 b4 00 	sts	0x00B4, r24	; 0x8000b4 <__TEXT_REGION_LENGTH__+0x7f80b4>
+    }
+    TIFR2 = 1 << (OCF2A + channel);
      bc4:	ad 01       	movw	r20, r26
      bc6:	4f 5f       	subi	r20, 0xFF	; 255
      bc8:	5f 4f       	sbci	r21, 0xFF	; 255
@@ -1563,6 +1975,7 @@ Disassembly of section .text:
      bd2:	4a 95       	dec	r20
      bd4:	ea f7       	brpl	.-6      	; 0xbd0 <pwm_lld_enable_channel+0x142>
      bd6:	87 bb       	out	0x17, r24	; 23
+    if (pwmp->config->channels[channel].callback)
      bd8:	a2 0f       	add	r26, r18
      bda:	b3 1f       	adc	r27, r19
      bdc:	e7 01       	movw	r28, r14
@@ -1573,9 +1986,16 @@ Disassembly of section .text:
      be6:	23 2b       	or	r18, r19
      be8:	09 f4       	brne	.+2      	; 0xbec <pwm_lld_enable_channel+0x15e>
      bea:	ba cf       	rjmp	.-140    	; 0xb60 <pwm_lld_enable_channel+0xd2>
+      TIMSK2 |= (1 << (OCIE2A + channel));
      bec:	90 91 70 00 	lds	r25, 0x0070	; 0x800070 <__TEXT_REGION_LENGTH__+0x7f8070>
      bf0:	89 2b       	or	r24, r25
      bf2:	80 93 70 00 	sts	0x0070, r24	; 0x800070 <__TEXT_REGION_LENGTH__+0x7f8070>
+  *ocrh = val >> 8;
+  *ocrl = val & 0xFF;
+  *regs_table[i].tifr = (1 << (channel + 1));
+  if (pwmp->config->channels[channel].callback != NULL)
+    *regs_table[i].timsk |= (1 << (channel + 1));
+}
      bf6:	df 91       	pop	r29
      bf8:	cf 91       	pop	r28
      bfa:	1f 91       	pop	r17
@@ -1584,22 +2004,47 @@ Disassembly of section .text:
      c00:	ef 90       	pop	r14
      c02:	df 90       	pop	r13
      c04:	08 95       	ret
+                           uint8_t com0,
+                           pwmmode_t mode) {
+
+  *tccra &= ~((1 << com1) | (1 << com0));
+  if (mode == PWM_OUTPUT_ACTIVE_HIGH)
+    *tccra |= ((1 << com1) | (0 << com0)); /* Non inverting mode. */
      c06:	90 91 b0 00 	lds	r25, 0x00B0	; 0x8000b0 <__TEXT_REGION_LENGTH__+0x7f80b0>
      c0a:	89 2b       	or	r24, r25
      c0c:	80 93 b0 00 	sts	0x00B0, r24	; 0x8000b0 <__TEXT_REGION_LENGTH__+0x7f80b0>
      c10:	cc cf       	rjmp	.-104    	; 0xbaa <pwm_lld_enable_channel+0x11c>
+                   pwmp->config->channels[channel].mode);
+    /* Timer 2 is 8 bit. */
+    if (val > 0xFF)
+      val = 0xFF;
+    switch (channel) {
+    case 0: OCR2A = val; break;
      c12:	80 93 b3 00 	sts	0x00B3, r24	; 0x8000b3 <__TEXT_REGION_LENGTH__+0x7f80b3>
      c16:	d6 cf       	rjmp	.-84     	; 0xbc4 <pwm_lld_enable_channel+0x136>
 
 00000c18 <notify1>:
+
+#if AVR_SERIAL_USE_USART0 || defined(__DOXYGEN__)
+static void notify1(io_queue_t *qp) {
+
+  (void)qp;
+  UCSR0B |= (1 << UDRIE0);
      c18:	e1 ec       	ldi	r30, 0xC1	; 193
      c1a:	f0 e0       	ldi	r31, 0x00	; 0
      c1c:	80 81       	ld	r24, Z
      c1e:	80 62       	ori	r24, 0x20	; 32
      c20:	80 83       	st	Z, r24
+}
      c22:	08 95       	ret
 
 00000c24 <__vector_18>:
+/**
+ * @brief   USART0 RX interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AVR_SD1_RX_VECT) {
      c24:	1f 92       	push	r1
      c26:	0f 92       	push	r0
      c28:	0f b6       	in	r0, 0x3f	; 63
@@ -1617,28 +2062,64 @@ Disassembly of section .text:
      c40:	bf 93       	push	r27
      c42:	ef 93       	push	r30
      c44:	ff 93       	push	r31
+  uint8_t sra;
+
+  OSAL_IRQ_PROLOGUE();
      c46:	81 e0       	ldi	r24, 0x01	; 1
      c48:	80 93 01 03 	sts	0x0301, r24	; 0x800301 <__avr_in_isr>
+
+  sra = UCSR0A;
      c4c:	80 91 c0 00 	lds	r24, 0x00C0	; 0x8000c0 <__TEXT_REGION_LENGTH__+0x7f80c0>
+  if (sra & ((1 << DOR0) | (1 << UPE0) | (1 << FE0)))
      c50:	98 2f       	mov	r25, r24
      c52:	9c 71       	andi	r25, 0x1C	; 28
      c54:	41 f0       	breq	.+16     	; 0xc66 <__vector_18+0x42>
+#endif
+
+  if (sra & dor)
+    sts |= SD_OVERRUN_ERROR;
+  if (sra & upe)
+    sts |= SD_PARITY_ERROR;
      c56:	60 e2       	ldi	r22, 0x20	; 32
+  }
+#endif
+
+  if (sra & dor)
+    sts |= SD_OVERRUN_ERROR;
+  if (sra & upe)
      c58:	82 ff       	sbrs	r24, 2
      c5a:	60 e0       	ldi	r22, 0x00	; 0
+    sts |= SD_PARITY_ERROR;
+  if (sra & fe)
      c5c:	84 fd       	sbrc	r24, 4
      c5e:	1e c0       	rjmp	.+60     	; 0xc9c <__vector_18+0x78>
+ * @iclass
+ */
+static inline void osalEventBroadcastFlagsI(event_source_t *esp,
+                                            eventflags_t flags) {
+
+  chEvtBroadcastFlagsI(esp, flags);
      c60:	80 e7       	ldi	r24, 0x70	; 112
      c62:	92 e0       	ldi	r25, 0x02	; 2
      c64:	60 d5       	rcall	.+2752   	; 0x1726 <chEvtBroadcastFlagsI>
+
+  sra = UCSR0A;
+  if (sra & ((1 << DOR0) | (1 << UPE0) | (1 << FE0)))
+    set_error(sra, &SD1);
+  osalSysLockFromISR();
+  sdIncomingDataI(&SD1, UDR0);
      c66:	60 91 c6 00 	lds	r22, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7f80c6>
      c6a:	8e e6       	ldi	r24, 0x6E	; 110
      c6c:	92 e0       	ldi	r25, 0x02	; 2
      c6e:	1e dd       	rcall	.-1476   	; 0x6ac <sdIncomingDataI>
+  osalSysUnlockFromISR();
+
+  OSAL_IRQ_EPILOGUE();
      c70:	10 92 01 03 	sts	0x0301, r1	; 0x800301 <__avr_in_isr>
      c74:	75 d3       	rcall	.+1770   	; 0x1360 <chSchIsPreemptionRequired>
      c76:	81 11       	cpse	r24, r1
      c78:	83 d3       	rcall	.+1798   	; 0x1380 <chSchDoPreemption>
+}
      c7a:	ff 91       	pop	r31
      c7c:	ef 91       	pop	r30
      c7e:	bf 91       	pop	r27
@@ -1656,10 +2137,22 @@ Disassembly of section .text:
      c96:	0f 90       	pop	r0
      c98:	1f 90       	pop	r1
      c9a:	18 95       	reti
+  if (sra & dor)
+    sts |= SD_OVERRUN_ERROR;
+  if (sra & upe)
+    sts |= SD_PARITY_ERROR;
+  if (sra & fe)
+    sts |= SD_FRAMING_ERROR;
      c9c:	60 64       	ori	r22, 0x40	; 64
      c9e:	e0 cf       	rjmp	.-64     	; 0xc60 <__vector_18+0x3c>
 
 00000ca0 <__vector_19>:
+/**
+ * @brief   USART0 TX interrupt handler.
+ *
+ * @isr
+ */
+OSAL_IRQ_HANDLER(AVR_SD1_TX_VECT) {
      ca0:	1f 92       	push	r1
      ca2:	0f 92       	push	r0
      ca4:	0f b6       	in	r0, 0x3f	; 63
@@ -1677,18 +2170,32 @@ Disassembly of section .text:
      cbc:	bf 93       	push	r27
      cbe:	ef 93       	push	r30
      cc0:	ff 93       	push	r31
+  msg_t b;
+
+  OSAL_IRQ_PROLOGUE();
      cc2:	81 e0       	ldi	r24, 0x01	; 1
      cc4:	80 93 01 03 	sts	0x0301, r24	; 0x800301 <__avr_in_isr>
+
+  osalSysLockFromISR();
+  b = sdRequestDataI(&SD1);
      cc8:	8e e6       	ldi	r24, 0x6E	; 110
      cca:	92 e0       	ldi	r25, 0x02	; 2
      ccc:	15 dd       	rcall	.-1494   	; 0x6f8 <sdRequestDataI>
+  osalSysUnlockFromISR();
+  if (b < MSG_OK)
      cce:	97 fd       	sbrc	r25, 7
      cd0:	18 c0       	rjmp	.+48     	; 0xd02 <__vector_19+0x62>
+    UCSR0B &= ~(1 << UDRIE0);
+  else
+    UDR0 = b;
      cd2:	80 93 c6 00 	sts	0x00C6, r24	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7f80c6>
+
+  OSAL_IRQ_EPILOGUE();
      cd6:	10 92 01 03 	sts	0x0301, r1	; 0x800301 <__avr_in_isr>
      cda:	42 d3       	rcall	.+1668   	; 0x1360 <chSchIsPreemptionRequired>
      cdc:	81 11       	cpse	r24, r1
      cde:	50 d3       	rcall	.+1696   	; 0x1380 <chSchDoPreemption>
+}
      ce0:	ff 91       	pop	r31
      ce2:	ef 91       	pop	r30
      ce4:	bf 91       	pop	r27
@@ -1706,12 +2213,24 @@ Disassembly of section .text:
      cfc:	0f 90       	pop	r0
      cfe:	1f 90       	pop	r1
      d00:	18 95       	reti
+
+  osalSysLockFromISR();
+  b = sdRequestDataI(&SD1);
+  osalSysUnlockFromISR();
+  if (b < MSG_OK)
+    UCSR0B &= ~(1 << UDRIE0);
      d02:	80 91 c1 00 	lds	r24, 0x00C1	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7f80c1>
      d06:	8f 7d       	andi	r24, 0xDF	; 223
      d08:	80 93 c1 00 	sts	0x00C1, r24	; 0x8000c1 <__TEXT_REGION_LENGTH__+0x7f80c1>
      d0c:	e4 cf       	rjmp	.-56     	; 0xcd6 <__vector_19+0x36>
 
 00000d0e <sd_lld_init>:
+ * @notapi
+ */
+void sd_lld_init(void) {
+
+#if AVR_SERIAL_USE_USART0
+  sdObjectInit(&SD1, NULL, notify1);
      d0e:	4c e0       	ldi	r20, 0x0C	; 12
      d10:	56 e0       	ldi	r21, 0x06	; 6
      d12:	70 e0       	ldi	r23, 0x00	; 0
@@ -1721,6 +2240,12 @@ Disassembly of section .text:
      d1a:	9d cc       	rjmp	.-1734   	; 0x656 <sdObjectInit>
 
 00000d1c <chSysInit>:
+  /* Timers list integrity check.*/
+  if ((testmask & CH_INTEGRITY_VTLIST) != 0U) {
+    ch_delta_list_t *dlp;
+
+    /* Scanning the timers list forward.*/
+    n = (cnt_t)0;
      d1c:	cf 93       	push	r28
      d1e:	df 93       	push	r29
      d20:	c7 eb       	ldi	r28, 0xB7	; 183
@@ -1744,11 +2269,26 @@ Disassembly of section .text:
      d44:	08 95       	ret
 
 00000d46 <chSysTimerHandlerI>:
+  }
+#endif
+#if CH_DBG_THREADS_PROFILING == TRUE
+  currtp->time++;
+#endif
+  chVTDoTickI();
      d46:	81 c1       	rjmp	.+770    	; 0x104a <chVTDoTickI>
 
 00000d48 <chRFCUCollectFaultsI>:
+/**
+ * @brief   Adds fault flags to the current mask.
+ *
+ * @param[in] mask      fault flags to be added
+ */
+void chRFCUCollectFaultsI(rfcu_mask_t mask) {
      d48:	0f 93       	push	r16
      d4a:	1f 93       	push	r17
+
+#if CH_CFG_SMP_MODE == FALSE
+  currcore->rfcu.mask |= mask;
      d4c:	ea eb       	ldi	r30, 0xBA	; 186
      d4e:	f2 e0       	ldi	r31, 0x02	; 2
      d50:	05 8d       	ldd	r16, Z+29	; 0x1d
@@ -1765,11 +2305,23 @@ Disassembly of section .text:
      d66:	96 8f       	std	Z+30, r25	; 0x1e
      d68:	a7 8f       	std	Z+31, r26	; 0x1f
      d6a:	b0 a3       	std	Z+32, r27	; 0x20
+#else
+  ch_system.rfcu.mask |= mask;
+#endif
+
+  CH_CFG_RUNTIME_FAULTS_HOOK(mask);
+}
      d6c:	1f 91       	pop	r17
      d6e:	0f 91       	pop	r16
      d70:	08 95       	ret
 
 00000d72 <vt_insert_first.constprop.5>:
+  } while (dlp != &vtlp->dlist);
+
+  chDbgAssert(false, "timer not in list");
+
+  return (sysinterval_t)-1;
+}
      d72:	cf 92       	push	r12
      d74:	df 92       	push	r13
      d76:	ef 92       	push	r14
@@ -2118,6 +2670,12 @@ Disassembly of section .text:
     1048:	55 c8       	rjmp	.-3926   	; 0xf4 <stStopAlarm>
 
 0000104a <chVTDoTickI>:
+ *          to acquire the lock if needed. This is done in order to reduce
+ *          interrupts jitter when many timers are in use.
+ *
+ * @iclass
+ */
+void chVTDoTickI(void) {
     104a:	cf 92       	push	r12
     104c:	df 92       	push	r13
     104e:	ef 92       	push	r14
@@ -2126,71 +2684,166 @@ Disassembly of section .text:
     1054:	1f 93       	push	r17
     1056:	cf 93       	push	r28
     1058:	df 93       	push	r29
+  dlp->delta -= delta;
+
+  /* Special case when the inserted element is in last position in the list,
+     the value in the header must be restored, just doing it is faster than
+     checking then doing.*/
+  dlhp->delta = (sysinterval_t)-1;
     105a:	ee 24       	eor	r14, r14
     105c:	ea 94       	dec	r14
     105e:	fe 2c       	mov	r15, r14
     1060:	0b c0       	rjmp	.+22     	; 0x1078 <chVTDoTickI+0x2e>
+    /* The callback is invoked outside the kernel critical section, it
+       is re-entered on the callback return. Note that "lasttime" can be
+       modified within the callback if some timer function is called.*/
+    chSysUnlockFromISR();
+
+    vtp->func(vtp, vtp->par);
     1062:	68 85       	ldd	r22, Y+8	; 0x08
     1064:	79 85       	ldd	r23, Y+9	; 0x09
     1066:	ee 81       	ldd	r30, Y+6	; 0x06
     1068:	ff 81       	ldd	r31, Y+7	; 0x07
     106a:	ce 01       	movw	r24, r28
     106c:	09 95       	icall
+
+    chSysLockFromISR();
+
+    /* If a reload is defined the timer needs to be restarted.*/
+    if (unlikely(vtp->reload > (sysinterval_t)0)) {
     106e:	8a 85       	ldd	r24, Y+10	; 0x0a
     1070:	9b 85       	ldd	r25, Y+11	; 0x0b
     1072:	89 2b       	or	r24, r25
     1074:	09 f0       	breq	.+2      	; 0x1078 <chVTDoTickI+0x2e>
     1076:	47 c0       	rjmp	.+142    	; 0x1106 <chVTDoTickI+0xbc>
+     than the interval between "now" and "lasttime".*/
+  while (true) {
+    systime_t lasttime;
+
+    /* First timer in the delta list.*/
+    vtp = (virtual_timer_t *)vtlp->dlist.next;
     1078:	c0 91 c1 02 	lds	r28, 0x02C1	; 0x8002c1 <ch0+0x7>
     107c:	d0 91 c2 02 	lds	r29, 0x02C2	; 0x8002c2 <ch0+0x8>
+ *
+ * @notapi
+ */
+static inline systime_t port_timer_get_time(void) {
+
+  return stGetCounter();
     1080:	2b d8       	rcall	.-4010   	; 0xd8 <stGetCounter>
+
+    /* Delta between current time and last execution time.*/
+    now = chVTGetSystemTimeX();
+    nowdelta = chTimeDiffX(vtlp->lasttime, now);
     1082:	00 91 c7 02 	lds	r16, 0x02C7	; 0x8002c7 <ch0+0xd>
     1086:	10 91 c8 02 	lds	r17, 0x02C8	; 0x8002c8 <ch0+0xe>
+ */
+static inline sysinterval_t chTimeDiffX(systime_t start, systime_t end) {
+
+  /*lint -save -e9033 [10.8] This cast is required by the operation, it is
+    known that the destination type can be wider.*/
+  return (sysinterval_t)((systime_t)(end - start));
     108a:	9c 01       	movw	r18, r24
     108c:	20 1b       	sub	r18, r16
     108e:	31 0b       	sbc	r19, r17
+
+    /* Loop break condition.
+       Note that the list scan is limited by the delta list header having
+       "vtlp->dlist.delta == (sysinterval_t)-1" which is greater than all
+       deltas*/
+    if (nowdelta < vtp->dlist.delta) {
     1090:	6c 81       	ldd	r22, Y+4	; 0x04
     1092:	7d 81       	ldd	r23, Y+5	; 0x05
     1094:	26 17       	cp	r18, r22
     1096:	37 07       	cpc	r19, r23
     1098:	e8 f0       	brcs	.+58     	; 0x10d4 <chVTDoTickI+0x8a>
+
+#if CH_CFG_ST_RESOLUTION != CH_CFG_INTERVALS_SIZE
+  chDbgCheck(interval <= (sysinterval_t)TIME_MAX_SYSTIME);
+#endif
+
+  return systime + (systime_t)interval;
     109a:	06 0f       	add	r16, r22
     109c:	17 1f       	adc	r17, r23
+      break;
+    }
+
+    /* Last time deadline is updated to the next timer's time.*/
+    lasttime = chTimeAddX(vtlp->lasttime, vtp->dlist.delta);
+    vtlp->lasttime = lasttime;
     109e:	10 93 c8 02 	sts	0x02C8, r17	; 0x8002c8 <ch0+0xe>
     10a2:	00 93 c7 02 	sts	0x02C7, r16	; 0x8002c7 <ch0+0xd>
+ *
+ * @notapi
+ */
+static inline ch_delta_list_t *ch_dlist_dequeue(ch_delta_list_t *dlp) {
+
+  dlp->prev->next = dlp->next;
     10a6:	ea 81       	ldd	r30, Y+2	; 0x02
     10a8:	fb 81       	ldd	r31, Y+3	; 0x03
     10aa:	88 81       	ld	r24, Y
     10ac:	99 81       	ldd	r25, Y+1	; 0x01
     10ae:	91 83       	std	Z+1, r25	; 0x01
     10b0:	80 83       	st	Z, r24
+  dlp->next->prev = dlp->prev;
     10b2:	a8 81       	ld	r26, Y
     10b4:	b9 81       	ldd	r27, Y+1	; 0x01
     10b6:	13 96       	adiw	r26, 0x03	; 3
     10b8:	fc 93       	st	X, r31
     10ba:	ee 93       	st	-X, r30
     10bc:	12 97       	sbiw	r26, 0x02	; 2
+
+    /* Removing the timer from the list, marking it as not armed.*/
+    (void) ch_dlist_dequeue(&vtp->dlist);
+    vtp->dlist.next = NULL;
     10be:	19 82       	std	Y+1, r1	; 0x01
     10c0:	18 82       	st	Y, r1
+
+    /* If the list becomes empty then the alarm is disabled.*/
+    if (ch_dlist_isempty(&vtlp->dlist)) {
     10c2:	80 91 c1 02 	lds	r24, 0x02C1	; 0x8002c1 <ch0+0x7>
     10c6:	90 91 c2 02 	lds	r25, 0x02C2	; 0x8002c2 <ch0+0x8>
     10ca:	81 5c       	subi	r24, 0xC1	; 193
     10cc:	92 40       	sbci	r25, 0x02	; 2
+ *
+ * @notapi
+ */
+static inline void port_timer_stop_alarm(void) {
+
+  stStopAlarm();
     10ce:	49 f6       	brne	.-110    	; 0x1062 <chVTDoTickI+0x18>
     10d0:	11 d8       	rcall	.-4062   	; 0xf4 <stStopAlarm>
     10d2:	c7 cf       	rjmp	.-114    	; 0x1062 <chVTDoTickI+0x18>
+      ch_dlist_insert(&vtlp->dlist, &vtp->dlist, delta);
+    }
+  }
+
+  /* If the list is empty, nothing else to do.*/
+  if (ch_dlist_isempty(&vtlp->dlist)) {
     10d4:	40 91 c1 02 	lds	r20, 0x02C1	; 0x8002c1 <ch0+0x7>
     10d8:	50 91 c2 02 	lds	r21, 0x02C2	; 0x8002c2 <ch0+0x8>
     10dc:	41 5c       	subi	r20, 0xC1	; 193
     10de:	52 40       	sbci	r21, 0x02	; 2
     10e0:	09 f4       	brne	.+2      	; 0x10e4 <chVTDoTickI+0x9a>
     10e2:	4b c0       	rjmp	.+150    	; 0x117a <chVTDoTickI+0x130>
+    return;
+  }
+
+  /* The "unprocessed nowdelta" time slice is added to "last time"
+     and subtracted to next timer's delta.*/
+  vtlp->lasttime += nowdelta;
     10e4:	90 93 c8 02 	sts	0x02C8, r25	; 0x8002c8 <ch0+0xe>
     10e8:	80 93 c7 02 	sts	0x02C7, r24	; 0x8002c7 <ch0+0xd>
+  vtp->dlist.delta -= nowdelta;
     10ec:	62 1b       	sub	r22, r18
     10ee:	73 0b       	sbc	r23, r19
     10f0:	7d 83       	std	Y+5, r23	; 0x05
     10f2:	6c 83       	std	Y+4, r22	; 0x04
+
+  /* Update alarm time to next timer.*/
+  vt_set_alarm(now, vtp->dlist.delta);
+#endif /* CH_CFG_ST_TIMEDELTA > 0 */
+}
     10f4:	df 91       	pop	r29
     10f6:	cf 91       	pop	r28
     10f8:	1f 91       	pop	r17
@@ -2199,60 +2852,140 @@ Disassembly of section .text:
     10fe:	ef 90       	pop	r14
     1100:	df 90       	pop	r13
     1102:	cf 90       	pop	r12
+     and subtracted to next timer's delta.*/
+  vtlp->lasttime += nowdelta;
+  vtp->dlist.delta -= nowdelta;
+
+  /* Update alarm time to next timer.*/
+  vt_set_alarm(now, vtp->dlist.delta);
     1104:	8f ce       	rjmp	.-738    	; 0xe24 <vt_set_alarm>
+ *
+ * @notapi
+ */
+static inline systime_t port_timer_get_time(void) {
+
+  return stGetCounter();
     1106:	0e 94 6c 00 	call	0xd8	; 0xd8 <stGetCounter>
     110a:	6c 01       	movw	r12, r24
+ */
+static inline sysinterval_t chTimeDiffX(systime_t start, systime_t end) {
+
+  /*lint -save -e9033 [10.8] This cast is required by the operation, it is
+    known that the destination type can be wider.*/
+  return (sysinterval_t)((systime_t)(end - start));
     110c:	80 1b       	sub	r24, r16
     110e:	91 0b       	sbc	r25, r17
     1110:	8c 01       	movw	r16, r24
+      now = chVTGetSystemTimeX();
+      nowdelta = chTimeDiffX(lasttime, now);
+
+#if !defined(CH_VT_RFCU_DISABLED)
+      /* Checking if the required reload is feasible.*/
+      if (nowdelta > vtp->reload) {
     1112:	4a 85       	ldd	r20, Y+10	; 0x0a
     1114:	5b 85       	ldd	r21, Y+11	; 0x0b
     1116:	48 17       	cp	r20, r24
     1118:	59 07       	cpc	r21, r25
     111a:	c0 f1       	brcs	.+112    	; 0x118c <chVTDoTickI+0x142>
+ *
+ * @notapi
+ */
+static inline bool ch_dlist_isempty(ch_delta_list_t *dlhp) {
+
+  return (bool)(dlhp == dlhp->next);
     111c:	e0 91 c1 02 	lds	r30, 0x02C1	; 0x8002c1 <ch0+0x7>
     1120:	f0 91 c2 02 	lds	r31, 0x02C2	; 0x8002c2 <ch0+0x8>
+      /* Enqueuing the timer again using the calculated delta.*/
+      delay = vtp->reload - nowdelta;
+#endif
+
+      /* Special case where the timers list is empty.*/
+      if (ch_dlist_isempty(&vtlp->dlist)) {
     1124:	22 e0       	ldi	r18, 0x02	; 2
     1126:	e1 3c       	cpi	r30, 0xC1	; 193
     1128:	f2 07       	cpc	r31, r18
     112a:	09 f4       	brne	.+2      	; 0x112e <chVTDoTickI+0xe4>
     112c:	3e c0       	rjmp	.+124    	; 0x11aa <chVTDoTickI+0x160>
+  ch_delta_list_t *dlp;
+
+  /* The delta list is scanned in order to find the correct position for
+     this element. */
+  dlp = dlhp->next;
+  while (likely(dlp->delta < delta)) {
     112e:	84 81       	ldd	r24, Z+4	; 0x04
     1130:	95 81       	ldd	r25, Z+5	; 0x05
     1132:	84 17       	cp	r24, r20
     1134:	95 07       	cpc	r25, r21
     1136:	50 f4       	brcc	.+20     	; 0x114c <chVTDoTickI+0x102>
+    /* Debug assert if the element is already in the list.*/
+    chDbgAssert(dlp != dlep, "element already in list");
+
+    delta -= dlp->delta;
     1138:	48 1b       	sub	r20, r24
     113a:	59 0b       	sbc	r21, r25
+    dlp = dlp->next;
     113c:	01 90       	ld	r0, Z+
     113e:	f0 81       	ld	r31, Z
     1140:	e0 2d       	mov	r30, r0
+  ch_delta_list_t *dlp;
+
+  /* The delta list is scanned in order to find the correct position for
+     this element. */
+  dlp = dlhp->next;
+  while (likely(dlp->delta < delta)) {
     1142:	84 81       	ldd	r24, Z+4	; 0x04
     1144:	95 81       	ldd	r25, Z+5	; 0x05
     1146:	84 17       	cp	r24, r20
     1148:	95 07       	cpc	r25, r21
     114a:	b0 f3       	brcs	.-20     	; 0x1138 <chVTDoTickI+0xee>
+ */
+static inline void ch_dlist_insert_before(ch_delta_list_t *dlhp,
+                                          ch_delta_list_t *dlp,
+                                          sysinterval_t delta) {
+
+  dlp->delta      = delta;
     114c:	5d 83       	std	Y+5, r21	; 0x05
     114e:	4c 83       	std	Y+4, r20	; 0x04
+  dlp->next       = dlhp;
     1150:	f9 83       	std	Y+1, r31	; 0x01
     1152:	e8 83       	st	Y, r30
+  dlp->prev       = dlp->next->prev;
     1154:	a2 81       	ldd	r26, Z+2	; 0x02
     1156:	b3 81       	ldd	r27, Z+3	; 0x03
     1158:	bb 83       	std	Y+3, r27	; 0x03
     115a:	aa 83       	std	Y+2, r26	; 0x02
+  dlp->prev->next = dlp;
     115c:	cd 93       	st	X+, r28
     115e:	dc 93       	st	X, r29
+  dlhp->prev      = dlp;
     1160:	d3 83       	std	Z+3, r29	; 0x03
     1162:	c2 83       	std	Z+2, r28	; 0x02
+
+  /* The timer is inserted in the delta list.*/
+  ch_dlist_insert_before(dlp, dlep, delta);
+
+  /* Adjusting delta for the following element.*/
+  dlp->delta -= delta;
     1164:	84 81       	ldd	r24, Z+4	; 0x04
     1166:	95 81       	ldd	r25, Z+5	; 0x05
     1168:	84 1b       	sub	r24, r20
     116a:	95 0b       	sbc	r25, r21
     116c:	95 83       	std	Z+5, r25	; 0x05
     116e:	84 83       	std	Z+4, r24	; 0x04
+
+  /* Special case when the inserted element is in last position in the list,
+     the value in the header must be restored, just doing it is faster than
+     checking then doing.*/
+  dlhp->delta = (sysinterval_t)-1;
     1170:	f0 92 c6 02 	sts	0x02C6, r15	; 0x8002c6 <ch0+0xc>
     1174:	e0 92 c5 02 	sts	0x02C5, r14	; 0x8002c5 <ch0+0xb>
     1178:	7f cf       	rjmp	.-258    	; 0x1078 <chVTDoTickI+0x2e>
+  vtp->dlist.delta -= nowdelta;
+
+  /* Update alarm time to next timer.*/
+  vt_set_alarm(now, vtp->dlist.delta);
+#endif /* CH_CFG_ST_TIMEDELTA > 0 */
+}
     117a:	df 91       	pop	r29
     117c:	cf 91       	pop	r28
     117e:	1f 91       	pop	r17
@@ -2262,23 +2995,59 @@ Disassembly of section .text:
     1186:	df 90       	pop	r13
     1188:	cf 90       	pop	r12
     118a:	08 95       	ret
+      if (nowdelta > vtp->reload) {
+        /* System time is already past the deadline, logging the fault and
+           proceeding with a minimum delay.*/
+
+        chDbgAssert(false, "skipped deadline");
+        chRFCUCollectFaultsI(CH_RFCU_VT_SKIPPED_DEADLINE);
     118c:	62 e0       	ldi	r22, 0x02	; 2
     118e:	70 e0       	ldi	r23, 0x00	; 0
     1190:	80 e0       	ldi	r24, 0x00	; 0
     1192:	90 e0       	ldi	r25, 0x00	; 0
     1194:	d9 dd       	rcall	.-1102   	; 0xd48 <chRFCUCollectFaultsI>
+ *
+ * @notapi
+ */
+static inline bool ch_dlist_isempty(ch_delta_list_t *dlhp) {
+
+  return (bool)(dlhp == dlhp->next);
     1196:	e0 91 c1 02 	lds	r30, 0x02C1	; 0x8002c1 <ch0+0x7>
     119a:	f0 91 c2 02 	lds	r31, 0x02C2	; 0x8002c2 <ch0+0x8>
+      /* Enqueuing the timer again using the calculated delta.*/
+      delay = vtp->reload - nowdelta;
+#endif
+
+      /* Special case where the timers list is empty.*/
+      if (ch_dlist_isempty(&vtlp->dlist)) {
     119e:	92 e0       	ldi	r25, 0x02	; 2
     11a0:	e1 3c       	cpi	r30, 0xC1	; 193
     11a2:	f9 07       	cpc	r31, r25
     11a4:	79 f0       	breq	.+30     	; 0x11c4 <chVTDoTickI+0x17a>
     11a6:	a8 01       	movw	r20, r16
     11a8:	c2 cf       	rjmp	.-124    	; 0x112e <chVTDoTickI+0xe4>
+
+        delay = (sysinterval_t)0;
+      }
+      else {
+        /* Enqueuing the timer again using the calculated delta.*/
+        delay = vtp->reload - nowdelta;
     11aa:	48 1b       	sub	r20, r24
     11ac:	59 0b       	sbc	r21, r25
+#endif
+
+      /* Special case where the timers list is empty.*/
+      if (ch_dlist_isempty(&vtlp->dlist)) {
+
+        vt_insert_first(vtlp, vtp, now, delay);
     11ae:	b6 01       	movw	r22, r12
     11b0:	ce 01       	movw	r24, r28
+  vtp->dlist.delta -= nowdelta;
+
+  /* Update alarm time to next timer.*/
+  vt_set_alarm(now, vtp->dlist.delta);
+#endif /* CH_CFG_ST_TIMEDELTA > 0 */
+}
     11b2:	df 91       	pop	r29
     11b4:	cf 91       	pop	r28
     11b6:	1f 91       	pop	r17
@@ -2286,13 +3055,31 @@ Disassembly of section .text:
     11ba:	ff 90       	pop	r15
     11bc:	ef 90       	pop	r14
     11be:	df 90       	pop	r13
+#endif
+
+      /* Special case where the timers list is empty.*/
+      if (ch_dlist_isempty(&vtlp->dlist)) {
+
+        vt_insert_first(vtlp, vtp, now, delay);
     11c0:	cf 90       	pop	r12
     11c2:	d7 cd       	rjmp	.-1106   	; 0xd72 <vt_insert_first.constprop.5>
+           proceeding with a minimum delay.*/
+
+        chDbgAssert(false, "skipped deadline");
+        chRFCUCollectFaultsI(CH_RFCU_VT_SKIPPED_DEADLINE);
+
+        delay = (sysinterval_t)0;
     11c4:	50 e0       	ldi	r21, 0x00	; 0
     11c6:	40 e0       	ldi	r20, 0x00	; 0
     11c8:	f2 cf       	rjmp	.-28     	; 0x11ae <chVTDoTickI+0x164>
 
 000011ca <__sch_wakeup>:
+    __instance_set_currthread(oip, ntp);
+
+    /* Swap operation as tail call.*/
+    chSysSwitch(ntp, otp);
+  }
+}
     11ca:	cf 93       	push	r28
     11cc:	df 93       	push	r29
     11ce:	db 01       	movw	r26, r22
@@ -2502,10 +3289,23 @@ Disassembly of section .text:
     135e:	ee cf       	rjmp	.-36     	; 0x133c <chSchGoSleepTimeoutS+0x48>
 
 00001360 <chSchIsPreemptionRequired>:
+ */
+bool chSchIsPreemptionRequired(void) {
+  os_instance_t *oip = currcore;
+  thread_t *tp = __instance_get_currthread(oip);
+
+  tprio_t p1 = firstprio(&oip->rlist.pqueue);
     1360:	a0 91 ba 02 	lds	r26, 0x02BA	; 0x8002ba <ch0>
     1364:	b0 91 bb 02 	lds	r27, 0x02BB	; 0x8002bb <ch0+0x1>
+  tprio_t p2 = tp->hdr.pqueue.prio;
     1368:	e0 91 bf 02 	lds	r30, 0x02BF	; 0x8002bf <ch0+0x5>
     136c:	f0 91 c0 02 	lds	r31, 0x02C0	; 0x8002c0 <ch0+0x6>
+     if the first thread on the ready queue has equal or higher priority.*/
+  return (tp->ticks > (tslices_t)0) ? (p1 > p2) : (p1 >= p2);
+#else
+  /* If the round robin preemption feature is not enabled then performs a
+     simpler comparison.*/
+  return p1 > p2;
     1370:	81 e0       	ldi	r24, 0x01	; 1
     1372:	14 96       	adiw	r26, 0x04	; 4
     1374:	2c 91       	ld	r18, X
@@ -2513,69 +3313,141 @@ Disassembly of section .text:
     1378:	92 17       	cp	r25, r18
     137a:	08 f0       	brcs	.+2      	; 0x137e <chSchIsPreemptionRequired+0x1e>
     137c:	80 e0       	ldi	r24, 0x00	; 0
+#endif
+}
     137e:	08 95       	ret
 
 00001380 <chSchDoPreemption>:
+ * @note    Not a user function, it is meant to be invoked from within
+ *          the port layer in the IRQ-related preemption code.
+ *
+ * @special
+ */
+void chSchDoPreemption(void) {
     1380:	cf 93       	push	r28
     1382:	df 93       	push	r29
+  os_instance_t *oip = currcore;
+  thread_t *otp = __instance_get_currthread(oip);
     1384:	a0 91 bf 02 	lds	r26, 0x02BF	; 0x8002bf <ch0+0x5>
     1388:	b0 91 c0 02 	lds	r27, 0x02C0	; 0x8002c0 <ch0+0x6>
+ * @return              The removed element pointer.
+ *
+ * @notapi
+ */
+static inline ch_priority_queue_t *ch_pqueue_remove_highest(ch_priority_queue_t *pqp) {
+  ch_priority_queue_t *p = pqp->next;
     138c:	40 91 ba 02 	lds	r20, 0x02BA	; 0x8002ba <ch0>
     1390:	50 91 bb 02 	lds	r21, 0x02BB	; 0x8002bb <ch0+0x1>
+
+  pqp->next       = p->next;
     1394:	ea 01       	movw	r28, r20
     1396:	e8 81       	ld	r30, Y
     1398:	f9 81       	ldd	r31, Y+1	; 0x01
     139a:	f0 93 bb 02 	sts	0x02BB, r31	; 0x8002bb <ch0+0x1>
     139e:	e0 93 ba 02 	sts	0x02BA, r30	; 0x8002ba <ch0>
+  pqp->next->prev = pqp;
     13a2:	8a eb       	ldi	r24, 0xBA	; 186
     13a4:	92 e0       	ldi	r25, 0x02	; 2
     13a6:	93 83       	std	Z+3, r25	; 0x03
     13a8:	82 83       	std	Z+2, r24	; 0x02
+  thread_t *ntp;
+
+  /* Picks the first thread from the ready queue and makes it current.*/
+  ntp = threadref(ch_pqueue_remove_highest(&oip->rlist.pqueue));
+  ntp->state = CH_STATE_CURRENT;
     13aa:	81 e0       	ldi	r24, 0x01	; 1
     13ac:	8f 87       	std	Y+15, r24	; 0x0f
+  __instance_set_currthread(oip, ntp);
     13ae:	50 93 c0 02 	sts	0x02C0, r21	; 0x8002c0 <ch0+0x6>
     13b2:	40 93 bf 02 	sts	0x02BF, r20	; 0x8002bf <ch0+0x5>
+
+  /* Tracing the event.*/
+  __trace_ready(tp, tp->u.rdymsg);
+
+  /* The thread is marked ready.*/
+  tp->state = CH_STATE_READY;
     13b6:	1f 96       	adiw	r26, 0x0f	; 15
     13b8:	1c 92       	st	X, r1
     13ba:	1f 97       	sbiw	r26, 0x0f	; 15
+
+  /* Insertion in the priority queue.*/
+  return threadref(ch_pqueue_insert_ahead(&tp->owner->rlist.pqueue,
     13bc:	1b 96       	adiw	r26, 0x0b	; 11
     13be:	ed 91       	ld	r30, X+
     13c0:	fc 91       	ld	r31, X
     13c2:	1c 97       	sbiw	r26, 0x0c	; 12
+                                                          ch_priority_queue_t *p) {
+
+  /* Scanning priority queue, the list is assumed to be mostly empty.*/
+  do {
+    pqp = pqp->next;
+  } while (unlikely(pqp->prio > p->prio));
     13c4:	14 96       	adiw	r26, 0x04	; 4
     13c6:	2c 91       	ld	r18, X
     13c8:	14 97       	sbiw	r26, 0x04	; 4
+static inline ch_priority_queue_t *ch_pqueue_insert_ahead(ch_priority_queue_t *pqp,
+                                                          ch_priority_queue_t *p) {
+
+  /* Scanning priority queue, the list is assumed to be mostly empty.*/
+  do {
+    pqp = pqp->next;
     13ca:	01 90       	ld	r0, Z+
     13cc:	f0 81       	ld	r31, Z
     13ce:	e0 2d       	mov	r30, r0
+  } while (unlikely(pqp->prio > p->prio));
     13d0:	94 81       	ldd	r25, Z+4	; 0x04
     13d2:	29 17       	cp	r18, r25
     13d4:	d0 f3       	brcs	.-12     	; 0x13ca <chSchDoPreemption+0x4a>
+
+  /* Insertion on prev.*/
+  p->next       = pqp;
     13d6:	11 96       	adiw	r26, 0x01	; 1
     13d8:	fc 93       	st	X, r31
     13da:	ee 93       	st	-X, r30
+  p->prev       = pqp->prev;
     13dc:	82 81       	ldd	r24, Z+2	; 0x02
     13de:	93 81       	ldd	r25, Z+3	; 0x03
     13e0:	13 96       	adiw	r26, 0x03	; 3
     13e2:	9c 93       	st	X, r25
     13e4:	8e 93       	st	-X, r24
     13e6:	12 97       	sbiw	r26, 0x02	; 2
+  p->prev->next = p;
     13e8:	ec 01       	movw	r28, r24
     13ea:	b9 83       	std	Y+1, r27	; 0x01
     13ec:	a8 83       	st	Y, r26
+  pqp->prev     = p;
     13ee:	b3 83       	std	Z+3, r27	; 0x03
     13f0:	a2 83       	std	Z+2, r26	; 0x02
+     ahead of its peers.*/
+  otp = __sch_ready_ahead(otp);
+#endif /* !(CH_CFG_TIME_QUANTUM > 0) */
+
+  /* Swap operation as tail call.*/
+  chSysSwitch(ntp, otp);
     13f2:	bd 01       	movw	r22, r26
     13f4:	ca 01       	movw	r24, r20
     13f6:	f9 d1       	rcall	.+1010   	; 0x17ea <_port_switch>
+}
     13f8:	df 91       	pop	r29
     13fa:	cf 91       	pop	r28
     13fc:	08 95       	ret
 
 000013fe <__idle_thread>:
+ *          that this thread is executed only if there are no other ready
+ *          threads in the system.
+ *
+ * @param[in] p         the thread parameter, unused in this scenario
+ */
+static void __idle_thread(void *p) {
     13fe:	ff cf       	rjmp	.-2      	; 0x13fe <__idle_thread>
 
 00001400 <chInstanceObjectInit>:
+ * @param[in] oicp      pointer to the @p os_instance_config_t structure
+ *
+ * @special
+ */
+void chInstanceObjectInit(os_instance_t *oip,
+                          const os_instance_config_t *oicp) {
     1400:	cf 92       	push	r12
     1402:	df 92       	push	r13
     1404:	ff 92       	push	r15
@@ -2593,42 +3465,105 @@ Disassembly of section .text:
     141c:	cd bf       	out	0x3d, r28	; 61
     141e:	8c 01       	movw	r16, r24
     1420:	6b 01       	movw	r12, r22
+  core_id = port_get_core_id();
+#else
+  core_id = 0U;
+#endif
+  chDbgAssert(ch_system.instances[core_id] == NULL, "instance already registered");
+  ch_system.instances[core_id] = oip;
     1422:	90 93 b9 02 	sts	0x02B9, r25	; 0x8002b9 <ch_system+0x2>
     1426:	80 93 b8 02 	sts	0x02B8, r24	; 0x8002b8 <ch_system+0x1>
+
+  /* Core associated to this instance.*/
+  oip->core_id = core_id;
     142a:	fc 01       	movw	r30, r24
     142c:	14 8e       	std	Z+28, r1	; 0x1c
     142e:	13 8e       	std	Z+27, r1	; 0x1b
+
+  /* Keeping a reference to the configuration data.*/
+  oip->config = oicp;
     1430:	72 a3       	std	Z+34, r23	; 0x22
     1432:	61 a3       	std	Z+33, r22	; 0x21
+
+  /* Port initialization for the current instance.*/
+  port_init(oip);
     1434:	ff 24       	eor	r15, r15
     1436:	f3 94       	inc	r15
     1438:	f0 92 01 03 	sts	0x0301, r15	; 0x800301 <__avr_in_isr>
+ *
+ * @notapi
+ */
+static inline void ch_pqueue_init(ch_priority_queue_t *pqp) {
+
+  pqp->next = pqp;
     143c:	91 83       	std	Z+1, r25	; 0x01
     143e:	80 83       	st	Z, r24
+  pqp->prev = pqp;
     1440:	93 83       	std	Z+3, r25	; 0x03
     1442:	82 83       	std	Z+2, r24	; 0x02
+  pqp->prio = (tprio_t)0;
     1444:	14 82       	std	Z+4, r1	; 0x04
+ *
+ * @init
+ */
+static inline void __reg_object_init(registry_t *rp) {
+
+  ch_queue_init(&rp->queue);
     1446:	47 96       	adiw	r24, 0x17	; 23
+ *
+ * @notapi
+ */
+static inline void ch_queue_init(ch_queue_t *qp) {
+
+  qp->next = qp;
     1448:	90 8f       	std	Z+24, r25	; 0x18
     144a:	87 8b       	std	Z+23, r24	; 0x17
+  qp->prev = qp;
     144c:	92 8f       	std	Z+26, r25	; 0x1a
     144e:	81 8f       	std	Z+25, r24	; 0x19
+ *
+ * @notapi
+ */
+static inline void __rfcu_object_init(rfcu_t *rfcup) {
+
+  rfcup->mask = (rfcu_mask_t)0;
     1450:	15 8e       	std	Z+29, r1	; 0x1d
     1452:	16 8e       	std	Z+30, r1	; 0x1e
     1454:	17 8e       	std	Z+31, r1	; 0x1f
     1456:	10 a2       	std	Z+32, r1	; 0x20
+ *
+ * @notapi
+ */
+static inline void __vt_object_init(virtual_timers_list_t *vtlp) {
+
+  ch_dlist_init(&vtlp->dlist);
     1458:	40 97       	sbiw	r24, 0x10	; 16
+ *
+ * @notapi
+ */
+static inline void ch_dlist_init(ch_delta_list_t *dlhp) {
+
+  dlhp->next  = dlhp;
     145a:	90 87       	std	Z+8, r25	; 0x08
     145c:	87 83       	std	Z+7, r24	; 0x07
+  dlhp->prev  = dlhp;
     145e:	92 87       	std	Z+10, r25	; 0x0a
     1460:	81 87       	std	Z+9, r24	; 0x09
+  dlhp->delta = (sysinterval_t)-1;
     1462:	8f ef       	ldi	r24, 0xFF	; 255
     1464:	9f ef       	ldi	r25, 0xFF	; 255
     1466:	94 87       	std	Z+12, r25	; 0x0c
     1468:	83 87       	std	Z+11, r24	; 0x0b
+#if CH_CFG_ST_TIMEDELTA == 0
+  vtlp->systime = (systime_t)0;
+#else /* CH_CFG_ST_TIMEDELTA > 0 */
+  vtlp->lasttime = (systime_t)0;
     146a:	16 86       	std	Z+14, r1	; 0x0e
     146c:	15 86       	std	Z+13, r1	; 0x0d
     146e:	0e 94 6c 00 	call	0xd8	; 0xd8 <stGetCounter>
+#endif /* CH_CFG_ST_TIMEDELTA > 0 */
+#if CH_CFG_USE_TIMESTAMP == TRUE
+  vtlp->laststamp = (systimestamp_t)chVTGetSystemTimeX();
     1472:	9c 01       	movw	r18, r24
     1474:	f8 01       	movw	r30, r16
     1476:	27 87       	std	Z+15, r18	; 0x0f
@@ -2639,10 +3574,22 @@ Disassembly of section .text:
     1480:	14 8a       	std	Z+20, r1	; 0x14
     1482:	15 8a       	std	Z+21, r1	; 0x15
     1484:	16 8a       	std	Z+22, r1	; 0x16
+ *
+ * @notapi
+ */
+static inline void __dbg_object_init(system_debug_t *sdp) {
+
+  sdp->panic_msg = NULL;
     1486:	ef 5b       	subi	r30, 0xBF	; 191
     1488:	ff 4f       	sbci	r31, 0xFF	; 255
     148a:	11 82       	std	Z+1, r1	; 0x01
     148c:	10 82       	st	Z, r1
+#endif
+
+#if CH_CFG_NO_IDLE_THREAD == FALSE
+  /* Now this instructions flow becomes the main thread.*/
+#if CH_CFG_USE_REGISTRY == TRUE
+  oip->rlist.current = __thd_object_init(oip, &oip->mainthread,
     148e:	b8 01       	movw	r22, r16
     1490:	6d 5d       	subi	r22, 0xDD	; 221
     1492:	7f 4f       	sbci	r23, 0xFF	; 255
@@ -2654,8 +3601,20 @@ Disassembly of section .text:
     149e:	f8 01       	movw	r30, r16
     14a0:	96 83       	std	Z+6, r25	; 0x06
     14a2:	85 83       	std	Z+5, r24	; 0x05
+#if (CH_DBG_ENABLE_STACK_CHECK == TRUE) || (CH_CFG_USE_DYNAMIC == TRUE)
+  oip->rlist.current->wabase = oicp->mainthread_base;
+#endif
+
+  /* Setting up the caller as current thread.*/
+  oip->rlist.current->state = CH_STATE_CURRENT;
     14a4:	fc 01       	movw	r30, r24
     14a6:	f7 86       	std	Z+15, r15	; 0x0f
+  /* User instance initialization hook.*/
+  CH_CFG_OS_INSTANCE_INIT_HOOK(oip);
+
+#if CH_CFG_NO_IDLE_THREAD == FALSE
+  {
+    thread_descriptor_t idle_descriptor = {
     14a8:	8d e3       	ldi	r24, 0x3D	; 61
     14aa:	91 e0       	ldi	r25, 0x01	; 1
     14ac:	9a 83       	std	Y+2, r25	; 0x02
@@ -2676,9 +3635,18 @@ Disassembly of section .text:
     14ca:	88 87       	std	Y+8, r24	; 0x08
     14cc:	1b 86       	std	Y+11, r1	; 0x0b
     14ce:	1a 86       	std	Y+10, r1	; 0x0a
+#endif
+
+    /* This thread has the lowest priority in the system, its role is just to
+       serve interrupts in its context while keeping the lowest energy saving
+       mode compatible with the system status.*/
+    (void) chThdCreateI(&idle_descriptor);
     14d0:	ce 01       	movw	r24, r28
     14d2:	01 96       	adiw	r24, 0x01	; 1
     14d4:	9e d0       	rcall	.+316    	; 0x1612 <chThdCreateI>
+  }
+#endif
+}
     14d6:	2b 96       	adiw	r28, 0x0b	; 11
     14d8:	0f b6       	in	r0, 0x3f	; 63
     14da:	f8 94       	cli
@@ -2695,6 +3663,12 @@ Disassembly of section .text:
     14f0:	08 95       	ret
 
 000014f2 <__thd_object_init>:
+void chThdResume(thread_reference_t *trp, msg_t msg) {
+
+  chSysLock();
+  chThdResumeS(trp, msg);
+  chSysUnlock();
+}
     14f2:	cf 93       	push	r28
     14f4:	df 93       	push	r29
     14f6:	fb 01       	movw	r30, r22
@@ -2901,28 +3875,66 @@ Disassembly of section .text:
     167c:	cc cf       	rjmp	.-104    	; 0x1616 <chThdExitS>
 
 0000167e <chThdEnqueueTimeoutS>:
+ *                      invoked with @p TIME_IMMEDIATE as timeout
+ *                      specification.
+ *
+ * @sclass
+ */
+msg_t chThdEnqueueTimeoutS(threads_queue_t *tqp, sysinterval_t timeout) {
     167e:	cf 93       	push	r28
     1680:	df 93       	push	r29
+ *
+ * @xclass
+ */
+static inline thread_t *chThdGetSelfX(void) {
+
+  return __sch_get_currthread();
     1682:	e0 91 bf 02 	lds	r30, 0x02BF	; 0x8002bf <ch0+0x5>
     1686:	f0 91 c0 02 	lds	r31, 0x02C0	; 0x8002c0 <ch0+0x6>
+  thread_t *currtp = chThdGetSelfX();
+
+  if (unlikely(TIME_IMMEDIATE == timeout)) {
     168a:	61 15       	cp	r22, r1
     168c:	71 05       	cpc	r23, r1
     168e:	79 f0       	breq	.+30     	; 0x16ae <chThdEnqueueTimeoutS+0x30>
+ *
+ * @notapi
+ */
+static inline void ch_queue_insert(ch_queue_t *qp, ch_queue_t *p) {
+
+  p->next       = qp;
     1690:	91 83       	std	Z+1, r25	; 0x01
     1692:	80 83       	st	Z, r24
+  p->prev       = qp->prev;
     1694:	ec 01       	movw	r28, r24
     1696:	aa 81       	ldd	r26, Y+2	; 0x02
     1698:	bb 81       	ldd	r27, Y+3	; 0x03
     169a:	b3 83       	std	Z+3, r27	; 0x03
     169c:	a2 83       	std	Z+2, r26	; 0x02
+  p->prev->next = p;
     169e:	ed 93       	st	X+, r30
     16a0:	fc 93       	st	X, r31
+  qp->prev      = p;
     16a2:	fb 83       	std	Y+3, r31	; 0x03
     16a4:	ea 83       	std	Y+2, r30	; 0x02
+    return MSG_TIMEOUT;
+  }
+
+  ch_queue_insert(&tqp->queue, (ch_queue_t *)currtp);
+
+  return chSchGoSleepTimeoutS(CH_STATE_QUEUED, timeout);
     16a6:	84 e0       	ldi	r24, 0x04	; 4
+}
     16a8:	df 91       	pop	r29
     16aa:	cf 91       	pop	r28
+    return MSG_TIMEOUT;
+  }
+
+  ch_queue_insert(&tqp->queue, (ch_queue_t *)currtp);
+
+  return chSchGoSleepTimeoutS(CH_STATE_QUEUED, timeout);
     16ac:	23 ce       	rjmp	.-954    	; 0x12f4 <chSchGoSleepTimeoutS>
+}
     16ae:	8f ef       	ldi	r24, 0xFF	; 255
     16b0:	9f ef       	ldi	r25, 0xFF	; 255
     16b2:	df 91       	pop	r29
@@ -2930,43 +3942,102 @@ Disassembly of section .text:
     16b6:	08 95       	ret
 
 000016b8 <chThdDequeueNextI>:
+ * @param[in] tqp       pointer to the threads queue object
+ * @param[in] msg       the message code
+ *
+ * @iclass
+ */
+void chThdDequeueNextI(threads_queue_t *tqp, msg_t msg) {
     16b8:	cf 93       	push	r28
     16ba:	df 93       	push	r29
     16bc:	fc 01       	movw	r30, r24
+ *
+ * @notapi
+ */
+static inline bool ch_queue_notempty(const ch_queue_t *qp) {
+
+  return (bool)(qp->next != qp);
     16be:	80 81       	ld	r24, Z
     16c0:	91 81       	ldd	r25, Z+1	; 0x01
+
+  if (ch_queue_notempty(&tqp->queue)) {
     16c2:	e8 17       	cp	r30, r24
     16c4:	f9 07       	cpc	r31, r25
     16c6:	71 f0       	breq	.+28     	; 0x16e4 <chThdDequeueNextI+0x2c>
+ * @notapi
+ */
+static inline ch_queue_t *ch_queue_fifo_remove(ch_queue_t *qp) {
+  ch_queue_t *p = qp->next;
+
+  qp->next       = p->next;
     16c8:	ec 01       	movw	r28, r24
     16ca:	a8 81       	ld	r26, Y
     16cc:	b9 81       	ldd	r27, Y+1	; 0x01
     16ce:	b1 83       	std	Z+1, r27	; 0x01
     16d0:	a0 83       	st	Z, r26
+  qp->next->prev = qp;
     16d2:	13 96       	adiw	r26, 0x03	; 3
     16d4:	fc 93       	st	X, r31
     16d6:	ee 93       	st	-X, r30
     16d8:	12 97       	sbiw	r26, 0x02	; 2
+
+  tp = threadref(ch_queue_fifo_remove(&tqp->queue));
+
+  chDbgAssert(tp->state == CH_STATE_QUEUED, "invalid state");
+
+  tp->u.rdymsg = msg;
     16da:	7b 8b       	std	Y+19, r23	; 0x13
     16dc:	6a 8b       	std	Y+18, r22	; 0x12
+    chThdDoDequeueNextI(tqp, msg);
+  }
+}
     16de:	df 91       	pop	r29
     16e0:	cf 91       	pop	r28
+  (void) chSchReadyI(tp);
     16e2:	c8 cd       	rjmp	.-1136   	; 0x1274 <chSchReadyI>
     16e4:	df 91       	pop	r29
     16e6:	cf 91       	pop	r28
     16e8:	08 95       	ret
 
 000016ea <chMtxObjectInit>:
+ *
+ * @param[out] mp       pointer to a @p mutex_t structure
+ *
+ * @init
+ */
+void chMtxObjectInit(mutex_t *mp) {
     16ea:	fc 01       	movw	r30, r24
+ *
+ * @notapi
+ */
+static inline void ch_queue_init(ch_queue_t *qp) {
+
+  qp->next = qp;
     16ec:	91 83       	std	Z+1, r25	; 0x01
     16ee:	80 83       	st	Z, r24
+  qp->prev = qp;
     16f0:	93 83       	std	Z+3, r25	; 0x03
     16f2:	82 83       	std	Z+2, r24	; 0x02
+
+  chDbgCheck(mp != NULL);
+
+  ch_queue_init(&mp->queue);
+  mp->owner = NULL;
     16f4:	15 82       	std	Z+5, r1	; 0x05
     16f6:	14 82       	std	Z+4, r1	; 0x04
+#if CH_CFG_USE_MUTEXES_RECURSIVE == TRUE
+  mp->cnt = (cnt_t)0;
+#endif
+}
     16f8:	08 95       	ret
 
 000016fa <chEvtSignalI>:
+
+  chSysLock();
+  chEvtSignalI(tp, events);
+  chSchRescheduleS();
+  chSysUnlock();
+}
     16fa:	fc 01       	movw	r30, r24
     16fc:	82 8d       	ldd	r24, Z+26	; 0x1a
     16fe:	68 2b       	or	r22, r24
@@ -2991,6 +4062,12 @@ Disassembly of section .text:
     1724:	08 95       	ret
 
 00001726 <chEvtBroadcastFlagsI>:
+ * @param[in] esp       pointer to the @p event_source_t structure
+ * @param[in] flags     the flags set to be added to the listener flags mask
+ *
+ * @iclass
+ */
+void chEvtBroadcastFlagsI(event_source_t *esp, eventflags_t flags) {
     1726:	ef 92       	push	r14
     1728:	ff 92       	push	r15
     172a:	1f 93       	push	r17
@@ -2998,30 +4075,66 @@ Disassembly of section .text:
     172e:	df 93       	push	r29
     1730:	7c 01       	movw	r14, r24
     1732:	16 2f       	mov	r17, r22
+  event_listener_t *elp;
+
+  chDbgCheckClassI();
+  chDbgCheck(esp != NULL);
+
+  elp = esp->next;
     1734:	fc 01       	movw	r30, r24
     1736:	c0 81       	ld	r28, Z
     1738:	d1 81       	ldd	r29, Z+1	; 0x01
+  /*lint -save -e9087 -e740 [11.3, 1.3] Cast required by list handling.*/
+  while (elp != (event_listener_t *)esp) {
     173a:	8c 17       	cp	r24, r28
     173c:	9d 07       	cpc	r25, r29
     173e:	91 f0       	breq	.+36     	; 0x1764 <chEvtBroadcastFlagsI+0x3e>
+  /*lint -restore*/
+    elp->flags |= flags;
     1740:	8d 81       	ldd	r24, Y+5	; 0x05
     1742:	81 2b       	or	r24, r17
     1744:	8d 83       	std	Y+5, r24	; 0x05
+    /* When flags == 0 the thread will always be signaled because the
+       source does not emit any flag.*/
+    if ((flags == (eventflags_t)0) ||
     1746:	11 23       	and	r17, r17
     1748:	19 f0       	breq	.+6      	; 0x1750 <chEvtBroadcastFlagsI+0x2a>
+        ((flags & elp->wflags) != (eventflags_t)0)) {
     174a:	8e 81       	ldd	r24, Y+6	; 0x06
     174c:	81 23       	and	r24, r17
+  while (elp != (event_listener_t *)esp) {
+  /*lint -restore*/
+    elp->flags |= flags;
+    /* When flags == 0 the thread will always be signaled because the
+       source does not emit any flag.*/
+    if ((flags == (eventflags_t)0) ||
     174e:	21 f0       	breq	.+8      	; 0x1758 <chEvtBroadcastFlagsI+0x32>
+        ((flags & elp->wflags) != (eventflags_t)0)) {
+      chEvtSignalI(elp->listener, elp->events);
     1750:	6c 81       	ldd	r22, Y+4	; 0x04
     1752:	8a 81       	ldd	r24, Y+2	; 0x02
     1754:	9b 81       	ldd	r25, Y+3	; 0x03
     1756:	d1 df       	rcall	.-94     	; 0x16fa <chEvtSignalI>
+    }
+    elp = elp->next;
     1758:	09 90       	ld	r0, Y+
     175a:	d8 81       	ld	r29, Y
     175c:	c0 2d       	mov	r28, r0
+  chDbgCheckClassI();
+  chDbgCheck(esp != NULL);
+
+  elp = esp->next;
+  /*lint -save -e9087 -e740 [11.3, 1.3] Cast required by list handling.*/
+  while (elp != (event_listener_t *)esp) {
     175e:	ec 16       	cp	r14, r28
     1760:	fd 06       	cpc	r15, r29
     1762:	71 f7       	brne	.-36     	; 0x1740 <chEvtBroadcastFlagsI+0x1a>
+        ((flags & elp->wflags) != (eventflags_t)0)) {
+      chEvtSignalI(elp->listener, elp->events);
+    }
+    elp = elp->next;
+  }
+}
     1764:	df 91       	pop	r29
     1766:	cf 91       	pop	r28
     1768:	1f 91       	pop	r17
@@ -3030,6 +4143,12 @@ Disassembly of section .text:
     176e:	08 95       	ret
 
 00001770 <__core_init>:
+  chSysLock();
+  p = chCoreAllocFromBaseI(size, align, offset);
+  chSysUnlock();
+
+  return p;
+}
     1770:	ed ef       	ldi	r30, 0xFD	; 253
     1772:	f2 e0       	ldi	r31, 0x02	; 2
     1774:	89 ed       	ldi	r24, 0xD9	; 217
@@ -3043,7 +4162,19 @@ Disassembly of section .text:
     1784:	08 95       	ret
 
 00001786 <chCoreAllocFromTop>:
+ * @details Usually this function just disables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_lock(void) {
+
+  asm volatile ("cli" : : : "memory");
     1786:	f8 94       	cli
+  uint8_t *p, *prev;
+
+  chDbgCheckClassI();
+  chDbgCheck(MEM_IS_VALID_ALIGNMENT(align));
+
+  p = (uint8_t *)MEM_ALIGN_PREV(ch_memcore.topmem - size, align);
     1788:	e0 91 ff 02 	lds	r30, 0x02FF	; 0x8002ff <ch_memcore+0x2>
     178c:	f0 91 00 03 	lds	r31, 0x0300	; 0x800300 <ch_memcore+0x3>
     1790:	9f 01       	movw	r18, r30
@@ -3055,9 +4186,13 @@ Disassembly of section .text:
     179c:	71 09       	sbc	r23, r1
     179e:	86 23       	and	r24, r22
     17a0:	97 23       	and	r25, r23
+  prev = p - offset;
     17a2:	9c 01       	movw	r18, r24
     17a4:	24 1b       	sub	r18, r20
     17a6:	35 0b       	sbc	r19, r21
+
+  /* Considering also the case where there is numeric overflow.*/
+  if ((prev < ch_memcore.basemem) || (prev > ch_memcore.topmem)) {
     17a8:	40 91 fd 02 	lds	r20, 0x02FD	; 0x8002fd <ch_memcore>
     17ac:	50 91 fe 02 	lds	r21, 0x02FE	; 0x8002fe <ch_memcore+0x1>
     17b0:	24 17       	cp	r18, r20
@@ -3066,85 +4201,193 @@ Disassembly of section .text:
     17b6:	e2 17       	cp	r30, r18
     17b8:	f3 07       	cpc	r31, r19
     17ba:	30 f0       	brcs	.+12     	; 0x17c8 <chCoreAllocFromTop+0x42>
+    return NULL;
+  }
+
+  ch_memcore.topmem = prev;
     17bc:	30 93 00 03 	sts	0x0300, r19	; 0x800300 <ch_memcore+0x3>
     17c0:	20 93 ff 02 	sts	0x02FF, r18	; 0x8002ff <ch_memcore+0x2>
+ * @details Usually this function just enables interrupts but may perform more
+ *          actions.
+ */
+static inline void port_unlock(void) {
+
+  asm volatile ("sei" : : : "memory");
     17c4:	78 94       	sei
+  chSysLock();
+  p = chCoreAllocFromTopI(size, align, offset);
+  chSysUnlock();
+
+  return p;
+}
     17c6:	08 95       	ret
+  p = (uint8_t *)MEM_ALIGN_PREV(ch_memcore.topmem - size, align);
+  prev = p - offset;
+
+  /* Considering also the case where there is numeric overflow.*/
+  if ((prev < ch_memcore.basemem) || (prev > ch_memcore.topmem)) {
+    return NULL;
     17c8:	90 e0       	ldi	r25, 0x00	; 0
     17ca:	80 e0       	ldi	r24, 0x00	; 0
     17cc:	78 94       	sei
+  chSysLock();
+  p = chCoreAllocFromTopI(size, align, offset);
+  chSysUnlock();
+
+  return p;
+}
     17ce:	08 95       	ret
 
 000017d0 <__heap_init>:
+ *
+ * @notapi
+ */
+void __heap_init(void) {
+
+  default_heap.provider = chCoreAllocAlignedWithOffset;
     17d0:	e9 e5       	ldi	r30, 0x59	; 89
     17d2:	f2 e0       	ldi	r31, 0x02	; 2
     17d4:	83 ec       	ldi	r24, 0xC3	; 195
     17d6:	9b e0       	ldi	r25, 0x0B	; 11
     17d8:	91 83       	std	Z+1, r25	; 0x01
     17da:	80 83       	st	Z, r24
+  H_NEXT(&default_heap.header) = NULL;
     17dc:	13 82       	std	Z+3, r1	; 0x03
     17de:	12 82       	std	Z+2, r1	; 0x02
+  H_PAGES(&default_heap.header) = 0;
     17e0:	15 82       	std	Z+5, r1	; 0x05
     17e2:	14 82       	std	Z+4, r1	; 0x04
+#if (CH_CFG_USE_MUTEXES == TRUE) || defined(__DOXYGEN__)
+  chMtxObjectInit(&default_heap.mtx);
     17e4:	8f e5       	ldi	r24, 0x5F	; 95
     17e6:	92 e0       	ldi	r25, 0x02	; 2
     17e8:	80 cf       	rjmp	.-256    	; 0x16ea <chMtxObjectInit>
 
 000017ea <_port_switch>:
+void _port_switch(thread_t *ntp, thread_t *otp) {
+
+  (void)ntp;
+  (void)otp;
+
+  asm volatile ("push    r2");
     17ea:	2f 92       	push	r2
+  asm volatile ("push    r3");
     17ec:	3f 92       	push	r3
+  asm volatile ("push    r4");
     17ee:	4f 92       	push	r4
+  asm volatile ("push    r5");
     17f0:	5f 92       	push	r5
+  asm volatile ("push    r6");
     17f2:	6f 92       	push	r6
+  asm volatile ("push    r7");
     17f4:	7f 92       	push	r7
+  asm volatile ("push    r8");
     17f6:	8f 92       	push	r8
+  asm volatile ("push    r9");
     17f8:	9f 92       	push	r9
+  asm volatile ("push    r10");
     17fa:	af 92       	push	r10
+  asm volatile ("push    r11");
     17fc:	bf 92       	push	r11
+  asm volatile ("push    r12");
     17fe:	cf 92       	push	r12
+  asm volatile ("push    r13");
     1800:	df 92       	push	r13
+  asm volatile ("push    r14");
     1802:	ef 92       	push	r14
+  asm volatile ("push    r15");
     1804:	ff 92       	push	r15
+  asm volatile ("push    r16");
     1806:	0f 93       	push	r16
+  asm volatile ("push    r17");
     1808:	1f 93       	push	r17
+  asm volatile ("push    r28");
     180a:	cf 93       	push	r28
+  asm volatile ("push    r29");
     180c:	df 93       	push	r29
+
+#if defined(__CHIBIOS_RT__)
+  asm volatile ("movw    r30, r22");
     180e:	fb 01       	movw	r30, r22
+  asm volatile ("in      r0, 0x3d");
     1810:	0d b6       	in	r0, 0x3d	; 61
+  asm volatile ("std     Z+5, r0");
     1812:	05 82       	std	Z+5, r0	; 0x05
+  asm volatile ("in      r0, 0x3e");
     1814:	0e b6       	in	r0, 0x3e	; 62
+  asm volatile ("std     Z+6, r0");
     1816:	06 82       	std	Z+6, r0	; 0x06
+
+  asm volatile ("movw    r30, r24");
     1818:	fc 01       	movw	r30, r24
+  asm volatile ("ldd     r0, Z+5");
     181a:	05 80       	ldd	r0, Z+5	; 0x05
+  asm volatile ("out     0x3d, r0");
     181c:	0d be       	out	0x3d, r0	; 61
+  asm volatile ("ldd     r0, Z+6");
     181e:	06 80       	ldd	r0, Z+6	; 0x06
+  asm volatile ("out     0x3e, r0");
     1820:	0e be       	out	0x3e, r0	; 62
+  asm volatile ("out     0x3d, r0");
+  asm volatile ("ldd     r0, Z+1");
+  asm volatile ("out     0x3e, r0");
+#endif
+
+  asm volatile ("pop     r29");
     1822:	df 91       	pop	r29
+  asm volatile ("pop     r28");
     1824:	cf 91       	pop	r28
+  asm volatile ("pop     r17");
     1826:	1f 91       	pop	r17
+  asm volatile ("pop     r16");
     1828:	0f 91       	pop	r16
+  asm volatile ("pop     r15");
     182a:	ff 90       	pop	r15
+  asm volatile ("pop     r14");
     182c:	ef 90       	pop	r14
+  asm volatile ("pop     r13");
     182e:	df 90       	pop	r13
+  asm volatile ("pop     r12");
     1830:	cf 90       	pop	r12
+  asm volatile ("pop     r11");
     1832:	bf 90       	pop	r11
+  asm volatile ("pop     r10");
     1834:	af 90       	pop	r10
+  asm volatile ("pop     r9");
     1836:	9f 90       	pop	r9
+  asm volatile ("pop     r8");
     1838:	8f 90       	pop	r8
+  asm volatile ("pop     r7");
     183a:	7f 90       	pop	r7
+  asm volatile ("pop     r6");
     183c:	6f 90       	pop	r6
+  asm volatile ("pop     r5");
     183e:	5f 90       	pop	r5
+  asm volatile ("pop     r4");
     1840:	4f 90       	pop	r4
+  asm volatile ("pop     r3");
     1842:	3f 90       	pop	r3
+  asm volatile ("pop     r2");
     1844:	2f 90       	pop	r2
+  asm volatile ("ret");
     1846:	08 95       	ret
 
 00001848 <_port_thread_start>:
     1848:	78 94       	sei
+ *          invoked.
+ */
+void _port_thread_start(void) {
+
+  chSysUnlock();
+  asm volatile ("movw    r24, r4");
     184a:	c2 01       	movw	r24, r4
+  asm volatile ("movw    r30, r2");
     184c:	f1 01       	movw	r30, r2
+  asm volatile ("icall");
     184e:	09 95       	icall
+  asm volatile ("call    chThdExit");  /* Used for avr5 Architecture. */
     1850:	14 cf       	rjmp	.-472    	; 0x167a <chThdExit>
+}
     1852:	08 95       	ret
 
 00001854 <main>:

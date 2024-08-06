@@ -1304,17 +1304,17 @@
  880               		.file 17 "../../os/oslib/include/chmemheaps.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmemheaps.c
-     /tmp/ccOm229b.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccOm229b.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccOm229b.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccOm229b.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccOm229b.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccOm229b.s:13     .text.__heap_init:0000000000000000 __heap_init
-     /tmp/ccOm229b.s:861    .bss.default_heap:0000000000000000 default_heap
-     /tmp/ccOm229b.s:46     .text.chHeapObjectInit:0000000000000000 chHeapObjectInit
-     /tmp/ccOm229b.s:107    .text.chHeapAllocAligned:0000000000000000 chHeapAllocAligned
-     /tmp/ccOm229b.s:515    .text.chHeapFree:0000000000000000 chHeapFree
-     /tmp/ccOm229b.s:701    .text.chHeapStatus:0000000000000000 chHeapStatus
+     /tmp/cchXCDER.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cchXCDER.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cchXCDER.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cchXCDER.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cchXCDER.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cchXCDER.s:13     .text.__heap_init:0000000000000000 __heap_init
+     /tmp/cchXCDER.s:861    .bss.default_heap:0000000000000000 default_heap
+     /tmp/cchXCDER.s:46     .text.chHeapObjectInit:0000000000000000 chHeapObjectInit
+     /tmp/cchXCDER.s:107    .text.chHeapAllocAligned:0000000000000000 chHeapAllocAligned
+     /tmp/cchXCDER.s:515    .text.chHeapFree:0000000000000000 chHeapFree
+     /tmp/cchXCDER.s:701    .text.chHeapStatus:0000000000000000 chHeapStatus
 
 UNDEFINED SYMBOLS
 chCoreAllocFromTop

@@ -32,10 +32,10 @@
   32               		.file 22 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_mmcsd.c
-     /tmp/ccDpIvvj.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccDpIvvj.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccDpIvvj.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccDpIvvj.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccDpIvvj.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccec4ytx.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccec4ytx.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccec4ytx.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccec4ytx.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccec4ytx.s:6      *ABS*:0000000000000001 __zero_reg__
 
 NO UNDEFINED SYMBOLS

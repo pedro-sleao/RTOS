@@ -2754,30 +2754,30 @@
  835               		.file 25 "../../os/rt/include/chschd.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_serial.c
-     /tmp/ccs84zAZ.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccs84zAZ.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccs84zAZ.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccs84zAZ.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccs84zAZ.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccs84zAZ.s:12     .text._readt:0000000000000000 _readt
-     /tmp/ccs84zAZ.s:32     .text._read:0000000000000000 _read
-     /tmp/ccs84zAZ.s:53     .text._writet:0000000000000000 _writet
-     /tmp/ccs84zAZ.s:72     .text._write:0000000000000000 _write
-     /tmp/ccs84zAZ.s:93     .text._gett:0000000000000000 _gett
-     /tmp/ccs84zAZ.s:112    .text._get:0000000000000000 _get
-     /tmp/ccs84zAZ.s:133    .text._putt:0000000000000000 _putt
-     /tmp/ccs84zAZ.s:152    .text._put:0000000000000000 _put
-     /tmp/ccs84zAZ.s:173    .text._ctl:0000000000000000 _ctl
-     /tmp/ccs84zAZ.s:197    .text.sdInit:0000000000000000 sdInit
-     /tmp/ccs84zAZ.s:214    .text.sdObjectInit:0000000000000000 sdObjectInit
-     /tmp/ccs84zAZ.s:802    .rodata.vmt:0000000000000000 vmt
-     /tmp/ccs84zAZ.s:314    .text.sdStart:0000000000000000 sdStart
-     /tmp/ccs84zAZ.s:383    .text.sdStop:0000000000000000 sdStop
-     /tmp/ccs84zAZ.s:467    .text.sdIncomingDataI:0000000000000000 sdIncomingDataI
-     /tmp/ccs84zAZ.s:566    .text.sdRequestDataI:0000000000000000 sdRequestDataI
-     /tmp/ccs84zAZ.s:641    .text.sdPutWouldBlock:0000000000000000 sdPutWouldBlock
-     /tmp/ccs84zAZ.s:701    .text.sdGetWouldBlock:0000000000000000 sdGetWouldBlock
-     /tmp/ccs84zAZ.s:761    .text.sdControl:0000000000000000 sdControl
+     /tmp/ccaYdI5r.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccaYdI5r.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccaYdI5r.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccaYdI5r.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccaYdI5r.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccaYdI5r.s:12     .text._readt:0000000000000000 _readt
+     /tmp/ccaYdI5r.s:32     .text._read:0000000000000000 _read
+     /tmp/ccaYdI5r.s:53     .text._writet:0000000000000000 _writet
+     /tmp/ccaYdI5r.s:72     .text._write:0000000000000000 _write
+     /tmp/ccaYdI5r.s:93     .text._gett:0000000000000000 _gett
+     /tmp/ccaYdI5r.s:112    .text._get:0000000000000000 _get
+     /tmp/ccaYdI5r.s:133    .text._putt:0000000000000000 _putt
+     /tmp/ccaYdI5r.s:152    .text._put:0000000000000000 _put
+     /tmp/ccaYdI5r.s:173    .text._ctl:0000000000000000 _ctl
+     /tmp/ccaYdI5r.s:197    .text.sdInit:0000000000000000 sdInit
+     /tmp/ccaYdI5r.s:214    .text.sdObjectInit:0000000000000000 sdObjectInit
+     /tmp/ccaYdI5r.s:802    .rodata.vmt:0000000000000000 vmt
+     /tmp/ccaYdI5r.s:314    .text.sdStart:0000000000000000 sdStart
+     /tmp/ccaYdI5r.s:383    .text.sdStop:0000000000000000 sdStop
+     /tmp/ccaYdI5r.s:467    .text.sdIncomingDataI:0000000000000000 sdIncomingDataI
+     /tmp/ccaYdI5r.s:566    .text.sdRequestDataI:0000000000000000 sdRequestDataI
+     /tmp/ccaYdI5r.s:641    .text.sdPutWouldBlock:0000000000000000 sdPutWouldBlock
+     /tmp/ccaYdI5r.s:701    .text.sdGetWouldBlock:0000000000000000 sdGetWouldBlock
+     /tmp/ccaYdI5r.s:761    .text.sdControl:0000000000000000 sdControl
 
 UNDEFINED SYMBOLS
 iqReadTimeout

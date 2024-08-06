@@ -44,41 +44,42 @@
   24:main.c        **** 
   25:main.c        ****   static PWMConfig pwmcfg = { .frequency = 15625,
   26:main.c        ****                               .period = 255,
-  27:main.c        ****                               .channels = {{PWM_OUTPUT_ACTIVE_HIGH, 0},
-  28:main.c        ****                                 {PWM_OUTPUT_DISABLED, 0}},
-  29:main.c        ****   };
-  30:main.c        **** 
-  31:main.c        ****   /*
-  32:main.c        ****    * System initializations.
-  33:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
-  34:main.c        ****    *   and performs the board-specific initializations.
-  35:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
-  36:main.c        ****    *   RTOS is active.
-  37:main.c        ****    */
-  38:main.c        ****   halInit();
-  22               		.loc 1 38 0
+  27:main.c        ****                               .callback = 0,
+  28:main.c        ****                               .channels = {{PWM_OUTPUT_ACTIVE_HIGH, 0},
+  29:main.c        ****                                 {PWM_OUTPUT_DISABLED, 0}},
+  30:main.c        ****   };
+  31:main.c        **** 
+  32:main.c        ****   /*
+  33:main.c        ****    * System initializations.
+  34:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  35:main.c        ****    *   and performs the board-specific initializations.
+  36:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  37:main.c        ****    *   RTOS is active.
+  38:main.c        ****    */
+  39:main.c        ****   halInit();
+  22               		.loc 1 39 0
   23 0000 0E94 0000 		call halInit
   24               	.LVL0:
-  39:main.c        ****   chSysInit();
-  25               		.loc 1 39 0
+  40:main.c        ****   chSysInit();
+  25               		.loc 1 40 0
   26 0004 0E94 0000 		call chSysInit
   27               	.LVL1:
-  40:main.c        **** 
-  41:main.c        ****   pwmStart(&PWMD3, &pwmcfg);
-  28               		.loc 1 41 0
+  41:main.c        **** 
+  42:main.c        ****   pwmStart(&PWMD2, &pwmcfg);
+  28               		.loc 1 42 0
   29 0008 60E0      		ldi r22,lo8(pwmcfg.4098)
   30 000a 70E0      		ldi r23,hi8(pwmcfg.4098)
-  31 000c 80E0      		ldi r24,lo8(PWMD3)
-  32 000e 90E0      		ldi r25,hi8(PWMD3)
+  31 000c 80E0      		ldi r24,lo8(PWMD2)
+  32 000e 90E0      		ldi r25,hi8(PWMD2)
   33 0010 0E94 0000 		call pwmStart
   34               	.LVL2:
-  42:main.c        ****   pwmEnableChannel(&PWMD3, 0, 0);
-  35               		.loc 1 42 0
+  43:main.c        ****   pwmEnableChannel(&PWMD2, 0, 0);
+  35               		.loc 1 43 0
   36 0014 50E0      		ldi r21,0
   37 0016 40E0      		ldi r20,0
   38 0018 60E0      		ldi r22,0
-  39 001a 80E0      		ldi r24,lo8(PWMD3)
-  40 001c 90E0      		ldi r25,hi8(PWMD3)
+  39 001a 80E0      		ldi r24,lo8(PWMD2)
+  40 001c 90E0      		ldi r25,hi8(PWMD2)
   41 001e 0E94 0000 		call pwmEnableChannel
   42               	.LVL3:
   43               	.L2:
@@ -92,7 +93,7 @@
   54 0002 00        		.byte	0
   55 0003 00        		.byte	0
   56 0004 FF00      		.word	255
-  57 0006 0000      		.zero	2
+  57 0006 0000      		.word	0
   58 0008 01        		.byte	1
   59 0009 0000      		.word	0
   60 000b 00        		.byte	0
@@ -124,18 +125,18 @@
   86               		.file 24 "../../os/hal/include/hal.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/ccfYKPxk.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccfYKPxk.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccfYKPxk.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccfYKPxk.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccfYKPxk.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccfYKPxk.s:13     .text.startup.main:0000000000000000 main
-     /tmp/ccfYKPxk.s:51     .data.pwmcfg.4098:0000000000000000 pwmcfg.4098
+     /tmp/ccmB5VDc.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccmB5VDc.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccmB5VDc.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccmB5VDc.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccmB5VDc.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccmB5VDc.s:13     .text.startup.main:0000000000000000 main
+     /tmp/ccmB5VDc.s:51     .data.pwmcfg.4098:0000000000000000 pwmcfg.4098
 
 UNDEFINED SYMBOLS
 halInit
 chSysInit
-PWMD3
+PWMD2
 pwmStart
 pwmEnableChannel
 __do_copy_data

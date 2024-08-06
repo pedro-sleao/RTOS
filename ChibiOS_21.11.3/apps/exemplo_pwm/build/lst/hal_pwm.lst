@@ -1376,22 +1376,22 @@
  624               		.file 24 "../../os/hal/osal/rt-nil/osal.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_pwm.c
-     /tmp/ccohJFz5.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccohJFz5.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccohJFz5.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccohJFz5.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccohJFz5.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccohJFz5.s:13     .text.pwmInit:0000000000000000 pwmInit
-     /tmp/ccohJFz5.s:31     .text.pwmObjectInit:0000000000000000 pwmObjectInit
-     /tmp/ccohJFz5.s:61     .text.pwmStart:0000000000000000 pwmStart
-     /tmp/ccohJFz5.s:143    .text.pwmStop:0000000000000000 pwmStop
-     /tmp/ccohJFz5.s:214    .text.pwmChangePeriod:0000000000000000 pwmChangePeriod
-     /tmp/ccohJFz5.s:268    .text.pwmEnableChannel:0000000000000000 pwmEnableChannel
-     /tmp/ccohJFz5.s:335    .text.pwmDisableChannel:0000000000000000 pwmDisableChannel
-     /tmp/ccohJFz5.s:400    .text.pwmEnablePeriodicNotification:0000000000000000 pwmEnablePeriodicNotification
-     /tmp/ccohJFz5.s:451    .text.pwmDisablePeriodicNotification:0000000000000000 pwmDisablePeriodicNotification
-     /tmp/ccohJFz5.s:502    .text.pwmEnableChannelNotification:0000000000000000 pwmEnableChannelNotification
-     /tmp/ccohJFz5.s:553    .text.pwmDisableChannelNotification:0000000000000000 pwmDisableChannelNotification
+     /tmp/cc8HjdR6.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc8HjdR6.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc8HjdR6.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc8HjdR6.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc8HjdR6.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc8HjdR6.s:13     .text.pwmInit:0000000000000000 pwmInit
+     /tmp/cc8HjdR6.s:31     .text.pwmObjectInit:0000000000000000 pwmObjectInit
+     /tmp/cc8HjdR6.s:61     .text.pwmStart:0000000000000000 pwmStart
+     /tmp/cc8HjdR6.s:143    .text.pwmStop:0000000000000000 pwmStop
+     /tmp/cc8HjdR6.s:214    .text.pwmChangePeriod:0000000000000000 pwmChangePeriod
+     /tmp/cc8HjdR6.s:268    .text.pwmEnableChannel:0000000000000000 pwmEnableChannel
+     /tmp/cc8HjdR6.s:335    .text.pwmDisableChannel:0000000000000000 pwmDisableChannel
+     /tmp/cc8HjdR6.s:400    .text.pwmEnablePeriodicNotification:0000000000000000 pwmEnablePeriodicNotification
+     /tmp/cc8HjdR6.s:451    .text.pwmDisablePeriodicNotification:0000000000000000 pwmDisablePeriodicNotification
+     /tmp/cc8HjdR6.s:502    .text.pwmEnableChannelNotification:0000000000000000 pwmEnableChannelNotification
+     /tmp/cc8HjdR6.s:553    .text.pwmDisableChannelNotification:0000000000000000 pwmDisableChannelNotification
 
 UNDEFINED SYMBOLS
 pwm_lld_init

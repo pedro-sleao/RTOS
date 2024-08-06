@@ -2053,18 +2053,18 @@
  1014               		.file 17 "../../os/oslib/include/chmemcore.h"
  1015               		.file 18 "../../os/rt/include/chthreads.h"
  1016               		.file 19 "../../os/rt/include/chschd.h"
- 1017               		.file 20 "<built-in>"
+ 1017               		.file 20 "<embutido>"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chpipes.c
-     /tmp/cc8WWAEl.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc8WWAEl.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc8WWAEl.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc8WWAEl.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc8WWAEl.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc8WWAEl.s:13     .text.chPipeObjectInit:0000000000000000 chPipeObjectInit
-     /tmp/cc8WWAEl.s:85     .text.chPipeReset:0000000000000000 chPipeReset
-     /tmp/cc8WWAEl.s:196    .text.chPipeWriteTimeout:0000000000000000 chPipeWriteTimeout
-     /tmp/cc8WWAEl.s:610    .text.chPipeReadTimeout:0000000000000000 chPipeReadTimeout
+     /tmp/ccgyrofO.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccgyrofO.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccgyrofO.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccgyrofO.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccgyrofO.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccgyrofO.s:13     .text.chPipeObjectInit:0000000000000000 chPipeObjectInit
+     /tmp/ccgyrofO.s:85     .text.chPipeReset:0000000000000000 chPipeReset
+     /tmp/ccgyrofO.s:196    .text.chPipeWriteTimeout:0000000000000000 chPipeWriteTimeout
+     /tmp/ccgyrofO.s:610    .text.chPipeReadTimeout:0000000000000000 chPipeReadTimeout
 
 UNDEFINED SYMBOLS
 chMtxObjectInit

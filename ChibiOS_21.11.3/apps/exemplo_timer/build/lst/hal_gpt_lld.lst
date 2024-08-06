@@ -1,0 +1,1490 @@
+   1               		.file	"hal_gpt_lld.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.__vector_7,"ax",@progbits
+  11               	.global	__vector_7
+  13               	__vector_7:
+  14               	.LFB242:
+  15               		.file 1 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c"
+   1:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*
+   2:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+   4:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     you may not use this file except in compliance with the License.
+   6:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     You may obtain a copy of the License at
+   7:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+   8:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  10:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     Unless required by applicable law or agreed to in writing, software
+  11:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     See the License for the specific language governing permissions and
+  14:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     limitations under the License.
+  15:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** */
+  16:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  17:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*
+  18:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****    This driver is based on the work done by Matteo Serva available at
+  19:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****    http://github.com/matteoserva/ChibiOS-AVR
+  20:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** */
+  21:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  22:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+  23:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @file    TIMv1/hal_gpt_lld.c
+  24:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   AVR/MEGA GPT subsystem low level driver source.
+  25:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+  26:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @addtogroup GPT
+  27:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @{
+  28:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+  29:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  30:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #include "hal.h"
+  31:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  32:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if HAL_USE_GPT || defined(__DOXYGEN__)
+  33:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  34:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+  35:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* Driver local definitions.                                                */
+  36:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+  37:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  38:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #define PRESCALER_SIZE_BASE       5
+  39:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #define PRESCALER_SIZE_EXTENDED   7
+  40:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  41:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* FIXME: could use better names here! */
+  42:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** typedef struct {
+  43:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *tccra;
+  44:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *tccrb;
+  45:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *ocr1;
+  46:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *ocr2;
+  47:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *tcnt1;
+  48:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *tcnt2;
+  49:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *tifr;
+  50:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   volatile uint8_t *timsk;
+  51:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** } timer_registers_t;
+  52:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  53:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** const timer_registers_t regs_table[] = {
+  54:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM1 || defined(__DOXYGEN__)
+  55:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   { &TCCR1A, &TCCR1B, &OCR1AH, &OCR1AL, &TCNT1H, &TCNT1L, &TIFR1, &TIMSK1 },
+  56:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  57:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM2 || defined(__DOXYGEN__)
+  58:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   { &TCCR2A, &TCCR2B, &OCR2A, &OCR2A, &TCNT2, &TCNT2, &TIFR2, &TIMSK2 },
+  59:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  60:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM3 || defined(__DOXYGEN__)
+  61:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   { &TCCR3A, &TCCR3B, &OCR3AH, &OCR3AL, &TCNT3H, &TCNT3L, &TIFR3, &TIMSK3 },
+  62:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  63:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM4 || defined(__DOXYGEN__)
+  64:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   { &TCCR4A, &TCCR4B, &OCR4AH, &OCR4AL, &TCNT4H, &TCNT4L, &TIFR4, &TIMSK4 },
+  65:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  66:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM5 || defined(__DOXYGEN__)
+  67:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   { &TCCR5A, &TCCR5B, &OCR5AH, &OCR5AL, &TCNT5H, &TCNT5L, &TIFR5, &TIMSK5 },
+  68:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  69:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** };
+  70:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  71:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+  72:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* Driver exported variables.                                               */
+  73:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+  74:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  75:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM1 || defined(__DOXYGEN__)
+  76:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** GPTDriver GPTD1;
+  77:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  78:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM2 || defined(__DOXYGEN__)
+  79:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** GPTDriver GPTD2;
+  80:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  81:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM3 || defined(__DOXYGEN__)
+  82:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** GPTDriver GPTD3;
+  83:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  84:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM4 || defined(__DOXYGEN__)
+  85:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** GPTDriver GPTD4;
+  86:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  87:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM5 || defined(__DOXYGEN__)
+  88:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** GPTDriver GPTD5;
+  89:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+  90:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  91:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+  92:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* Driver local variables.                                                  */
+  93:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+  94:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  95:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static uint16_t ratio_base[] = { 1024, 256, 64, 8, 1 };
+  96:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static uint8_t  clock_source_base[] = { 5, 4, 3, 2, 1 };
+  97:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  98:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+  99:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static uint16_t ratio_extended[] = { 1024, 256, 128, 64, 32, 8, 1 };
+ 100:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static uint8_t  clock_source_extended[] = { 7, 6, 5, 4, 3, 2, 1 };
+ 101:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 102:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 103:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+ 104:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* Driver local functions.                                                  */
+ 105:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+ 106:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 107:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 108:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TODO: Comment this function.
+ 109:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 110:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] freq
+ 111:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] ratio   pointer to the ratio used to calculate the prescaler
+ 112:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] n       ....
+ 113:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @return            ....
+ 114:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 115:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static uint8_t prescaler(uint16_t freq, uint16_t *ratio, uint8_t n) {
+ 116:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 117:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   uint8_t i;
+ 118:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 119:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   for (i = 0; i < n; ++i) {
+ 120:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     uint32_t result = F_CPU / ratio[i] / freq;
+ 121:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if (result > 256UL)
+ 122:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****        return i - 1;
+ 123:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if ((result * ratio[i] * freq) == F_CPU)
+ 124:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       return i;
+ 125:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 126:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   return -1;
+ 127:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 128:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 129:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 130:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TODO: Comment this function.
+ 131:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 132:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp  pointer to the General Purpose Timer driver.
+ 133:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 134:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static void gpt_lld_serve_interrupt(GPTDriver *gptp) {
+ 135:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 136:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->counter++;
+ 137:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp->counter == gptp->period) {
+ 138:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     gptp->counter = 0;
+ 139:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if (gptp->state == GPT_ONESHOT) {
+ 140:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       gptp->state = GPT_READY;             /* Back in GPT_READY state.     */
+ 141:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       gpt_lld_stop_timer(gptp);            /* Timer automatically stopped. */
+ 142:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     }
+ 143:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     gptp->callback(gptp);
+ 144:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 145:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 146:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 147:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 148:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   GPT low level driver dummy callback.
+ 149:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 150:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp  pointer to the General Purpose Timer driver.
+ 151:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 152:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static void gpt_lld_dummy_callback(GPTDriver *gptp) {
+ 153:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 154:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 155:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 156:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Get the timer index.
+ 157:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 158:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp  pointer to the General Purpose Timer driver.
+ 159:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 160:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** static uint8_t getTimerIndex(GPTDriver *gptp) {
+ 161:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 162:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   uint8_t index = 0;
+ 163:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 164:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM1 || defined(__DOXYGEN__)
+ 165:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp == &GPTD1) return index;
+ 166:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 167:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 168:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM2 || defined(__DOXYGEN__)
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp == &GPTD2) return index;
+ 170:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 171:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 172:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM3 || defined(__DOXYGEN__)
+ 173:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp == &GPTD3) return index;
+ 174:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 175:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 176:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM4 || defined(__DOXYGEN__)
+ 177:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp == &GPTD4) return index;
+ 178:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 179:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 180:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM5 || defined(__DOXYGEN__)
+ 181:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp == &GPTD5) return index;
+ 182:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 183:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 184:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   return -1;
+ 185:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 186:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 187:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*===========================================================================*/
+ 188:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* Driver interrupt handlers.                                                */
+ 189:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*===========================================================================*/
+ 190:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 191:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM1 || defined(__DOXYGEN__)
+ 192:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 193:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TIM1 interrupt handler.
+ 194:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 195:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @isr
+ 196:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 197:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** OSAL_IRQ_HANDLER(TIMER1_COMPA_vect) {
+ 198:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 199:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 200:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_serve_interrupt(&GPTD1);
+ 201:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 202:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 203:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 204:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 205:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM2 || defined(__DOXYGEN__)
+ 206:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 207:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TIM2 interrupt handler.
+ 208:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 209:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @isr
+ 210:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 211:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** OSAL_IRQ_HANDLER(TIMER2_COMPA_vect) {
+  16               		.loc 1 211 0
+  17               		.cfi_startproc
+  18 0000 1F92      		push r1
+  19               	.LCFI0:
+  20               		.cfi_def_cfa_offset 3
+  21               		.cfi_offset 1, -2
+  22 0002 0F92      		push r0
+  23               	.LCFI1:
+  24               		.cfi_def_cfa_offset 4
+  25               		.cfi_offset 0, -3
+  26 0004 0FB6      		in r0,__SREG__
+  27 0006 0F92      		push r0
+  28 0008 1124      		clr __zero_reg__
+  29 000a 2F93      		push r18
+  30               	.LCFI2:
+  31               		.cfi_def_cfa_offset 5
+  32               		.cfi_offset 18, -4
+  33 000c 3F93      		push r19
+  34               	.LCFI3:
+  35               		.cfi_def_cfa_offset 6
+  36               		.cfi_offset 19, -5
+  37 000e 4F93      		push r20
+  38               	.LCFI4:
+  39               		.cfi_def_cfa_offset 7
+  40               		.cfi_offset 20, -6
+  41 0010 5F93      		push r21
+  42               	.LCFI5:
+  43               		.cfi_def_cfa_offset 8
+  44               		.cfi_offset 21, -7
+  45 0012 6F93      		push r22
+  46               	.LCFI6:
+  47               		.cfi_def_cfa_offset 9
+  48               		.cfi_offset 22, -8
+  49 0014 7F93      		push r23
+  50               	.LCFI7:
+  51               		.cfi_def_cfa_offset 10
+  52               		.cfi_offset 23, -9
+  53 0016 8F93      		push r24
+  54               	.LCFI8:
+  55               		.cfi_def_cfa_offset 11
+  56               		.cfi_offset 24, -10
+  57 0018 9F93      		push r25
+  58               	.LCFI9:
+  59               		.cfi_def_cfa_offset 12
+  60               		.cfi_offset 25, -11
+  61 001a AF93      		push r26
+  62               	.LCFI10:
+  63               		.cfi_def_cfa_offset 13
+  64               		.cfi_offset 26, -12
+  65 001c BF93      		push r27
+  66               	.LCFI11:
+  67               		.cfi_def_cfa_offset 14
+  68               		.cfi_offset 27, -13
+  69 001e EF93      		push r30
+  70               	.LCFI12:
+  71               		.cfi_def_cfa_offset 15
+  72               		.cfi_offset 30, -14
+  73 0020 FF93      		push r31
+  74               	.LCFI13:
+  75               		.cfi_def_cfa_offset 16
+  76               		.cfi_offset 31, -15
+  77               	/* prologue: Signal */
+  78               	/* frame size = 0 */
+  79               	/* stack size = 15 */
+  80               	.L__stack_usage = 15
+ 212:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 213:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_PROLOGUE();
+  81               		.loc 1 213 0
+  82 0022 81E0      		ldi r24,lo8(1)
+  83 0024 8093 0000 		sts __avr_in_isr,r24
+  84               	.LVL0:
+  85               	.LBB36:
+  86               	.LBB37:
+ 136:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp->counter == gptp->period) {
+  87               		.loc 1 136 0
+  88 0028 8091 0000 		lds r24,GPTD2+6
+  89 002c 9091 0000 		lds r25,GPTD2+6+1
+  90 0030 0196      		adiw r24,1
+  91 0032 9093 0000 		sts GPTD2+6+1,r25
+  92 0036 8093 0000 		sts GPTD2+6,r24
+ 137:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     gptp->counter = 0;
+  93               		.loc 1 137 0
+  94 003a 2091 0000 		lds r18,GPTD2+4
+  95 003e 3091 0000 		lds r19,GPTD2+4+1
+  96 0042 8217      		cp r24,r18
+  97 0044 9307      		cpc r25,r19
+  98 0046 01F0      		breq .L9
+  99               	.L2:
+ 100               	.LVL1:
+ 101               	.LBE37:
+ 102               	.LBE36:
+ 214:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_serve_interrupt(&GPTD2);
+ 215:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 103               		.loc 1 215 0
+ 104 0048 1092 0000 		sts __avr_in_isr,__zero_reg__
+ 105 004c 0E94 0000 		call chSchIsPreemptionRequired
+ 106               	.LVL2:
+ 107 0050 8111      		cpse r24,__zero_reg__
+ 108               		.loc 1 215 0 is_stmt 0 discriminator 1
+ 109 0052 0E94 0000 		call chSchDoPreemption
+ 110               	.LVL3:
+ 111               	.L1:
+ 112               	/* epilogue start */
+ 216:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 113               		.loc 1 216 0 is_stmt 1
+ 114 0056 FF91      		pop r31
+ 115 0058 EF91      		pop r30
+ 116 005a BF91      		pop r27
+ 117 005c AF91      		pop r26
+ 118 005e 9F91      		pop r25
+ 119 0060 8F91      		pop r24
+ 120 0062 7F91      		pop r23
+ 121 0064 6F91      		pop r22
+ 122 0066 5F91      		pop r21
+ 123 0068 4F91      		pop r20
+ 124 006a 3F91      		pop r19
+ 125 006c 2F91      		pop r18
+ 126 006e 0F90      		pop r0
+ 127 0070 0FBE      		out __SREG__,r0
+ 128 0072 0F90      		pop r0
+ 129 0074 1F90      		pop r1
+ 130 0076 1895      		reti
+ 131               	.LVL4:
+ 132               	.L9:
+ 133               	.LBB41:
+ 134               	.LBB40:
+ 138:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if (gptp->state == GPT_ONESHOT) {
+ 135               		.loc 1 138 0
+ 136 0078 1092 0000 		sts GPTD2+6+1,__zero_reg__
+ 137 007c 1092 0000 		sts GPTD2+6,__zero_reg__
+ 139:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       gptp->state = GPT_READY;             /* Back in GPT_READY state.     */
+ 138               		.loc 1 139 0
+ 139 0080 8091 0000 		lds r24,GPTD2
+ 140 0084 8430      		cpi r24,lo8(4)
+ 141 0086 01F4      		brne .L3
+ 140:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       gpt_lld_stop_timer(gptp);            /* Timer automatically stopped. */
+ 142               		.loc 1 140 0
+ 143 0088 92E0      		ldi r25,lo8(2)
+ 144 008a 9093 0000 		sts GPTD2,r25
+ 145               	.LVL5:
+ 146               	.LBB38:
+ 147               	.LBB39:
+ 217:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 218:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 219:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM3 || defined(__DOXYGEN__)
+ 220:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 221:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TIM3 interrupt handler.
+ 222:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 223:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @isr
+ 224:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 225:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** OSAL_IRQ_HANDLER(TIMER3_COMPA_vect) {
+ 226:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 227:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 228:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_serve_interrupt(&GPTD3);
+ 229:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 230:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 231:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 232:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 233:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM4 || defined(__DOXYGEN__)
+ 234:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 235:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TIM4 interrupt handler.
+ 236:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 237:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @isr
+ 238:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 239:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** OSAL_IRQ_HANDLER(TIMER4_COMPA_vect) {
+ 240:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 241:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 242:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_serve_interrupt(&GPTD4);
+ 243:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 244:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 245:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 246:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 247:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM5 || defined(__DOXYGEN__)
+ 248:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 249:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   TIM2 interrupt handler.
+ 250:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 251:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @isr
+ 252:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 253:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** OSAL_IRQ_HANDLER(TIMER5_COMPA_vect) {
+ 254:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 255:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_PROLOGUE();
+ 256:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_serve_interrupt(&GPTD5);
+ 257:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 258:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 259:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 260:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 261:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+ 262:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /* Driver exported functions.                                               */
+ 263:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /*==========================================================================*/
+ 264:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 265:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 266:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Low level GPT driver initialization.
+ 267:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 268:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @notapi
+ 269:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 270:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** void gpt_lld_init(void) {
+ 271:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 272:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM1 || defined(__DOXYGEN__)
+ 273:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptObjectInit(&GPTD1);
+ 274:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 275:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM2 || defined(__DOXYGEN__)
+ 276:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptObjectInit(&GPTD2);
+ 277:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 278:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM3 || defined(__DOXYGEN__)
+ 279:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptObjectInit(&GPTD3);
+ 280:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 281:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM4 || defined(__DOXYGEN__)
+ 282:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptObjectInit(&GPTD4);
+ 283:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 284:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM5 || defined(__DOXYGEN__)
+ 285:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptObjectInit(&GPTD5);
+ 286:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 287:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 288:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 289:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 290:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Configures and activates the GPT peripheral.
+ 291:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 292:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp    pointer to the @p GPTDriver object
+ 293:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 294:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @notapi
+ 295:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 296:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** void gpt_lld_start(GPTDriver *gptp) {
+ 297:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 298:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   uint8_t psc;
+ 299:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 300:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp->state == GPT_STOP) {
+ 301:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     /* Clock activation.*/
+ 302:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 303:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 304:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   /* Configuration.*/
+ 305:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 306:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #if AVR_GPT_USE_TIM2 || defined(__DOXYGEN__)
+ 307:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp == &GPTD2) {
+ 308:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     psc = prescaler(gptp->config->frequency, ratio_extended, PRESCALER_SIZE_EXTENDED);
+ 309:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     gptp->clock_source = clock_source_extended[psc] & 0x07;
+ 310:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     TCCR2A  = (1 << WGM21) | (0 << WGM20);
+ 311:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     TCCR2B  = (0 << WGM22);
+ 312:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     OCR2A = F_CPU / ratio_extended[psc] /gptp->config->frequency - 1;
+ 313:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     return;
+ 314:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 315:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 316:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 317:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   uint8_t i = getTimerIndex(gptp);
+ 318:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   psc = prescaler(gptp->config->frequency, ratio_base, PRESCALER_SIZE_BASE);
+ 319:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->clock_source = clock_source_base[psc] & 0x07;
+ 320:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccra = (0 << WGM11)  |
+ 321:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****                          (0 << WGM10)  |
+ 322:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****                          (0 << COM1A1) |
+ 323:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****                          (0 << COM1A0) |
+ 324:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****                          (0 << COM1B1) |
+ 325:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****                          (0 << COM1B0);
+ 326:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccrb = (1 << WGM12);
+ 327:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].ocr1 = 0;
+ 328:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].ocr2 = F_CPU / ratio_base[psc] / gptp->config->frequency - 1;
+ 329:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 330:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 331:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 332:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Deactivates the GPT peripheral.
+ 333:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 334:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp    pointer to the @p GPTDriver object
+ 335:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 336:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @notapi
+ 337:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 338:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** void gpt_lld_stop(GPTDriver *gptp) {
+ 339:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 340:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   /* Nothing to be done */
+ 341:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   if (gptp->state == GPT_READY) {
+ 342:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     /* Clock de-activation.*/
+ 343:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 344:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_stop_timer(gptp);
+ 345:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 346:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 347:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 348:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Starts the timer in continuous mode.
+ 349:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 350:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 351:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] period    period in ticks
+ 352:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 353:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @notapi
+ 354:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 355:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** void gpt_lld_start_timer(GPTDriver *gptp, gptcnt_t period) {
+ 356:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 357:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->callback = gptp->config->callback;
+ 358:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->period = period;
+ 359:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->counter = 0;
+ 360:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 361:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   uint8_t i = getTimerIndex(gptp);
+ 362:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tcnt1 = 0;
+ 363:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tcnt2 = 0;
+ 364:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tifr  = (1 << OCF1A);
+ 365:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].timsk = (1 << OCIE1A);
+ 366:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccrb |= (gptp->clock_source << CS10);
+ 367:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 368:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 369:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 370:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Stops the timer.
+ 371:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 372:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp    pointer to the @p GPTDriver object
+ 373:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 374:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @notapi
+ 375:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 376:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** void gpt_lld_stop_timer(GPTDriver *gptp) {
+ 377:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 378:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   uint8_t i = getTimerIndex(gptp);
+ 379:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 380:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccrb &= ~((7 << CS10) | (1 << OCIE1A));
+ 148               		.loc 1 380 0
+ 149 008e 8091 B100 		lds r24,177
+ 150 0092 887F      		andi r24,lo8(-8)
+ 151 0094 8093 B100 		sts 177,r24
+ 381:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tifr = (1 << OCF1A);
+ 152               		.loc 1 381 0
+ 153 0098 97BB      		out 0x17,r25
+ 154               	.LVL6:
+ 155               	.L3:
+ 156               	.LBE39:
+ 157               	.LBE38:
+ 143:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 158               		.loc 1 143 0
+ 159 009a E091 0000 		lds r30,GPTD2+8
+ 160 009e F091 0000 		lds r31,GPTD2+8+1
+ 161 00a2 80E0      		ldi r24,lo8(GPTD2)
+ 162 00a4 90E0      		ldi r25,hi8(GPTD2)
+ 163 00a6 0995      		icall
+ 164               	.LVL7:
+ 165 00a8 00C0      		rjmp .L2
+ 166               	.LBE40:
+ 167               	.LBE41:
+ 168               		.cfi_endproc
+ 169               	.LFE242:
+ 171               		.section	.text.gpt_lld_init,"ax",@progbits
+ 172               	.global	gpt_lld_init
+ 174               	gpt_lld_init:
+ 175               	.LFB243:
+ 270:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 176               		.loc 1 270 0
+ 177               		.cfi_startproc
+ 178               	/* prologue: function */
+ 179               	/* frame size = 0 */
+ 180               	/* stack size = 0 */
+ 181               	.L__stack_usage = 0
+ 276:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** #endif
+ 182               		.loc 1 276 0
+ 183 0000 80E0      		ldi r24,lo8(GPTD2)
+ 184 0002 90E0      		ldi r25,hi8(GPTD2)
+ 185 0004 0C94 0000 		jmp gptObjectInit
+ 186               	.LVL8:
+ 187               		.cfi_endproc
+ 188               	.LFE243:
+ 190               		.section	.text.gpt_lld_start,"ax",@progbits
+ 191               	.global	gpt_lld_start
+ 193               	gpt_lld_start:
+ 194               	.LFB244:
+ 296:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 195               		.loc 1 296 0
+ 196               		.cfi_startproc
+ 197               	.LVL9:
+ 198 0000 2F92      		push r2
+ 199               	.LCFI14:
+ 200               		.cfi_def_cfa_offset 3
+ 201               		.cfi_offset 2, -2
+ 202 0002 3F92      		push r3
+ 203               	.LCFI15:
+ 204               		.cfi_def_cfa_offset 4
+ 205               		.cfi_offset 3, -3
+ 206 0004 4F92      		push r4
+ 207               	.LCFI16:
+ 208               		.cfi_def_cfa_offset 5
+ 209               		.cfi_offset 4, -4
+ 210 0006 5F92      		push r5
+ 211               	.LCFI17:
+ 212               		.cfi_def_cfa_offset 6
+ 213               		.cfi_offset 5, -5
+ 214 0008 6F92      		push r6
+ 215               	.LCFI18:
+ 216               		.cfi_def_cfa_offset 7
+ 217               		.cfi_offset 6, -6
+ 218 000a 7F92      		push r7
+ 219               	.LCFI19:
+ 220               		.cfi_def_cfa_offset 8
+ 221               		.cfi_offset 7, -7
+ 222 000c 8F92      		push r8
+ 223               	.LCFI20:
+ 224               		.cfi_def_cfa_offset 9
+ 225               		.cfi_offset 8, -8
+ 226 000e 9F92      		push r9
+ 227               	.LCFI21:
+ 228               		.cfi_def_cfa_offset 10
+ 229               		.cfi_offset 9, -9
+ 230 0010 AF92      		push r10
+ 231               	.LCFI22:
+ 232               		.cfi_def_cfa_offset 11
+ 233               		.cfi_offset 10, -10
+ 234 0012 BF92      		push r11
+ 235               	.LCFI23:
+ 236               		.cfi_def_cfa_offset 12
+ 237               		.cfi_offset 11, -11
+ 238 0014 CF92      		push r12
+ 239               	.LCFI24:
+ 240               		.cfi_def_cfa_offset 13
+ 241               		.cfi_offset 12, -12
+ 242 0016 DF92      		push r13
+ 243               	.LCFI25:
+ 244               		.cfi_def_cfa_offset 14
+ 245               		.cfi_offset 13, -13
+ 246 0018 EF92      		push r14
+ 247               	.LCFI26:
+ 248               		.cfi_def_cfa_offset 15
+ 249               		.cfi_offset 14, -14
+ 250 001a FF92      		push r15
+ 251               	.LCFI27:
+ 252               		.cfi_def_cfa_offset 16
+ 253               		.cfi_offset 15, -15
+ 254 001c 0F93      		push r16
+ 255               	.LCFI28:
+ 256               		.cfi_def_cfa_offset 17
+ 257               		.cfi_offset 16, -16
+ 258 001e 1F93      		push r17
+ 259               	.LCFI29:
+ 260               		.cfi_def_cfa_offset 18
+ 261               		.cfi_offset 17, -17
+ 262 0020 CF93      		push r28
+ 263               	.LCFI30:
+ 264               		.cfi_def_cfa_offset 19
+ 265               		.cfi_offset 28, -18
+ 266 0022 DF93      		push r29
+ 267               	.LCFI31:
+ 268               		.cfi_def_cfa_offset 20
+ 269               		.cfi_offset 29, -19
+ 270               	/* prologue: function */
+ 271               	/* frame size = 0 */
+ 272               	/* stack size = 18 */
+ 273               	.L__stack_usage = 18
+ 274 0024 8C01      		movw r16,r24
+ 300:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     /* Clock activation.*/
+ 275               		.loc 1 300 0
+ 276 0026 DC01      		movw r26,r24
+ 277 0028 8C91      		ld r24,X
+ 278               	.LVL10:
+ 307:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     psc = prescaler(gptp->config->frequency, ratio_extended, PRESCALER_SIZE_EXTENDED);
+ 279               		.loc 1 307 0
+ 280 002a B0E0      		ldi r27,hi8(GPTD2)
+ 281 002c 0030      		cpi r16,lo8(GPTD2)
+ 282 002e 1B07      		cpc r17,r27
+ 283 0030 01F4      		brne .+2
+ 284 0032 00C0      		rjmp .L24
+ 285               	.LVL11:
+ 318:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->clock_source = clock_source_base[psc] & 0x07;
+ 286               		.loc 1 318 0
+ 287 0034 D801      		movw r26,r16
+ 288 0036 1196      		adiw r26,1
+ 289 0038 ED91      		ld r30,X+
+ 290 003a FC91      		ld r31,X
+ 291 003c 4080      		ld r4,Z
+ 292 003e 5180      		ldd r5,Z+1
+ 293 0040 6280      		ldd r6,Z+2
+ 294 0042 7380      		ldd r7,Z+3
+ 295 0044 6624      		clr r6
+ 296 0046 7724      		clr r7
+ 297 0048 C0E0      		ldi r28,lo8(ratio_base)
+ 298 004a D0E0      		ldi r29,hi8(ratio_base)
+ 299               	.LBB42:
+ 300               	.LBB43:
+ 119:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     uint32_t result = F_CPU / ratio[i] / freq;
+ 301               		.loc 1 119 0
+ 302 004c 312C      		mov r3,__zero_reg__
+ 303               	.LVL12:
+ 304               	.L21:
+ 305               	.LBB44:
+ 120:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if (result > 256UL)
+ 306               		.loc 1 120 0
+ 307 004e C990      		ld r12,Y+
+ 308 0050 D990      		ld r13,Y+
+ 309 0052 F12C      		mov r15,__zero_reg__
+ 310 0054 E12C      		mov r14,__zero_reg__
+ 311 0056 60E0      		ldi r22,0
+ 312 0058 74E2      		ldi r23,lo8(36)
+ 313 005a 84EF      		ldi r24,lo8(-12)
+ 314 005c 90E0      		ldi r25,0
+ 315 005e A701      		movw r20,r14
+ 316 0060 9601      		movw r18,r12
+ 317 0062 0E94 0000 		call __udivmodsi4
+ 318 0066 CA01      		movw r24,r20
+ 319 0068 B901      		movw r22,r18
+ 320 006a A301      		movw r20,r6
+ 321 006c 9201      		movw r18,r4
+ 322 006e 0E94 0000 		call __udivmodsi4
+ 323 0072 4901      		movw r8,r18
+ 324 0074 5A01      		movw r10,r20
+ 325               	.LVL13:
+ 121:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****        return i - 1;
+ 326               		.loc 1 121 0
+ 327 0076 B1E0      		ldi r27,1
+ 328 0078 8B16      		cp r8,r27
+ 329 007a 9B06      		cpc r9,r27
+ 330 007c A104      		cpc r10,__zero_reg__
+ 331 007e B104      		cpc r11,__zero_reg__
+ 332 0080 00F0      		brlo .+2
+ 333 0082 00C0      		rjmp .L25
+ 123:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       return i;
+ 334               		.loc 1 123 0
+ 335 0084 A701      		movw r20,r14
+ 336 0086 9601      		movw r18,r12
+ 337 0088 C301      		movw r24,r6
+ 338 008a B201      		movw r22,r4
+ 339 008c 0E94 0000 		call __mulsi3
+ 340 0090 9B01      		movw r18,r22
+ 341 0092 AC01      		movw r20,r24
+ 342 0094 C501      		movw r24,r10
+ 343 0096 B401      		movw r22,r8
+ 344 0098 0E94 0000 		call __mulsi3
+ 345 009c 6115      		cp r22,__zero_reg__
+ 346 009e 7442      		sbci r23,36
+ 347 00a0 844F      		sbci r24,-12
+ 348 00a2 9105      		cpc r25,__zero_reg__
+ 349 00a4 01F4      		brne .+2
+ 350 00a6 00C0      		rjmp .L20
+ 351               	.LBE44:
+ 119:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     uint32_t result = F_CPU / ratio[i] / freq;
+ 352               		.loc 1 119 0
+ 353 00a8 3394      		inc r3
+ 354               	.LVL14:
+ 355 00aa F5E0      		ldi r31,lo8(5)
+ 356 00ac 3F12      		cpse r3,r31
+ 357 00ae 00C0      		rjmp .L21
+ 358 00b0 20E0      		ldi r18,0
+ 359 00b2 8FEF      		ldi r24,lo8(-1)
+ 360 00b4 90E0      		ldi r25,0
+ 361               	.LVL15:
+ 362               	.L19:
+ 363               	.LBE43:
+ 364               	.LBE42:
+ 319:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccra = (0 << WGM11)  |
+ 365               		.loc 1 319 0
+ 366 00b6 D801      		movw r26,r16
+ 367 00b8 1396      		adiw r26,3
+ 368 00ba 2C93      		st X,r18
+ 320:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****                          (0 << WGM10)  |
+ 369               		.loc 1 320 0
+ 370 00bc 1092 0000 		sts 0,__zero_reg__
+ 326:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].ocr1 = 0;
+ 371               		.loc 1 326 0
+ 372 00c0 28E0      		ldi r18,lo8(8)
+ 373 00c2 2093 0000 		sts 0,r18
+ 327:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].ocr2 = F_CPU / ratio_base[psc] / gptp->config->frequency - 1;
+ 374               		.loc 1 327 0
+ 375 00c6 1092 0000 		sts 0,__zero_reg__
+ 328:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 376               		.loc 1 328 0
+ 377 00ca 880F      		lsl r24
+ 378 00cc 991F      		rol r25
+ 379 00ce FC01      		movw r30,r24
+ 380 00d0 E050      		subi r30,lo8(-(ratio_base))
+ 381 00d2 F040      		sbci r31,hi8(-(ratio_base))
+ 382 00d4 2081      		ld r18,Z
+ 383 00d6 3181      		ldd r19,Z+1
+ 384 00d8 50E0      		ldi r21,0
+ 385 00da 40E0      		ldi r20,0
+ 386 00dc 60E0      		ldi r22,0
+ 387 00de 74E2      		ldi r23,lo8(36)
+ 388 00e0 84EF      		ldi r24,lo8(-12)
+ 389 00e2 90E0      		ldi r25,0
+ 390 00e4 0E94 0000 		call __udivmodsi4
+ 391 00e8 CA01      		movw r24,r20
+ 392 00ea B901      		movw r22,r18
+ 393 00ec D801      		movw r26,r16
+ 394 00ee 1196      		adiw r26,1
+ 395 00f0 ED91      		ld r30,X+
+ 396 00f2 FC91      		ld r31,X
+ 397 00f4 2081      		ld r18,Z
+ 398 00f6 3181      		ldd r19,Z+1
+ 399 00f8 4281      		ldd r20,Z+2
+ 400 00fa 5381      		ldd r21,Z+3
+ 401 00fc 0E94 0000 		call __udivmodsi4
+ 402 0100 2150      		subi r18,lo8(-(-1))
+ 403 0102 2093 0000 		sts 0,r18
+ 404               	.LVL16:
+ 405               	.L11:
+ 406               	/* epilogue start */
+ 329:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 407               		.loc 1 329 0
+ 408 0106 DF91      		pop r29
+ 409 0108 CF91      		pop r28
+ 410 010a 1F91      		pop r17
+ 411 010c 0F91      		pop r16
+ 412               	.LVL17:
+ 413 010e FF90      		pop r15
+ 414 0110 EF90      		pop r14
+ 415 0112 DF90      		pop r13
+ 416 0114 CF90      		pop r12
+ 417 0116 BF90      		pop r11
+ 418 0118 AF90      		pop r10
+ 419 011a 9F90      		pop r9
+ 420 011c 8F90      		pop r8
+ 421 011e 7F90      		pop r7
+ 422 0120 6F90      		pop r6
+ 423 0122 5F90      		pop r5
+ 424 0124 4F90      		pop r4
+ 425 0126 3F90      		pop r3
+ 426 0128 2F90      		pop r2
+ 427 012a 0895      		ret
+ 428               	.LVL18:
+ 429               	.L24:
+ 308:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     gptp->clock_source = clock_source_extended[psc] & 0x07;
+ 430               		.loc 1 308 0
+ 431 012c 2090 0000 		lds r2,GPTD2+1
+ 432 0130 3090 0000 		lds r3,GPTD2+1+1
+ 433 0134 F101      		movw r30,r2
+ 434 0136 4080      		ld r4,Z
+ 435 0138 5180      		ldd r5,Z+1
+ 436 013a 6280      		ldd r6,Z+2
+ 437 013c 7380      		ldd r7,Z+3
+ 438 013e 6624      		clr r6
+ 439 0140 7724      		clr r7
+ 440 0142 C0E0      		ldi r28,lo8(ratio_extended)
+ 441 0144 D0E0      		ldi r29,hi8(ratio_extended)
+ 442               	.LBB47:
+ 443               	.LBB48:
+ 119:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     uint32_t result = F_CPU / ratio[i] / freq;
+ 444               		.loc 1 119 0
+ 445 0146 10E0      		ldi r17,0
+ 446               	.LVL19:
+ 447               	.L16:
+ 448               	.LBB49:
+ 120:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if (result > 256UL)
+ 449               		.loc 1 120 0
+ 450 0148 C990      		ld r12,Y+
+ 451 014a D990      		ld r13,Y+
+ 452 014c F12C      		mov r15,__zero_reg__
+ 453 014e E12C      		mov r14,__zero_reg__
+ 454 0150 60E0      		ldi r22,0
+ 455 0152 74E2      		ldi r23,lo8(36)
+ 456 0154 84EF      		ldi r24,lo8(-12)
+ 457 0156 90E0      		ldi r25,0
+ 458 0158 A701      		movw r20,r14
+ 459 015a 9601      		movw r18,r12
+ 460 015c 0E94 0000 		call __udivmodsi4
+ 461 0160 CA01      		movw r24,r20
+ 462 0162 B901      		movw r22,r18
+ 463 0164 A301      		movw r20,r6
+ 464 0166 9201      		movw r18,r4
+ 465 0168 0E94 0000 		call __udivmodsi4
+ 466 016c 4901      		movw r8,r18
+ 467 016e 5A01      		movw r10,r20
+ 468               	.LVL20:
+ 121:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****        return i - 1;
+ 469               		.loc 1 121 0
+ 470 0170 F1E0      		ldi r31,1
+ 471 0172 8F16      		cp r8,r31
+ 472 0174 9F06      		cpc r9,r31
+ 473 0176 A104      		cpc r10,__zero_reg__
+ 474 0178 B104      		cpc r11,__zero_reg__
+ 475 017a 00F0      		brlo .+2
+ 476 017c 00C0      		rjmp .L26
+ 123:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****       return i;
+ 477               		.loc 1 123 0
+ 478 017e A701      		movw r20,r14
+ 479 0180 9601      		movw r18,r12
+ 480 0182 C301      		movw r24,r6
+ 481 0184 B201      		movw r22,r4
+ 482 0186 0E94 0000 		call __mulsi3
+ 483 018a 9B01      		movw r18,r22
+ 484 018c AC01      		movw r20,r24
+ 485 018e C501      		movw r24,r10
+ 486 0190 B401      		movw r22,r8
+ 487 0192 0E94 0000 		call __mulsi3
+ 488 0196 6115      		cp r22,__zero_reg__
+ 489 0198 7442      		sbci r23,36
+ 490 019a 844F      		sbci r24,-12
+ 491 019c 9105      		cpc r25,__zero_reg__
+ 492 019e 01F0      		breq .L15
+ 493               	.LBE49:
+ 119:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     uint32_t result = F_CPU / ratio[i] / freq;
+ 494               		.loc 1 119 0
+ 495 01a0 1F5F      		subi r17,lo8(-(1))
+ 496               	.LVL21:
+ 497 01a2 1730      		cpi r17,lo8(7)
+ 498 01a4 01F4      		brne .L16
+ 499 01a6 20E0      		ldi r18,0
+ 500 01a8 8FEF      		ldi r24,lo8(-1)
+ 501 01aa 90E0      		ldi r25,0
+ 502               	.LVL22:
+ 503               	.L14:
+ 504               	.LBE48:
+ 505               	.LBE47:
+ 309:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     TCCR2A  = (1 << WGM21) | (0 << WGM20);
+ 506               		.loc 1 309 0
+ 507 01ac 2093 0000 		sts GPTD2+3,r18
+ 310:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     TCCR2B  = (0 << WGM22);
+ 508               		.loc 1 310 0
+ 509 01b0 22E0      		ldi r18,lo8(2)
+ 510 01b2 2093 B000 		sts 176,r18
+ 311:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     OCR2A = F_CPU / ratio_extended[psc] /gptp->config->frequency - 1;
+ 511               		.loc 1 311 0
+ 512 01b6 1092 B100 		sts 177,__zero_reg__
+ 312:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     return;
+ 513               		.loc 1 312 0
+ 514 01ba 880F      		lsl r24
+ 515 01bc 991F      		rol r25
+ 516 01be FC01      		movw r30,r24
+ 517 01c0 E050      		subi r30,lo8(-(ratio_extended))
+ 518 01c2 F040      		sbci r31,hi8(-(ratio_extended))
+ 519 01c4 2081      		ld r18,Z
+ 520 01c6 3181      		ldd r19,Z+1
+ 521 01c8 50E0      		ldi r21,0
+ 522 01ca 40E0      		ldi r20,0
+ 523 01cc 60E0      		ldi r22,0
+ 524 01ce 74E2      		ldi r23,lo8(36)
+ 525 01d0 84EF      		ldi r24,lo8(-12)
+ 526 01d2 90E0      		ldi r25,0
+ 527 01d4 0E94 0000 		call __udivmodsi4
+ 528 01d8 CA01      		movw r24,r20
+ 529 01da B901      		movw r22,r18
+ 530 01dc D101      		movw r26,r2
+ 531 01de 2D91      		ld r18,X+
+ 532 01e0 3D91      		ld r19,X+
+ 533 01e2 4D91      		ld r20,X+
+ 534 01e4 5C91      		ld r21,X
+ 535 01e6 0E94 0000 		call __udivmodsi4
+ 536 01ea 2150      		subi r18,lo8(-(-1))
+ 537 01ec 2093 B300 		sts 179,r18
+ 313:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   }
+ 538               		.loc 1 313 0
+ 539 01f0 00C0      		rjmp .L11
+ 540               	.LVL23:
+ 541               	.L25:
+ 542               	.LBB52:
+ 543               	.LBB46:
+ 544               	.LBB45:
+ 122:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     if ((result * ratio[i] * freq) == F_CPU)
+ 545               		.loc 1 122 0
+ 546 01f2 3A94      		dec r3
+ 547               	.LVL24:
+ 548               	.L20:
+ 549 01f4 832D      		mov r24,r3
+ 550 01f6 90E0      		ldi r25,0
+ 551 01f8 FC01      		movw r30,r24
+ 552 01fa E050      		subi r30,lo8(-(clock_source_base))
+ 553 01fc F040      		sbci r31,hi8(-(clock_source_base))
+ 554 01fe 2081      		ld r18,Z
+ 555 0200 2770      		andi r18,lo8(7)
+ 556 0202 00C0      		rjmp .L19
+ 557               	.LVL25:
+ 558               	.L26:
+ 559               	.LBE45:
+ 560               	.LBE46:
+ 561               	.LBE52:
+ 562               	.LBB53:
+ 563               	.LBB51:
+ 564               	.LBB50:
+ 565 0204 1150      		subi r17,lo8(-(-1))
+ 566               	.LVL26:
+ 567               	.L15:
+ 568 0206 812F      		mov r24,r17
+ 569 0208 90E0      		ldi r25,0
+ 570 020a FC01      		movw r30,r24
+ 571 020c E050      		subi r30,lo8(-(clock_source_extended))
+ 572 020e F040      		sbci r31,hi8(-(clock_source_extended))
+ 573 0210 2081      		ld r18,Z
+ 574 0212 2770      		andi r18,lo8(7)
+ 575 0214 00C0      		rjmp .L14
+ 576               	.LBE50:
+ 577               	.LBE51:
+ 578               	.LBE53:
+ 579               		.cfi_endproc
+ 580               	.LFE244:
+ 582               		.section	.text.gpt_lld_stop,"ax",@progbits
+ 583               	.global	gpt_lld_stop
+ 585               	gpt_lld_stop:
+ 586               	.LFB245:
+ 338:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 587               		.loc 1 338 0
+ 588               		.cfi_startproc
+ 589               	.LVL27:
+ 590               	/* prologue: function */
+ 591               	/* frame size = 0 */
+ 592               	/* stack size = 0 */
+ 593               	.L__stack_usage = 0
+ 341:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****     /* Clock de-activation.*/
+ 594               		.loc 1 341 0
+ 595 0000 FC01      		movw r30,r24
+ 596 0002 2081      		ld r18,Z
+ 597               	.LVL28:
+ 598               	.LBB54:
+ 599               	.LBB55:
+ 600               	.LBB56:
+ 601               	.LBB57:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 602               		.loc 1 169 0
+ 603 0004 E1E0      		ldi r30,lo8(1)
+ 604 0006 8050      		subi r24,lo8(GPTD2)
+ 605 0008 9040      		sbci r25,hi8(GPTD2)
+ 606 000a 01F0      		breq .L29
+ 607               	.L28:
+ 608 000c E195      		neg r30
+ 609               	.LBE57:
+ 610               	.LBE56:
+ 380:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tifr = (1 << OCF1A);
+ 611               		.loc 1 380 0
+ 612 000e F0E0      		ldi r31,0
+ 613 0010 E295      		swap r30
+ 614 0012 F295      		swap r31
+ 615 0014 F07F      		andi r31,0xf0
+ 616 0016 FE27      		eor r31,r30
+ 617 0018 E07F      		andi r30,0xf0
+ 618 001a FE27      		eor r31,r30
+ 619               	.LVL29:
+ 620 001c E050      		subi r30,lo8(-(regs_table))
+ 621 001e F040      		sbci r31,hi8(-(regs_table))
+ 622 0020 A281      		ldd r26,Z+2
+ 623 0022 B381      		ldd r27,Z+3
+ 624 0024 8C91      		ld r24,X
+ 625 0026 887F      		andi r24,lo8(-8)
+ 626 0028 8C93      		st X,r24
+ 627               		.loc 1 381 0
+ 628 002a 0484      		ldd __tmp_reg__,Z+12
+ 629 002c F585      		ldd r31,Z+13
+ 630 002e E02D      		mov r30,__tmp_reg__
+ 631 0030 82E0      		ldi r24,lo8(2)
+ 632 0032 8083      		st Z,r24
+ 633               	.LVL30:
+ 634               	/* epilogue start */
+ 635               	.LBE55:
+ 636               	.LBE54:
+ 345:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 637               		.loc 1 345 0
+ 638 0034 0895      		ret
+ 639               	.LVL31:
+ 640               	.L29:
+ 641               	.LBB61:
+ 642               	.LBB60:
+ 643               	.LBB59:
+ 644               	.LBB58:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 645               		.loc 1 169 0
+ 646 0036 E0E0      		ldi r30,0
+ 647 0038 00C0      		rjmp .L28
+ 648               	.LBE58:
+ 649               	.LBE59:
+ 650               	.LBE60:
+ 651               	.LBE61:
+ 652               		.cfi_endproc
+ 653               	.LFE245:
+ 655               		.section	.text.gpt_lld_start_timer,"ax",@progbits
+ 656               	.global	gpt_lld_start_timer
+ 658               	gpt_lld_start_timer:
+ 659               	.LFB246:
+ 355:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 660               		.loc 1 355 0
+ 661               		.cfi_startproc
+ 662               	.LVL32:
+ 663 0000 CF93      		push r28
+ 664               	.LCFI32:
+ 665               		.cfi_def_cfa_offset 3
+ 666               		.cfi_offset 28, -2
+ 667 0002 DF93      		push r29
+ 668               	.LCFI33:
+ 669               		.cfi_def_cfa_offset 4
+ 670               		.cfi_offset 29, -3
+ 671               	/* prologue: function */
+ 672               	/* frame size = 0 */
+ 673               	/* stack size = 2 */
+ 674               	.L__stack_usage = 2
+ 675 0004 DC01      		movw r26,r24
+ 357:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->period = period;
+ 676               		.loc 1 357 0
+ 677 0006 1196      		adiw r26,1
+ 678 0008 ED91      		ld r30,X+
+ 679 000a FC91      		ld r31,X
+ 680 000c 1297      		sbiw r26,1+1
+ 681 000e 8481      		ldd r24,Z+4
+ 682 0010 9581      		ldd r25,Z+5
+ 683               	.LVL33:
+ 684 0012 1996      		adiw r26,8+1
+ 685 0014 9C93      		st X,r25
+ 686 0016 8E93      		st -X,r24
+ 687 0018 1897      		sbiw r26,8
+ 358:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->counter = 0;
+ 688               		.loc 1 358 0
+ 689 001a 1596      		adiw r26,4+1
+ 690 001c 7C93      		st X,r23
+ 691 001e 6E93      		st -X,r22
+ 692 0020 1497      		sbiw r26,4
+ 359:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 693               		.loc 1 359 0
+ 694 0022 1796      		adiw r26,6+1
+ 695 0024 1C92      		st X,__zero_reg__
+ 696 0026 1E92      		st -X,__zero_reg__
+ 697 0028 1697      		sbiw r26,6
+ 698               	.LVL34:
+ 699               	.LBB62:
+ 700               	.LBB63:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 701               		.loc 1 169 0
+ 702 002a E1E0      		ldi r30,lo8(1)
+ 703 002c 80E0      		ldi r24,hi8(GPTD2)
+ 704 002e A030      		cpi r26,lo8(GPTD2)
+ 705 0030 B807      		cpc r27,r24
+ 706 0032 01F0      		breq .L32
+ 707               	.L31:
+ 708 0034 E195      		neg r30
+ 709               	.LBE63:
+ 710               	.LBE62:
+ 362:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tcnt2 = 0;
+ 711               		.loc 1 362 0
+ 712 0036 F0E0      		ldi r31,0
+ 713 0038 E295      		swap r30
+ 714 003a F295      		swap r31
+ 715 003c F07F      		andi r31,0xf0
+ 716 003e FE27      		eor r31,r30
+ 717 0040 E07F      		andi r30,0xf0
+ 718 0042 FE27      		eor r31,r30
+ 719 0044 E050      		subi r30,lo8(-(regs_table))
+ 720 0046 F040      		sbci r31,hi8(-(regs_table))
+ 721 0048 C085      		ldd r28,Z+8
+ 722 004a D185      		ldd r29,Z+9
+ 723 004c 1882      		st Y,__zero_reg__
+ 363:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tifr  = (1 << OCF1A);
+ 724               		.loc 1 363 0
+ 725 004e C285      		ldd r28,Z+10
+ 726 0050 D385      		ldd r29,Z+11
+ 727 0052 1882      		st Y,__zero_reg__
+ 364:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].timsk = (1 << OCIE1A);
+ 728               		.loc 1 364 0
+ 729 0054 C485      		ldd r28,Z+12
+ 730 0056 D585      		ldd r29,Z+13
+ 731 0058 82E0      		ldi r24,lo8(2)
+ 732 005a 8883      		st Y,r24
+ 365:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccrb |= (gptp->clock_source << CS10);
+ 733               		.loc 1 365 0
+ 734 005c 8093 7000 		sts 112,r24
+ 366:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 735               		.loc 1 366 0
+ 736 0060 0280      		ldd __tmp_reg__,Z+2
+ 737 0062 F381      		ldd r31,Z+3
+ 738 0064 E02D      		mov r30,__tmp_reg__
+ 739 0066 8081      		ld r24,Z
+ 740 0068 1396      		adiw r26,3
+ 741 006a 9C91      		ld r25,X
+ 742 006c 892B      		or r24,r25
+ 743 006e 8083      		st Z,r24
+ 744               	/* epilogue start */
+ 367:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 745               		.loc 1 367 0
+ 746 0070 DF91      		pop r29
+ 747 0072 CF91      		pop r28
+ 748 0074 0895      		ret
+ 749               	.L32:
+ 750               	.LBB65:
+ 751               	.LBB64:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 752               		.loc 1 169 0
+ 753 0076 E0E0      		ldi r30,0
+ 754 0078 00C0      		rjmp .L31
+ 755               	.LBE64:
+ 756               	.LBE65:
+ 757               		.cfi_endproc
+ 758               	.LFE246:
+ 760               		.section	.text.gpt_lld_stop_timer,"ax",@progbits
+ 761               	.global	gpt_lld_stop_timer
+ 763               	gpt_lld_stop_timer:
+ 764               	.LFB247:
+ 376:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 765               		.loc 1 376 0
+ 766               		.cfi_startproc
+ 767               	.LVL35:
+ 768               	/* prologue: function */
+ 769               	/* frame size = 0 */
+ 770               	/* stack size = 0 */
+ 771               	.L__stack_usage = 0
+ 772               	.LBB66:
+ 773               	.LBB67:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 774               		.loc 1 169 0
+ 775 0000 E1E0      		ldi r30,lo8(1)
+ 776 0002 8050      		subi r24,lo8(GPTD2)
+ 777 0004 9040      		sbci r25,hi8(GPTD2)
+ 778 0006 01F0      		breq .L35
+ 779               	.L34:
+ 780 0008 E195      		neg r30
+ 781               	.LBE67:
+ 782               	.LBE66:
+ 380:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tifr = (1 << OCF1A);
+ 783               		.loc 1 380 0
+ 784 000a F0E0      		ldi r31,0
+ 785 000c E295      		swap r30
+ 786 000e F295      		swap r31
+ 787 0010 F07F      		andi r31,0xf0
+ 788 0012 FE27      		eor r31,r30
+ 789 0014 E07F      		andi r30,0xf0
+ 790 0016 FE27      		eor r31,r30
+ 791               	.LVL36:
+ 792 0018 E050      		subi r30,lo8(-(regs_table))
+ 793 001a F040      		sbci r31,hi8(-(regs_table))
+ 794 001c A281      		ldd r26,Z+2
+ 795 001e B381      		ldd r27,Z+3
+ 796 0020 8C91      		ld r24,X
+ 797 0022 887F      		andi r24,lo8(-8)
+ 798 0024 8C93      		st X,r24
+ 799               		.loc 1 381 0
+ 800 0026 0484      		ldd __tmp_reg__,Z+12
+ 801 0028 F585      		ldd r31,Z+13
+ 802 002a E02D      		mov r30,__tmp_reg__
+ 803 002c 82E0      		ldi r24,lo8(2)
+ 804 002e 8083      		st Z,r24
+ 805               	/* epilogue start */
+ 382:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 806               		.loc 1 382 0
+ 807 0030 0895      		ret
+ 808               	.LVL37:
+ 809               	.L35:
+ 810               	.LBB69:
+ 811               	.LBB68:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 812               		.loc 1 169 0
+ 813 0032 E0E0      		ldi r30,0
+ 814 0034 00C0      		rjmp .L34
+ 815               	.LBE68:
+ 816               	.LBE69:
+ 817               		.cfi_endproc
+ 818               	.LFE247:
+ 820               		.section	.text.gpt_lld_polled_delay,"ax",@progbits
+ 821               	.global	gpt_lld_polled_delay
+ 823               	gpt_lld_polled_delay:
+ 824               	.LFB248:
+ 383:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 384:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** /**
+ 385:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @brief   Starts the timer in one shot mode and waits for completion.
+ 386:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @details This function specifically polls the timer waiting for completion
+ 387:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *          in order to not have extra delays caused by interrupt servicing,
+ 388:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *          this function is only recommended for short delays.
+ 389:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 390:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 391:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @param[in] interval  time interval in ticks
+ 392:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  *
+ 393:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  * @notapi
+ 394:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****  */
+ 395:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** void gpt_lld_polled_delay(GPTDriver *gptp, gptcnt_t interval) {
+ 825               		.loc 1 395 0
+ 826               		.cfi_startproc
+ 827               	.LVL38:
+ 828 0000 CF93      		push r28
+ 829               	.LCFI34:
+ 830               		.cfi_def_cfa_offset 3
+ 831               		.cfi_offset 28, -2
+ 832 0002 DF93      		push r29
+ 833               	.LCFI35:
+ 834               		.cfi_def_cfa_offset 4
+ 835               		.cfi_offset 29, -3
+ 836               	/* prologue: function */
+ 837               	/* frame size = 0 */
+ 838               	/* stack size = 2 */
+ 839               	.L__stack_usage = 2
+ 840 0004 FC01      		movw r30,r24
+ 841               	.LVL39:
+ 842               	.LBB70:
+ 843               	.LBB71:
+ 357:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->period = period;
+ 844               		.loc 1 357 0
+ 845 0006 A181      		ldd r26,Z+1
+ 846 0008 B281      		ldd r27,Z+2
+ 847 000a 1496      		adiw r26,4
+ 848 000c 8D91      		ld r24,X+
+ 849 000e 9C91      		ld r25,X
+ 850               	.LVL40:
+ 851 0010 9187      		std Z+9,r25
+ 852 0012 8087      		std Z+8,r24
+ 358:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->counter = 0;
+ 853               		.loc 1 358 0
+ 854 0014 7583      		std Z+5,r23
+ 855 0016 6483      		std Z+4,r22
+ 359:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 856               		.loc 1 359 0
+ 857 0018 1782      		std Z+7,__zero_reg__
+ 858 001a 1682      		std Z+6,__zero_reg__
+ 859               	.LVL41:
+ 860               	.LBB72:
+ 861               	.LBB73:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 862               		.loc 1 169 0
+ 863 001c A1E0      		ldi r26,lo8(1)
+ 864 001e 80E0      		ldi r24,hi8(GPTD2)
+ 865 0020 E030      		cpi r30,lo8(GPTD2)
+ 866 0022 F807      		cpc r31,r24
+ 867 0024 01F0      		breq .L40
+ 868               	.L37:
+ 869 0026 A195      		neg r26
+ 870               	.LBE73:
+ 871               	.LBE72:
+ 362:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tcnt2 = 0;
+ 872               		.loc 1 362 0
+ 873 0028 B0E0      		ldi r27,0
+ 874 002a A295      		swap r26
+ 875 002c B295      		swap r27
+ 876 002e B07F      		andi r27,0xf0
+ 877 0030 BA27      		eor r27,r26
+ 878 0032 A07F      		andi r26,0xf0
+ 879 0034 BA27      		eor r27,r26
+ 880 0036 A050      		subi r26,lo8(-(regs_table))
+ 881 0038 B040      		sbci r27,hi8(-(regs_table))
+ 882 003a 1896      		adiw r26,8
+ 883 003c CD91      		ld r28,X+
+ 884 003e DC91      		ld r29,X
+ 885 0040 1997      		sbiw r26,8+1
+ 886 0042 1882      		st Y,__zero_reg__
+ 363:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tifr  = (1 << OCF1A);
+ 887               		.loc 1 363 0
+ 888 0044 1A96      		adiw r26,10
+ 889 0046 CD91      		ld r28,X+
+ 890 0048 DC91      		ld r29,X
+ 891 004a 1B97      		sbiw r26,10+1
+ 892 004c 1882      		st Y,__zero_reg__
+ 364:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].timsk = (1 << OCIE1A);
+ 893               		.loc 1 364 0
+ 894 004e 1C96      		adiw r26,12
+ 895 0050 CD91      		ld r28,X+
+ 896 0052 DC91      		ld r29,X
+ 897 0054 1D97      		sbiw r26,12+1
+ 898 0056 82E0      		ldi r24,lo8(2)
+ 899 0058 8883      		st Y,r24
+ 365:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   *regs_table[i].tccrb |= (gptp->clock_source << CS10);
+ 900               		.loc 1 365 0
+ 901 005a 8093 7000 		sts 112,r24
+ 366:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 902               		.loc 1 366 0
+ 903 005e 1296      		adiw r26,2
+ 904 0060 0D90      		ld __tmp_reg__,X+
+ 905 0062 BC91      		ld r27,X
+ 906 0064 A02D      		mov r26,__tmp_reg__
+ 907 0066 8C91      		ld r24,X
+ 908 0068 9381      		ldd r25,Z+3
+ 909 006a 892B      		or r24,r25
+ 910 006c 8C93      		st X,r24
+ 911               	.L38:
+ 912               	.LBE71:
+ 913               	.LBE70:
+ 396:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** 
+ 397:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gptp->callback = gpt_lld_dummy_callback;
+ 398:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   gpt_lld_start_timer(gptp, interval);
+ 399:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   /* FIX */
+ 400:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   while (gptp->state != GPT_READY) {}
+ 914               		.loc 1 400 0 discriminator 1
+ 915 006e 8081      		ld r24,Z
+ 916 0070 8230      		cpi r24,lo8(2)
+ 917 0072 01F4      		brne .L38
+ 918               	/* epilogue start */
+ 401:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c **** }
+ 919               		.loc 1 401 0
+ 920 0074 DF91      		pop r29
+ 921 0076 CF91      		pop r28
+ 922 0078 0895      		ret
+ 923               	.L40:
+ 924               	.LBB77:
+ 925               	.LBB76:
+ 926               	.LBB75:
+ 927               	.LBB74:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.c ****   else index++;
+ 928               		.loc 1 169 0
+ 929 007a A0E0      		ldi r26,0
+ 930 007c 00C0      		rjmp .L37
+ 931               	.LBE74:
+ 932               	.LBE75:
+ 933               	.LBE76:
+ 934               	.LBE77:
+ 935               		.cfi_endproc
+ 936               	.LFE248:
+ 938               		.section	.rodata.clock_source_extended,"a",@progbits
+ 941               	clock_source_extended:
+ 942 0000 07        		.byte	7
+ 943 0001 06        		.byte	6
+ 944 0002 05        		.byte	5
+ 945 0003 04        		.byte	4
+ 946 0004 03        		.byte	3
+ 947 0005 02        		.byte	2
+ 948 0006 01        		.byte	1
+ 949               		.section	.data.ratio_extended,"aw",@progbits
+ 952               	ratio_extended:
+ 953 0000 0004      		.word	1024
+ 954 0002 0001      		.word	256
+ 955 0004 8000      		.word	128
+ 956 0006 4000      		.word	64
+ 957 0008 2000      		.word	32
+ 958 000a 0800      		.word	8
+ 959 000c 0100      		.word	1
+ 960               		.section	.rodata.clock_source_base,"a",@progbits
+ 963               	clock_source_base:
+ 964 0000 05        		.byte	5
+ 965 0001 04        		.byte	4
+ 966 0002 03        		.byte	3
+ 967 0003 02        		.byte	2
+ 968 0004 01        		.byte	1
+ 969               		.section	.data.ratio_base,"aw",@progbits
+ 972               	ratio_base:
+ 973 0000 0004      		.word	1024
+ 974 0002 0001      		.word	256
+ 975 0004 4000      		.word	64
+ 976 0006 0800      		.word	8
+ 977 0008 0100      		.word	1
+ 978               		.comm	GPTD2,10,1
+ 979               	.global	regs_table
+ 980               		.section	.rodata.regs_table,"a",@progbits
+ 983               	regs_table:
+ 984 0000 B000      		.word	176
+ 985 0002 B100      		.word	177
+ 986 0004 B300      		.word	179
+ 987 0006 B300      		.word	179
+ 988 0008 B200      		.word	178
+ 989 000a B200      		.word	178
+ 990 000c 3700      		.word	55
+ 991 000e 7000      		.word	112
+ 992               		.text
+ 993               	.Letext0:
+ 994               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 995               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 996               		.file 4 "../../os/common/ports/AVR/compilers/GCC/chtypes.h"
+ 997               		.file 5 "../../os/rt/include/chearly.h"
+ 998               		.file 6 "../../os/rt/include/chobjects.h"
+ 999               		.file 7 "../../os/rt/include/chrfcu.h"
+ 1000               		.file 8 "../../os/rt/include/chdebug.h"
+ 1001               		.file 9 "../../os/rt/include/chtime.h"
+ 1002               		.file 10 "../../os/rt/include/chlists.h"
+ 1003               		.file 11 "../../os/common/ports/AVR/chcore.h"
+ 1004               		.file 12 "../../os/rt/include/chsem.h"
+ 1005               		.file 13 "../../os/rt/include/chmtx.h"
+ 1006               		.file 14 "../../os/rt/include/chsys.h"
+ 1007               		.file 15 "../../os/rt/include/chregistry.h"
+ 1008               		.file 16 "../../os/rt/include/chevents.h"
+ 1009               		.file 17 "../../os/oslib/include/chmemcore.h"
+ 1010               		.file 18 "../../os/hal/include/hal_queues.h"
+ 1011               		.file 19 "../../os/hal/ports/AVR/MEGA/LLD/GPIOv1/hal_pal_lld.h"
+ 1012               		.file 20 "../../os/hal/include/hal_gpt.h"
+ 1013               		.file 21 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.h"
+ 1014               		.file 22 "../../os/hal/include/hal_serial.h"
+ 1015               		.file 23 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
+ 1016               		.file 24 "../../os/rt/include/chschd.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 hal_gpt_lld.c
+     /tmp/cc8TpQdI.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc8TpQdI.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc8TpQdI.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc8TpQdI.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc8TpQdI.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc8TpQdI.s:13     .text.__vector_7:0000000000000000 __vector_7
+                            *COM*:000000000000000a GPTD2
+     /tmp/cc8TpQdI.s:174    .text.gpt_lld_init:0000000000000000 gpt_lld_init
+     /tmp/cc8TpQdI.s:193    .text.gpt_lld_start:0000000000000000 gpt_lld_start
+     /tmp/cc8TpQdI.s:972    .data.ratio_base:0000000000000000 ratio_base
+     /tmp/cc8TpQdI.s:952    .data.ratio_extended:0000000000000000 ratio_extended
+     /tmp/cc8TpQdI.s:963    .rodata.clock_source_base:0000000000000000 clock_source_base
+     /tmp/cc8TpQdI.s:941    .rodata.clock_source_extended:0000000000000000 clock_source_extended
+     /tmp/cc8TpQdI.s:585    .text.gpt_lld_stop:0000000000000000 gpt_lld_stop
+     /tmp/cc8TpQdI.s:983    .rodata.regs_table:0000000000000000 regs_table
+     /tmp/cc8TpQdI.s:658    .text.gpt_lld_start_timer:0000000000000000 gpt_lld_start_timer
+     /tmp/cc8TpQdI.s:763    .text.gpt_lld_stop_timer:0000000000000000 gpt_lld_stop_timer
+     /tmp/cc8TpQdI.s:823    .text.gpt_lld_polled_delay:0000000000000000 gpt_lld_polled_delay
+
+UNDEFINED SYMBOLS
+__avr_in_isr
+chSchIsPreemptionRequired
+chSchDoPreemption
+gptObjectInit
+__udivmodsi4
+__mulsi3
+__do_copy_data
+__do_clear_bss

@@ -3402,21 +3402,21 @@
  1516               		.file 17 "../../os/rt/include/chvt.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chvt.c
-     /tmp/cc79OWyn.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc79OWyn.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc79OWyn.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc79OWyn.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc79OWyn.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc79OWyn.s:12     .text.vt_insert_first.constprop.5:0000000000000000 vt_insert_first.constprop.5
-     /tmp/cc79OWyn.s:216    .text.vt_set_alarm:0000000000000000 vt_set_alarm
-     /tmp/cc79OWyn.s:360    .text.vt_enqueue.constprop.4:0000000000000000 vt_enqueue.constprop.4
-     /tmp/cc79OWyn.s:580    .text.chVTDoSetI:0000000000000000 chVTDoSetI
-     /tmp/cc79OWyn.s:608    .text.chVTDoSetContinuousI:0000000000000000 chVTDoSetContinuousI
-     /tmp/cc79OWyn.s:636    .text.chVTDoResetI:0000000000000000 chVTDoResetI
-     /tmp/cc79OWyn.s:816    .text.chVTGetRemainingIntervalI:0000000000000000 chVTGetRemainingIntervalI
-     /tmp/cc79OWyn.s:933    .text.chVTDoTickI:0000000000000000 chVTDoTickI
-     /tmp/cc79OWyn.s:1307   .text.chVTGetTimeStampI:0000000000000000 chVTGetTimeStampI
-     /tmp/cc79OWyn.s:1457   .text.chVTResetTimeStampI:0000000000000000 chVTResetTimeStampI
+     /tmp/ccqBLAXn.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccqBLAXn.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccqBLAXn.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccqBLAXn.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccqBLAXn.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccqBLAXn.s:12     .text.vt_insert_first.constprop.5:0000000000000000 vt_insert_first.constprop.5
+     /tmp/ccqBLAXn.s:216    .text.vt_set_alarm:0000000000000000 vt_set_alarm
+     /tmp/ccqBLAXn.s:360    .text.vt_enqueue.constprop.4:0000000000000000 vt_enqueue.constprop.4
+     /tmp/ccqBLAXn.s:580    .text.chVTDoSetI:0000000000000000 chVTDoSetI
+     /tmp/ccqBLAXn.s:608    .text.chVTDoSetContinuousI:0000000000000000 chVTDoSetContinuousI
+     /tmp/ccqBLAXn.s:636    .text.chVTDoResetI:0000000000000000 chVTDoResetI
+     /tmp/ccqBLAXn.s:816    .text.chVTGetRemainingIntervalI:0000000000000000 chVTGetRemainingIntervalI
+     /tmp/ccqBLAXn.s:933    .text.chVTDoTickI:0000000000000000 chVTDoTickI
+     /tmp/ccqBLAXn.s:1307   .text.chVTGetTimeStampI:0000000000000000 chVTGetTimeStampI
+     /tmp/ccqBLAXn.s:1457   .text.chVTResetTimeStampI:0000000000000000 chVTResetTimeStampI
 
 UNDEFINED SYMBOLS
 ch0

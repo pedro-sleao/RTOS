@@ -1,7 +1,7 @@
-00000000 A __TEXT_REGION_ORIGIN__
 00000000 W __heap_end
 00000000 A __main_thread_stack_base__
 00000000 A __main_thread_stack_end__
+00000000 A __TEXT_REGION_ORIGIN__
 00000000 a __tmp_reg__
 00000000 a __tmp_reg__
 00000000 a __tmp_reg__
@@ -252,8 +252,8 @@
 000012bc T chSchGoSleepS
 000012f4 T chSchGoSleepTimeoutS
 00001360 T chSchIsPreemptionRequired
-00001380 t __sch_reschedule_ahead
 00001380 T chSchDoPreemption
+00001380 t __sch_reschedule_ahead
 000013fe t __idle_thread
 00001400 T chInstanceObjectInit
 000014f2 T __thd_object_init
@@ -304,9 +304,9 @@
 00800137 D ch_core0_cfg
 00800142 D ch_debug
 0080016e B __bss_start
+0080016e b ch_c0_idle_thread_wa
 0080016e D __data_end
 0080016e D _edata
-0080016e b ch_c0_idle_thread_wa
 008001d9 b static_heap.3138
 00800259 b default_heap
 00800267 B PWMD2

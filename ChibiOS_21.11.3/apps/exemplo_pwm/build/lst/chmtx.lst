@@ -3078,20 +3078,20 @@
  1209               		.file 17 "../../os/oslib/include/chmemcore.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmtx.c
-     /tmp/ccn3nbrh.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccn3nbrh.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccn3nbrh.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccn3nbrh.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccn3nbrh.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccn3nbrh.s:13     .text.chMtxObjectInit:0000000000000000 chMtxObjectInit
-     /tmp/ccn3nbrh.s:49     .text.chMtxLockS:0000000000000000 chMtxLockS
-     /tmp/ccn3nbrh.s:455    .text.chMtxLock:0000000000000000 chMtxLock
-     /tmp/ccn3nbrh.s:503    .text.chMtxTryLock:0000000000000000 chMtxTryLock
-     /tmp/ccn3nbrh.s:611    .text.chMtxTryLockS:0000000000000000 chMtxTryLockS
-     /tmp/ccn3nbrh.s:668    .text.chMtxUnlock:0000000000000000 chMtxUnlock
-     /tmp/ccn3nbrh.s:856    .text.chMtxUnlockS:0000000000000000 chMtxUnlockS
-     /tmp/ccn3nbrh.s:1003   .text.chMtxUnlockAllS:0000000000000000 chMtxUnlockAllS
-     /tmp/ccn3nbrh.s:1153   .text.chMtxUnlockAll:0000000000000000 chMtxUnlockAll
+     /tmp/ccrbeh6b.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccrbeh6b.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccrbeh6b.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccrbeh6b.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccrbeh6b.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccrbeh6b.s:13     .text.chMtxObjectInit:0000000000000000 chMtxObjectInit
+     /tmp/ccrbeh6b.s:49     .text.chMtxLockS:0000000000000000 chMtxLockS
+     /tmp/ccrbeh6b.s:455    .text.chMtxLock:0000000000000000 chMtxLock
+     /tmp/ccrbeh6b.s:503    .text.chMtxTryLock:0000000000000000 chMtxTryLock
+     /tmp/ccrbeh6b.s:611    .text.chMtxTryLockS:0000000000000000 chMtxTryLockS
+     /tmp/ccrbeh6b.s:668    .text.chMtxUnlock:0000000000000000 chMtxUnlock
+     /tmp/ccrbeh6b.s:856    .text.chMtxUnlockS:0000000000000000 chMtxUnlockS
+     /tmp/ccrbeh6b.s:1003   .text.chMtxUnlockAllS:0000000000000000 chMtxUnlockAllS
+     /tmp/ccrbeh6b.s:1153   .text.chMtxUnlockAll:0000000000000000 chMtxUnlockAll
 
 UNDEFINED SYMBOLS
 ch0

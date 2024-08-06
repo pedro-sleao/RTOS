@@ -1103,19 +1103,19 @@
  436               		.file 16 "../../os/oslib/include/chmemcore.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chmemcore.c
-     /tmp/ccjFI8j0.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccjFI8j0.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccjFI8j0.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccjFI8j0.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccjFI8j0.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccjFI8j0.s:13     .text.__core_init:0000000000000000 __core_init
+     /tmp/ccrwCofZ.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccrwCofZ.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccrwCofZ.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccrwCofZ.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccrwCofZ.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccrwCofZ.s:13     .text.__core_init:0000000000000000 __core_init
                             *COM*:0000000000000004 ch_memcore
-     /tmp/ccjFI8j0.s:418    .bss.static_heap.3138:0000000000000000 static_heap.3138
-     /tmp/ccjFI8j0.s:43     .text.chCoreAllocFromBaseI:0000000000000000 chCoreAllocFromBaseI
-     /tmp/ccjFI8j0.s:109    .text.chCoreAllocFromTopI:0000000000000000 chCoreAllocFromTopI
-     /tmp/ccjFI8j0.s:168    .text.chCoreAllocFromBase:0000000000000000 chCoreAllocFromBase
-     /tmp/ccjFI8j0.s:282    .text.chCoreAllocFromTop:0000000000000000 chCoreAllocFromTop
-     /tmp/ccjFI8j0.s:392    .text.chCoreGetStatusX:0000000000000000 chCoreGetStatusX
+     /tmp/ccrwCofZ.s:418    .bss.static_heap.3138:0000000000000000 static_heap.3138
+     /tmp/ccrwCofZ.s:43     .text.chCoreAllocFromBaseI:0000000000000000 chCoreAllocFromBaseI
+     /tmp/ccrwCofZ.s:109    .text.chCoreAllocFromTopI:0000000000000000 chCoreAllocFromTopI
+     /tmp/ccrwCofZ.s:168    .text.chCoreAllocFromBase:0000000000000000 chCoreAllocFromBase
+     /tmp/ccrwCofZ.s:282    .text.chCoreAllocFromTop:0000000000000000 chCoreAllocFromTop
+     /tmp/ccrwCofZ.s:392    .text.chCoreGetStatusX:0000000000000000 chCoreGetStatusX
 
 UNDEFINED SYMBOLS
 __do_clear_bss

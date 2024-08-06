@@ -1639,17 +1639,17 @@
  657               		.file 26 "../../os/rt/include/chthreads.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_flash.c
-     /tmp/ccTBMatr.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccTBMatr.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccTBMatr.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccTBMatr.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccTBMatr.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccTBMatr.s:13     .text.flashWaitErase:0000000000000000 flashWaitErase
-     /tmp/ccTBMatr.s:140    .text.flashGetSectorOffset:0000000000000000 flashGetSectorOffset
-     /tmp/ccTBMatr.s:230    .text.flashGetSectorSize:0000000000000000 flashGetSectorSize
-     /tmp/ccTBMatr.s:318    .text.flashGetOffsetSector:0000000000000000 flashGetOffsetSector
-     /tmp/ccTBMatr.s:503    .text.flashGetOffsetAddress:0000000000000000 flashGetOffsetAddress
-     /tmp/ccTBMatr.s:565    .text.flashGetAddressOffset:0000000000000000 flashGetAddressOffset
+     /tmp/ccR8TTRO.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccR8TTRO.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccR8TTRO.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccR8TTRO.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccR8TTRO.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccR8TTRO.s:13     .text.flashWaitErase:0000000000000000 flashWaitErase
+     /tmp/ccR8TTRO.s:140    .text.flashGetSectorOffset:0000000000000000 flashGetSectorOffset
+     /tmp/ccR8TTRO.s:230    .text.flashGetSectorSize:0000000000000000 flashGetSectorSize
+     /tmp/ccR8TTRO.s:318    .text.flashGetOffsetSector:0000000000000000 flashGetOffsetSector
+     /tmp/ccR8TTRO.s:503    .text.flashGetOffsetAddress:0000000000000000 flashGetOffsetAddress
+     /tmp/ccR8TTRO.s:565    .text.flashGetAddressOffset:0000000000000000 flashGetAddressOffset
 
 UNDEFINED SYMBOLS
 __muluhisi3

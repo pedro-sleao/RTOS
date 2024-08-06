@@ -102,11 +102,11 @@
   51               		.file 23 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_lld.c
-     /tmp/ccYOrYDy.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccYOrYDy.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccYOrYDy.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccYOrYDy.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccYOrYDy.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/ccYOrYDy.s:13     .text.hal_lld_init:0000000000000000 hal_lld_init
+     /tmp/cc142evL.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc142evL.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc142evL.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc142evL.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc142evL.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc142evL.s:13     .text.hal_lld_init:0000000000000000 hal_lld_init
 
 NO UNDEFINED SYMBOLS

@@ -4996,36 +4996,36 @@
  2488               		.file 24 "../../os/hal/include/hal_serial.h"
  2489               		.file 25 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
  2490               		.file 26 "../../os/rt/include/chthreads.h"
- 2491               		.file 27 "<built-in>"
+ 2491               		.file 27 "<embutido>"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 hal_buffers.c
-     /tmp/cc81OExT.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc81OExT.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc81OExT.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc81OExT.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc81OExT.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc81OExT.s:13     .text.ibqObjectInit:0000000000000000 ibqObjectInit
-     /tmp/cc81OExT.s:133    .text.ibqResetI:0000000000000000 ibqResetI
-     /tmp/cc81OExT.s:179    .text.ibqGetEmptyBufferI:0000000000000000 ibqGetEmptyBufferI
-     /tmp/cc81OExT.s:221    .text.ibqPostFullBufferI:0000000000000000 ibqPostFullBufferI
-     /tmp/cc81OExT.s:281    .text.ibqGetFullBufferTimeoutS:0000000000000000 ibqGetFullBufferTimeoutS
-     /tmp/cc81OExT.s:391    .text.ibqGetFullBufferTimeout:0000000000000000 ibqGetFullBufferTimeout
-     /tmp/cc81OExT.s:443    .text.ibqReleaseEmptyBuffer:0000000000000000 ibqReleaseEmptyBuffer
-     /tmp/cc81OExT.s:558    .text.ibqReleaseEmptyBufferS:0000000000000000 ibqReleaseEmptyBufferS
-     /tmp/cc81OExT.s:638    .text.ibqGetTimeout:0000000000000000 ibqGetTimeout
-     /tmp/cc81OExT.s:788    .text.ibqReadTimeout:0000000000000000 ibqReadTimeout
-     /tmp/cc81OExT.s:1095   .text.obqObjectInit:0000000000000000 obqObjectInit
-     /tmp/cc81OExT.s:1213   .text.obqResetI:0000000000000000 obqResetI
-     /tmp/cc81OExT.s:1260   .text.obqGetFullBufferI:0000000000000000 obqGetFullBufferI
-     /tmp/cc81OExT.s:1309   .text.obqReleaseEmptyBufferI:0000000000000000 obqReleaseEmptyBufferI
-     /tmp/cc81OExT.s:1364   .text.obqGetEmptyBufferTimeoutS:0000000000000000 obqGetEmptyBufferTimeoutS
-     /tmp/cc81OExT.s:1475   .text.obqGetEmptyBufferTimeout:0000000000000000 obqGetEmptyBufferTimeout
-     /tmp/cc81OExT.s:1526   .text.obqPostFullBuffer:0000000000000000 obqPostFullBuffer
-     /tmp/cc81OExT.s:1644   .text.obqPostFullBufferS:0000000000000000 obqPostFullBufferS
-     /tmp/cc81OExT.s:1727   .text.obqPutTimeout:0000000000000000 obqPutTimeout
-     /tmp/cc81OExT.s:1910   .text.obqWriteTimeout:0000000000000000 obqWriteTimeout
-     /tmp/cc81OExT.s:2233   .text.obqTryFlushI:0000000000000000 obqTryFlushI
-     /tmp/cc81OExT.s:2323   .text.obqFlush:0000000000000000 obqFlush
+     /tmp/cczejWcf.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cczejWcf.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cczejWcf.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cczejWcf.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cczejWcf.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cczejWcf.s:13     .text.ibqObjectInit:0000000000000000 ibqObjectInit
+     /tmp/cczejWcf.s:133    .text.ibqResetI:0000000000000000 ibqResetI
+     /tmp/cczejWcf.s:179    .text.ibqGetEmptyBufferI:0000000000000000 ibqGetEmptyBufferI
+     /tmp/cczejWcf.s:221    .text.ibqPostFullBufferI:0000000000000000 ibqPostFullBufferI
+     /tmp/cczejWcf.s:281    .text.ibqGetFullBufferTimeoutS:0000000000000000 ibqGetFullBufferTimeoutS
+     /tmp/cczejWcf.s:391    .text.ibqGetFullBufferTimeout:0000000000000000 ibqGetFullBufferTimeout
+     /tmp/cczejWcf.s:443    .text.ibqReleaseEmptyBuffer:0000000000000000 ibqReleaseEmptyBuffer
+     /tmp/cczejWcf.s:558    .text.ibqReleaseEmptyBufferS:0000000000000000 ibqReleaseEmptyBufferS
+     /tmp/cczejWcf.s:638    .text.ibqGetTimeout:0000000000000000 ibqGetTimeout
+     /tmp/cczejWcf.s:788    .text.ibqReadTimeout:0000000000000000 ibqReadTimeout
+     /tmp/cczejWcf.s:1095   .text.obqObjectInit:0000000000000000 obqObjectInit
+     /tmp/cczejWcf.s:1213   .text.obqResetI:0000000000000000 obqResetI
+     /tmp/cczejWcf.s:1260   .text.obqGetFullBufferI:0000000000000000 obqGetFullBufferI
+     /tmp/cczejWcf.s:1309   .text.obqReleaseEmptyBufferI:0000000000000000 obqReleaseEmptyBufferI
+     /tmp/cczejWcf.s:1364   .text.obqGetEmptyBufferTimeoutS:0000000000000000 obqGetEmptyBufferTimeoutS
+     /tmp/cczejWcf.s:1475   .text.obqGetEmptyBufferTimeout:0000000000000000 obqGetEmptyBufferTimeout
+     /tmp/cczejWcf.s:1526   .text.obqPostFullBuffer:0000000000000000 obqPostFullBuffer
+     /tmp/cczejWcf.s:1644   .text.obqPostFullBufferS:0000000000000000 obqPostFullBufferS
+     /tmp/cczejWcf.s:1727   .text.obqPutTimeout:0000000000000000 obqPutTimeout
+     /tmp/cczejWcf.s:1910   .text.obqWriteTimeout:0000000000000000 obqWriteTimeout
+     /tmp/cczejWcf.s:2233   .text.obqTryFlushI:0000000000000000 obqTryFlushI
+     /tmp/cczejWcf.s:2323   .text.obqFlush:0000000000000000 obqFlush
 
 UNDEFINED SYMBOLS
 chThdDequeueAllI

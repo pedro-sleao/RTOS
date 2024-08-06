@@ -95,10 +95,10 @@ GPTDriver GPTD5;
 static uint16_t ratio_base[] = { 1024, 256, 64, 8, 1 };
 static uint8_t  clock_source_base[] = { 5, 4, 3, 2, 1 };
 
-/* Extended tables.
- * static uint16_t ratio_extended[] = { 1024, 256, 128, 64, 32, 8, 1 };
- * static uint8_t  clock_source_extended[] = { 7, 6, 5, 4, 3, 2, 1 };
- */
+
+static uint16_t ratio_extended[] = { 1024, 256, 128, 64, 32, 8, 1 };
+static uint8_t  clock_source_extended[] = { 7, 6, 5, 4, 3, 2, 1 };
+
 
 /*==========================================================================*/
 /* Driver local functions.                                                  */

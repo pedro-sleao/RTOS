@@ -1,0 +1,204 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.gpt_cb,"ax",@progbits
+  11               	.global	gpt_cb
+  13               	gpt_cb:
+  14               	.LFB238:
+  15               		.file 1 "main.c"
+   1:main.c        **** /*
+   2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:main.c        **** 
+   4:main.c        ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:main.c        ****     you may not use this file except in compliance with the License.
+   6:main.c        ****     You may obtain a copy of the License at
+   7:main.c        **** 
+   8:main.c        ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:main.c        **** 
+  10:main.c        ****     Unless required by applicable law or agreed to in writing, software
+  11:main.c        ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:main.c        ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:main.c        ****     See the License for the specific language governing permissions and
+  14:main.c        ****     limitations under the License.
+  15:main.c        **** */
+  16:main.c        **** 
+  17:main.c        **** #include "ch.h"
+  18:main.c        **** #include "hal.h"
+  19:main.c        **** 
+  20:main.c        **** #define LED_PIN PORTB_LED1
+  21:main.c        **** #define LED_PORT IOPORT2
+  22:main.c        **** 
+  23:main.c        **** void gpt_cb(GPTDriver* gptd) {
+  16               		.loc 1 23 0
+  17               		.cfi_startproc
+  18               	.LVL0:
+  19               	/* prologue: function */
+  20               	/* frame size = 0 */
+  21               	/* stack size = 0 */
+  22               	.L__stack_usage = 0
+  24:main.c        ****   (void) gptd;
+  25:main.c        ****   palTogglePad(LED_PORT, LED_PIN);
+  23               		.loc 1 25 0
+  24 0000 85B1      		in r24,0x5
+  25               	.LVL1:
+  26 0002 90E2      		ldi r25,lo8(32)
+  27 0004 8927      		eor r24,r25
+  28 0006 85B9      		out 0x5,r24
+  29               	/* epilogue start */
+  26:main.c        **** }
+  30               		.loc 1 26 0
+  31 0008 0895      		ret
+  32               		.cfi_endproc
+  33               	.LFE238:
+  35               		.section	.rodata
+  36               	.LC0:
+  37 0000 00        		.byte	0
+  38 0001 24        		.byte	36
+  39 0002 F4        		.byte	-12
+  40 0003 00        		.byte	0
+  41 0004 0000      		.word	gs(gpt_cb)
+  42               		.section	.text.startup.main,"ax",@progbits
+  43               	.global	main
+  45               	main:
+  46               	.LFB239:
+  27:main.c        **** 
+  28:main.c        **** /*
+  29:main.c        ****  * Application entry point.
+  30:main.c        ****  */
+  31:main.c        **** int main(void) {
+  47               		.loc 1 31 0
+  48               		.cfi_startproc
+  49 0000 CF93      		push r28
+  50               	.LCFI0:
+  51               		.cfi_def_cfa_offset 3
+  52               		.cfi_offset 28, -2
+  53 0002 DF93      		push r29
+  54               	.LCFI1:
+  55               		.cfi_def_cfa_offset 4
+  56               		.cfi_offset 29, -3
+  57 0004 00D0      		rcall .
+  58 0006 00D0      		rcall .
+  59 0008 00D0      		rcall .
+  60               	.LCFI2:
+  61               		.cfi_def_cfa_offset 10
+  62 000a CDB7      		in r28,__SP_L__
+  63 000c DEB7      		in r29,__SP_H__
+  64               	.LCFI3:
+  65               		.cfi_def_cfa_register 28
+  66               	/* prologue: function */
+  67               	/* frame size = 6 */
+  68               	/* stack size = 8 */
+  69               	.L__stack_usage = 8
+  32:main.c        ****   GPTConfig driver_config = {.frequency = 16000000,
+  70               		.loc 1 32 0
+  71 000e 86E0      		ldi r24,lo8(6)
+  72 0010 E0E0      		ldi r30,lo8(.LC0)
+  73 0012 F0E0      		ldi r31,hi8(.LC0)
+  74 0014 DE01      		movw r26,r28
+  75 0016 1196      		adiw r26,1
+  76               		0:
+  77 0018 0190      		ld r0,Z+
+  78 001a 0D92      		st X+,r0
+  79 001c 8A95      		dec r24
+  80 001e 01F4      		brne 0b
+  33:main.c        ****                              .callback = gpt_cb
+  34:main.c        ****   };
+  35:main.c        **** 
+  36:main.c        ****   /*
+  37:main.c        ****    * System initializations.
+  38:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  39:main.c        ****    *   and performs the board-specific initializations.
+  40:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  41:main.c        ****    *   RTOS is active.
+  42:main.c        ****    */
+  43:main.c        ****   halInit();
+  81               		.loc 1 43 0
+  82 0020 0E94 0000 		call halInit
+  83               	.LVL2:
+  44:main.c        ****   chSysInit();
+  84               		.loc 1 44 0
+  85 0024 0E94 0000 		call chSysInit
+  86               	.LVL3:
+  45:main.c        **** 
+  46:main.c        ****   palSetPadMode(LED_PORT, LED_PIN, PAL_MODE_OUTPUT_PUSHPULL);
+  87               		.loc 1 46 0
+  88 0028 46E0      		ldi r20,lo8(6)
+  89 002a 60E2      		ldi r22,lo8(32)
+  90 002c 83E2      		ldi r24,lo8(35)
+  91 002e 90E0      		ldi r25,0
+  92 0030 0E94 0000 		call _pal_lld_setgroupmode
+  93               	.LVL4:
+  47:main.c        ****   palClearPad(LED_PORT, LED_PIN);
+  94               		.loc 1 47 0
+  95 0034 2D98      		cbi 0x5,5
+  48:main.c        **** 
+  49:main.c        ****   gptStart(&GPTD2, &driver_config);
+  96               		.loc 1 49 0
+  97 0036 BE01      		movw r22,r28
+  98 0038 6F5F      		subi r22,-1
+  99 003a 7F4F      		sbci r23,-1
+ 100 003c 80E0      		ldi r24,lo8(GPTD2)
+ 101 003e 90E0      		ldi r25,hi8(GPTD2)
+ 102 0040 0E94 0000 		call gptStart
+ 103               	.LVL5:
+  50:main.c        ****   gptStartContinuous(&GPTD2, 255);
+ 104               		.loc 1 50 0
+ 105 0044 6FEF      		ldi r22,lo8(-1)
+ 106 0046 70E0      		ldi r23,0
+ 107 0048 80E0      		ldi r24,lo8(GPTD2)
+ 108 004a 90E0      		ldi r25,hi8(GPTD2)
+ 109 004c 0E94 0000 		call gptStartContinuous
+ 110               	.LVL6:
+ 111               	.L4:
+ 112 0050 00C0      		rjmp .L4
+ 113               		.cfi_endproc
+ 114               	.LFE239:
+ 116               		.text
+ 117               	.Letext0:
+ 118               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 119               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 120               		.file 4 "../../os/common/ports/AVR/compilers/GCC/chtypes.h"
+ 121               		.file 5 "../../os/rt/include/chearly.h"
+ 122               		.file 6 "../../os/rt/include/chobjects.h"
+ 123               		.file 7 "../../os/rt/include/chrfcu.h"
+ 124               		.file 8 "../../os/rt/include/chdebug.h"
+ 125               		.file 9 "../../os/rt/include/chtime.h"
+ 126               		.file 10 "../../os/rt/include/chlists.h"
+ 127               		.file 11 "../../os/common/ports/AVR/chcore.h"
+ 128               		.file 12 "../../os/rt/include/chsem.h"
+ 129               		.file 13 "../../os/rt/include/chmtx.h"
+ 130               		.file 14 "../../os/rt/include/chsys.h"
+ 131               		.file 15 "../../os/rt/include/chregistry.h"
+ 132               		.file 16 "../../os/rt/include/chevents.h"
+ 133               		.file 17 "../../os/oslib/include/chmemcore.h"
+ 134               		.file 18 "../../os/hal/include/hal_queues.h"
+ 135               		.file 19 "../../os/hal/ports/AVR/MEGA/LLD/GPIOv1/hal_pal_lld.h"
+ 136               		.file 20 "../../os/hal/include/hal_gpt.h"
+ 137               		.file 21 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.h"
+ 138               		.file 22 "../../os/hal/include/hal_serial.h"
+ 139               		.file 23 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
+ 140               		.file 24 "../../os/hal/include/hal.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/cclcCJNT.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cclcCJNT.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cclcCJNT.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cclcCJNT.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cclcCJNT.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cclcCJNT.s:13     .text.gpt_cb:0000000000000000 gpt_cb
+     /tmp/cclcCJNT.s:45     .text.startup.main:0000000000000000 main
+
+UNDEFINED SYMBOLS
+halInit
+chSysInit
+_pal_lld_setgroupmode
+GPTD2
+gptStart
+gptStartContinuous
+__do_copy_data

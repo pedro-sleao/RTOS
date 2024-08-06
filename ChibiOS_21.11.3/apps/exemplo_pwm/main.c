@@ -24,6 +24,7 @@ int main(void) {
 
   static PWMConfig pwmcfg = { .frequency = 15625,
                               .period = 255,
+                              .callback = 0,
                               .channels = {{PWM_OUTPUT_ACTIVE_HIGH, 0},
                                 {PWM_OUTPUT_DISABLED, 0}},
   };

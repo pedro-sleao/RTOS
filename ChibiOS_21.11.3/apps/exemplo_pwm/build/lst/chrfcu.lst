@@ -238,13 +238,13 @@
  148               		.file 15 "../../os/oslib/include/chmemcore.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chrfcu.c
-     /tmp/cc35jJ2w.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/cc35jJ2w.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/cc35jJ2w.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/cc35jJ2w.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/cc35jJ2w.s:6      *ABS*:0000000000000001 __zero_reg__
-     /tmp/cc35jJ2w.s:13     .text.chRFCUCollectFaultsI:0000000000000000 chRFCUCollectFaultsI
-     /tmp/cc35jJ2w.s:59     .text.chRFCUGetAndClearFaultsI:0000000000000000 chRFCUGetAndClearFaultsI
+     /tmp/cccCKqHW.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cccCKqHW.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cccCKqHW.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cccCKqHW.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cccCKqHW.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cccCKqHW.s:13     .text.chRFCUCollectFaultsI:0000000000000000 chRFCUCollectFaultsI
+     /tmp/cccCKqHW.s:59     .text.chRFCUGetAndClearFaultsI:0000000000000000 chRFCUGetAndClearFaultsI
 
 UNDEFINED SYMBOLS
 ch0

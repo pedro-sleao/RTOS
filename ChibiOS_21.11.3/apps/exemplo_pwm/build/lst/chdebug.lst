@@ -24,10 +24,10 @@
   24               		.file 14 "../../os/oslib/include/chmemcore.h"
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 chdebug.c
-     /tmp/ccLHE2Xa.s:2      *ABS*:000000000000003e __SP_H__
-     /tmp/ccLHE2Xa.s:3      *ABS*:000000000000003d __SP_L__
-     /tmp/ccLHE2Xa.s:4      *ABS*:000000000000003f __SREG__
-     /tmp/ccLHE2Xa.s:5      *ABS*:0000000000000000 __tmp_reg__
-     /tmp/ccLHE2Xa.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccaonN0U.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccaonN0U.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccaonN0U.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccaonN0U.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccaonN0U.s:6      *ABS*:0000000000000001 __zero_reg__
 
 NO UNDEFINED SYMBOLS
