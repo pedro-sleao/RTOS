@@ -1,0 +1,1291 @@
+   1               		.file	"hal_gpt.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.gptInit,"ax",@progbits
+  11               	.global	gptInit
+  13               	gptInit:
+  14               	.LFB238:
+  15               		.file 1 "../../os/hal/src/hal_gpt.c"
+   1:../../os/hal/src/hal_gpt.c **** /*
+   2:../../os/hal/src/hal_gpt.c ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:../../os/hal/src/hal_gpt.c **** 
+   4:../../os/hal/src/hal_gpt.c ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:../../os/hal/src/hal_gpt.c ****     you may not use this file except in compliance with the License.
+   6:../../os/hal/src/hal_gpt.c ****     You may obtain a copy of the License at
+   7:../../os/hal/src/hal_gpt.c **** 
+   8:../../os/hal/src/hal_gpt.c ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:../../os/hal/src/hal_gpt.c **** 
+  10:../../os/hal/src/hal_gpt.c ****     Unless required by applicable law or agreed to in writing, software
+  11:../../os/hal/src/hal_gpt.c ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:../../os/hal/src/hal_gpt.c ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:../../os/hal/src/hal_gpt.c ****     See the License for the specific language governing permissions and
+  14:../../os/hal/src/hal_gpt.c ****     limitations under the License.
+  15:../../os/hal/src/hal_gpt.c **** */
+  16:../../os/hal/src/hal_gpt.c **** 
+  17:../../os/hal/src/hal_gpt.c **** /**
+  18:../../os/hal/src/hal_gpt.c ****  * @file    hal_gpt.c
+  19:../../os/hal/src/hal_gpt.c ****  * @brief   GPT Driver code.
+  20:../../os/hal/src/hal_gpt.c ****  *
+  21:../../os/hal/src/hal_gpt.c ****  * @addtogroup GPT
+  22:../../os/hal/src/hal_gpt.c ****  * @{
+  23:../../os/hal/src/hal_gpt.c ****  */
+  24:../../os/hal/src/hal_gpt.c **** 
+  25:../../os/hal/src/hal_gpt.c **** #include "hal.h"
+  26:../../os/hal/src/hal_gpt.c **** 
+  27:../../os/hal/src/hal_gpt.c **** #if (HAL_USE_GPT == TRUE) || defined(__DOXYGEN__)
+  28:../../os/hal/src/hal_gpt.c **** 
+  29:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  30:../../os/hal/src/hal_gpt.c **** /* Driver local definitions.                                                 */
+  31:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  32:../../os/hal/src/hal_gpt.c **** 
+  33:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  34:../../os/hal/src/hal_gpt.c **** /* Driver exported variables.                                                */
+  35:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  36:../../os/hal/src/hal_gpt.c **** 
+  37:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  38:../../os/hal/src/hal_gpt.c **** /* Driver local variables and types.                                         */
+  39:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  40:../../os/hal/src/hal_gpt.c **** 
+  41:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  42:../../os/hal/src/hal_gpt.c **** /* Driver local functions.                                                   */
+  43:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  44:../../os/hal/src/hal_gpt.c **** 
+  45:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  46:../../os/hal/src/hal_gpt.c **** /* Driver exported functions.                                                */
+  47:../../os/hal/src/hal_gpt.c **** /*===========================================================================*/
+  48:../../os/hal/src/hal_gpt.c **** 
+  49:../../os/hal/src/hal_gpt.c **** /**
+  50:../../os/hal/src/hal_gpt.c ****  * @brief   GPT Driver initialization.
+  51:../../os/hal/src/hal_gpt.c ****  * @note    This function is implicitly invoked by @p halInit(), there is
+  52:../../os/hal/src/hal_gpt.c ****  *          no need to explicitly initialize the driver.
+  53:../../os/hal/src/hal_gpt.c ****  *
+  54:../../os/hal/src/hal_gpt.c ****  * @init
+  55:../../os/hal/src/hal_gpt.c ****  */
+  56:../../os/hal/src/hal_gpt.c **** void gptInit(void) {
+  16               		.loc 1 56 0
+  17               		.cfi_startproc
+  18               	/* prologue: function */
+  19               	/* frame size = 0 */
+  20               	/* stack size = 0 */
+  21               	.L__stack_usage = 0
+  57:../../os/hal/src/hal_gpt.c **** 
+  58:../../os/hal/src/hal_gpt.c ****   gpt_lld_init();
+  22               		.loc 1 58 0
+  23 0000 0C94 0000 		jmp gpt_lld_init
+  24               	.LVL0:
+  25               		.cfi_endproc
+  26               	.LFE238:
+  28               		.section	.text.gptObjectInit,"ax",@progbits
+  29               	.global	gptObjectInit
+  31               	gptObjectInit:
+  32               	.LFB239:
+  59:../../os/hal/src/hal_gpt.c **** }
+  60:../../os/hal/src/hal_gpt.c **** 
+  61:../../os/hal/src/hal_gpt.c **** /**
+  62:../../os/hal/src/hal_gpt.c ****  * @brief   Initializes the standard part of a @p GPTDriver structure.
+  63:../../os/hal/src/hal_gpt.c ****  *
+  64:../../os/hal/src/hal_gpt.c ****  * @param[out] gptp     pointer to the @p GPTDriver object
+  65:../../os/hal/src/hal_gpt.c ****  *
+  66:../../os/hal/src/hal_gpt.c ****  * @init
+  67:../../os/hal/src/hal_gpt.c ****  */
+  68:../../os/hal/src/hal_gpt.c **** void gptObjectInit(GPTDriver *gptp) {
+  33               		.loc 1 68 0
+  34               		.cfi_startproc
+  35               	.LVL1:
+  36               	/* prologue: function */
+  37               	/* frame size = 0 */
+  38               	/* stack size = 0 */
+  39               	.L__stack_usage = 0
+  69:../../os/hal/src/hal_gpt.c **** 
+  70:../../os/hal/src/hal_gpt.c ****   gptp->state  = GPT_STOP;
+  40               		.loc 1 70 0
+  41 0000 21E0      		ldi r18,lo8(1)
+  42 0002 FC01      		movw r30,r24
+  43 0004 2083      		st Z,r18
+  71:../../os/hal/src/hal_gpt.c ****   gptp->config = NULL;
+  44               		.loc 1 71 0
+  45 0006 1282      		std Z+2,__zero_reg__
+  46 0008 1182      		std Z+1,__zero_reg__
+  47               	/* epilogue start */
+  72:../../os/hal/src/hal_gpt.c **** }
+  48               		.loc 1 72 0
+  49 000a 0895      		ret
+  50               		.cfi_endproc
+  51               	.LFE239:
+  53               		.section	.text.gptStart,"ax",@progbits
+  54               	.global	gptStart
+  56               	gptStart:
+  57               	.LFB240:
+  73:../../os/hal/src/hal_gpt.c **** 
+  74:../../os/hal/src/hal_gpt.c **** /**
+  75:../../os/hal/src/hal_gpt.c ****  * @brief   Configures and activates the GPT peripheral.
+  76:../../os/hal/src/hal_gpt.c ****  *
+  77:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+  78:../../os/hal/src/hal_gpt.c ****  * @param[in] config    pointer to the @p GPTConfig object
+  79:../../os/hal/src/hal_gpt.c ****  * @return              The operation status.
+  80:../../os/hal/src/hal_gpt.c ****  *
+  81:../../os/hal/src/hal_gpt.c ****  * @api
+  82:../../os/hal/src/hal_gpt.c ****  */
+  83:../../os/hal/src/hal_gpt.c **** msg_t gptStart(GPTDriver *gptp, const GPTConfig *config) {
+  58               		.loc 1 83 0
+  59               		.cfi_startproc
+  60               	.LVL2:
+  61 0000 CF93      		push r28
+  62               	.LCFI0:
+  63               		.cfi_def_cfa_offset 3
+  64               		.cfi_offset 28, -2
+  65 0002 DF93      		push r29
+  66               	.LCFI1:
+  67               		.cfi_def_cfa_offset 4
+  68               		.cfi_offset 29, -3
+  69               	/* prologue: function */
+  70               	/* frame size = 0 */
+  71               	/* stack size = 2 */
+  72               	.L__stack_usage = 2
+  73 0004 EC01      		movw r28,r24
+  74               	.LBB86:
+  75               	.LBB87:
+  76               	.LBB88:
+  77               	.LBB89:
+  78               		.file 2 "../../os/common/ports/AVR/chcore.h"
+   1:../../os/common/ports/AVR/chcore.h **** /*
+   2:../../os/common/ports/AVR/chcore.h ****     ChibiOS - Copyright (C) 2006,2007,2008,2009,2010,2011,2012,2013,2014,
+   3:../../os/common/ports/AVR/chcore.h ****               2015,2016,2017,2018,2019,2020,2021 Giovanni Di Sirio.
+   4:../../os/common/ports/AVR/chcore.h **** 
+   5:../../os/common/ports/AVR/chcore.h ****     This file is part of ChibiOS.
+   6:../../os/common/ports/AVR/chcore.h **** 
+   7:../../os/common/ports/AVR/chcore.h ****     ChibiOS is free software; you can redistribute it and/or modify
+   8:../../os/common/ports/AVR/chcore.h ****     it under the terms of the GNU General Public License as published by
+   9:../../os/common/ports/AVR/chcore.h ****     the Free Software Foundation version 3 of the License.
+  10:../../os/common/ports/AVR/chcore.h **** 
+  11:../../os/common/ports/AVR/chcore.h ****     ChibiOS is distributed in the hope that it will be useful,
+  12:../../os/common/ports/AVR/chcore.h ****     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:../../os/common/ports/AVR/chcore.h ****     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:../../os/common/ports/AVR/chcore.h ****     GNU General Public License for more details.
+  15:../../os/common/ports/AVR/chcore.h **** 
+  16:../../os/common/ports/AVR/chcore.h ****     You should have received a copy of the GNU General Public License
+  17:../../os/common/ports/AVR/chcore.h ****     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  18:../../os/common/ports/AVR/chcore.h **** */
+  19:../../os/common/ports/AVR/chcore.h **** 
+  20:../../os/common/ports/AVR/chcore.h **** /**
+  21:../../os/common/ports/AVR/chcore.h ****  * @file    chcore.h
+  22:../../os/common/ports/AVR/chcore.h ****  * @brief   AVR port macros and structures.
+  23:../../os/common/ports/AVR/chcore.h ****  *
+  24:../../os/common/ports/AVR/chcore.h ****  * @addtogroup AVR_CORE
+  25:../../os/common/ports/AVR/chcore.h ****  * @{
+  26:../../os/common/ports/AVR/chcore.h ****  */
+  27:../../os/common/ports/AVR/chcore.h **** 
+  28:../../os/common/ports/AVR/chcore.h **** #ifndef CHCORE_H
+  29:../../os/common/ports/AVR/chcore.h **** #define CHCORE_H
+  30:../../os/common/ports/AVR/chcore.h **** 
+  31:../../os/common/ports/AVR/chcore.h **** #include <avr/io.h>
+  32:../../os/common/ports/AVR/chcore.h **** #include <avr/interrupt.h>
+  33:../../os/common/ports/AVR/chcore.h **** 
+  34:../../os/common/ports/AVR/chcore.h **** extern bool __avr_in_isr;
+  35:../../os/common/ports/AVR/chcore.h **** 
+  36:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+  37:../../os/common/ports/AVR/chcore.h **** /* Module constants.                                                         */
+  38:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+  39:../../os/common/ports/AVR/chcore.h **** 
+  40:../../os/common/ports/AVR/chcore.h **** /**
+  41:../../os/common/ports/AVR/chcore.h ****  * @name    Port Capabilities and Constants
+  42:../../os/common/ports/AVR/chcore.h ****  * @{
+  43:../../os/common/ports/AVR/chcore.h ****  */
+  44:../../os/common/ports/AVR/chcore.h **** /**
+  45:../../os/common/ports/AVR/chcore.h ****  * @brief   This port supports a realtime counter.
+  46:../../os/common/ports/AVR/chcore.h ****  */
+  47:../../os/common/ports/AVR/chcore.h **** #define PORT_SUPPORTS_RT                FALSE
+  48:../../os/common/ports/AVR/chcore.h **** 
+  49:../../os/common/ports/AVR/chcore.h **** /**
+  50:../../os/common/ports/AVR/chcore.h ****  * @brief   Natural alignment constant.
+  51:../../os/common/ports/AVR/chcore.h ****  * @note    It is the minimum alignment for pointer-size variables.
+  52:../../os/common/ports/AVR/chcore.h ****  */
+  53:../../os/common/ports/AVR/chcore.h **** #define PORT_NATURAL_ALIGN              1U
+  54:../../os/common/ports/AVR/chcore.h **** 
+  55:../../os/common/ports/AVR/chcore.h **** /**
+  56:../../os/common/ports/AVR/chcore.h ****  * @brief   Stack alignment constant.
+  57:../../os/common/ports/AVR/chcore.h ****  * @note    It is the alignment required for the stack pointer.
+  58:../../os/common/ports/AVR/chcore.h ****  */
+  59:../../os/common/ports/AVR/chcore.h **** #define PORT_STACK_ALIGN                1U
+  60:../../os/common/ports/AVR/chcore.h **** 
+  61:../../os/common/ports/AVR/chcore.h **** /**
+  62:../../os/common/ports/AVR/chcore.h ****  * @brief   Working Areas alignment constant.
+  63:../../os/common/ports/AVR/chcore.h ****  * @note    It is the alignment to be enforced for thread working areas.
+  64:../../os/common/ports/AVR/chcore.h ****  */
+  65:../../os/common/ports/AVR/chcore.h **** #define PORT_WORKING_AREA_ALIGN         1U
+  66:../../os/common/ports/AVR/chcore.h **** /** @} */
+  67:../../os/common/ports/AVR/chcore.h **** 
+  68:../../os/common/ports/AVR/chcore.h **** /**
+  69:../../os/common/ports/AVR/chcore.h ****  * @name    Architecture and Compiler
+  70:../../os/common/ports/AVR/chcore.h ****  * @{
+  71:../../os/common/ports/AVR/chcore.h ****  */
+  72:../../os/common/ports/AVR/chcore.h **** /**
+  73:../../os/common/ports/AVR/chcore.h ****  * @brief   Macro defining an AVR architecture.
+  74:../../os/common/ports/AVR/chcore.h ****  */
+  75:../../os/common/ports/AVR/chcore.h **** #define PORT_ARCHITECTURE_AVR
+  76:../../os/common/ports/AVR/chcore.h **** 
+  77:../../os/common/ports/AVR/chcore.h **** /**
+  78:../../os/common/ports/AVR/chcore.h ****  * @brief   Macro defining the specific AVR architecture.
+  79:../../os/common/ports/AVR/chcore.h ****  */
+  80:../../os/common/ports/AVR/chcore.h **** #define PORT_ARCHITECTURE_AVR_MEGAAVR
+  81:../../os/common/ports/AVR/chcore.h **** 
+  82:../../os/common/ports/AVR/chcore.h **** /**
+  83:../../os/common/ports/AVR/chcore.h ****  * @brief   Name of the implemented architecture.
+  84:../../os/common/ports/AVR/chcore.h ****  */
+  85:../../os/common/ports/AVR/chcore.h **** #define PORT_ARCHITECTURE_NAME          "AVR"
+  86:../../os/common/ports/AVR/chcore.h **** 
+  87:../../os/common/ports/AVR/chcore.h **** /**
+  88:../../os/common/ports/AVR/chcore.h ****  * @brief   Name of the architecture variant.
+  89:../../os/common/ports/AVR/chcore.h ****  */
+  90:../../os/common/ports/AVR/chcore.h **** #define PORT_CORE_VARIANT_NAME          "MegaAVR"
+  91:../../os/common/ports/AVR/chcore.h **** 
+  92:../../os/common/ports/AVR/chcore.h **** /**
+  93:../../os/common/ports/AVR/chcore.h ****  * @brief   Compiler name and version.
+  94:../../os/common/ports/AVR/chcore.h ****  */
+  95:../../os/common/ports/AVR/chcore.h **** #if defined(__GNUC__) || defined(__DOXYGEN__)
+  96:../../os/common/ports/AVR/chcore.h **** #define PORT_COMPILER_NAME              "GCC " __VERSION__
+  97:../../os/common/ports/AVR/chcore.h **** 
+  98:../../os/common/ports/AVR/chcore.h **** #else
+  99:../../os/common/ports/AVR/chcore.h **** #error "unsupported compiler"
+ 100:../../os/common/ports/AVR/chcore.h **** #endif
+ 101:../../os/common/ports/AVR/chcore.h **** 
+ 102:../../os/common/ports/AVR/chcore.h **** /**
+ 103:../../os/common/ports/AVR/chcore.h ****  * @brief   Port-specific information string.
+ 104:../../os/common/ports/AVR/chcore.h ****  */
+ 105:../../os/common/ports/AVR/chcore.h **** #define PORT_INFO                       "None"
+ 106:../../os/common/ports/AVR/chcore.h **** /** @} */
+ 107:../../os/common/ports/AVR/chcore.h **** 
+ 108:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 109:../../os/common/ports/AVR/chcore.h **** /* Module pre-compile time settings.                                         */
+ 110:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 111:../../os/common/ports/AVR/chcore.h **** 
+ 112:../../os/common/ports/AVR/chcore.h **** /**
+ 113:../../os/common/ports/AVR/chcore.h ****  * @brief   Stack size for the system idle thread.
+ 114:../../os/common/ports/AVR/chcore.h ****  * @details This size depends on the idle thread implementation, usually
+ 115:../../os/common/ports/AVR/chcore.h ****  *          the idle thread should take no more space than those reserved
+ 116:../../os/common/ports/AVR/chcore.h ****  *          by @p PORT_INT_REQUIRED_STACK.
+ 117:../../os/common/ports/AVR/chcore.h ****  */
+ 118:../../os/common/ports/AVR/chcore.h **** #if !defined(PORT_IDLE_THREAD_STACK_SIZE) || defined(__DOXYGEN__)
+ 119:../../os/common/ports/AVR/chcore.h **** #define PORT_IDLE_THREAD_STACK_SIZE     8
+ 120:../../os/common/ports/AVR/chcore.h **** #endif
+ 121:../../os/common/ports/AVR/chcore.h **** 
+ 122:../../os/common/ports/AVR/chcore.h **** /**
+ 123:../../os/common/ports/AVR/chcore.h ****  * @brief   Per-thread stack overhead for interrupts servicing.
+ 124:../../os/common/ports/AVR/chcore.h ****  * @details This constant is used in the calculation of the correct working
+ 125:../../os/common/ports/AVR/chcore.h ****  *          area size.
+ 126:../../os/common/ports/AVR/chcore.h ****  */
+ 127:../../os/common/ports/AVR/chcore.h **** #if !defined(PORT_INT_REQUIRED_STACK) || defined(__DOXYGEN__)
+ 128:../../os/common/ports/AVR/chcore.h **** #define PORT_INT_REQUIRED_STACK         32
+ 129:../../os/common/ports/AVR/chcore.h **** #endif
+ 130:../../os/common/ports/AVR/chcore.h **** 
+ 131:../../os/common/ports/AVR/chcore.h **** /**
+ 132:../../os/common/ports/AVR/chcore.h ****  * @brief   Enables a "wait for interrupt" instruction in the idle loop.
+ 133:../../os/common/ports/AVR/chcore.h ****  */
+ 134:../../os/common/ports/AVR/chcore.h **** #if !defined(PORT_AVR_WFI_SLEEP_IDLE) || defined(__DOXYGEN__)
+ 135:../../os/common/ports/AVR/chcore.h **** #define PORT_AVR_WFI_SLEEP_IDLE      FALSE
+ 136:../../os/common/ports/AVR/chcore.h **** #endif
+ 137:../../os/common/ports/AVR/chcore.h **** 
+ 138:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 139:../../os/common/ports/AVR/chcore.h **** /* Derived constants and error checks.                                       */
+ 140:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 141:../../os/common/ports/AVR/chcore.h **** 
+ 142:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 143:../../os/common/ports/AVR/chcore.h **** /* Module data structures and types.                                         */
+ 144:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 145:../../os/common/ports/AVR/chcore.h **** 
+ 146:../../os/common/ports/AVR/chcore.h **** /* The following code is not processed when the file is included from an
+ 147:../../os/common/ports/AVR/chcore.h ****    asm module.*/
+ 148:../../os/common/ports/AVR/chcore.h **** #if !defined(_FROM_ASM_)
+ 149:../../os/common/ports/AVR/chcore.h **** 
+ 150:../../os/common/ports/AVR/chcore.h **** /**
+ 151:../../os/common/ports/AVR/chcore.h ****  * @brief   Type of stack and memory alignment enforcement.
+ 152:../../os/common/ports/AVR/chcore.h ****  * @note    In this architecture the stack alignment is enforced to 8 bits.
+ 153:../../os/common/ports/AVR/chcore.h ****  */
+ 154:../../os/common/ports/AVR/chcore.h **** typedef uint8_t stkalign_t;
+ 155:../../os/common/ports/AVR/chcore.h **** 
+ 156:../../os/common/ports/AVR/chcore.h **** /**
+ 157:../../os/common/ports/AVR/chcore.h ****  * @brief   Interrupt saved context.
+ 158:../../os/common/ports/AVR/chcore.h ****  * @details This structure represents the stack frame saved during a
+ 159:../../os/common/ports/AVR/chcore.h ****  *          preemption-capable interrupt handler.
+ 160:../../os/common/ports/AVR/chcore.h ****  * @note    R2 and R13 are not saved because those are assumed to be immutable
+ 161:../../os/common/ports/AVR/chcore.h ****  *          during the system life cycle.
+ 162:../../os/common/ports/AVR/chcore.h ****  */
+ 163:../../os/common/ports/AVR/chcore.h **** struct port_extctx {
+ 164:../../os/common/ports/AVR/chcore.h ****   uint8_t       _next;
+ 165:../../os/common/ports/AVR/chcore.h ****   uint8_t       r31;
+ 166:../../os/common/ports/AVR/chcore.h ****   uint8_t       r30;
+ 167:../../os/common/ports/AVR/chcore.h ****   uint8_t       r27;
+ 168:../../os/common/ports/AVR/chcore.h ****   uint8_t       r26;
+ 169:../../os/common/ports/AVR/chcore.h ****   uint8_t       r25;
+ 170:../../os/common/ports/AVR/chcore.h ****   uint8_t       r24;
+ 171:../../os/common/ports/AVR/chcore.h ****   uint8_t       r23;
+ 172:../../os/common/ports/AVR/chcore.h ****   uint8_t       r22;
+ 173:../../os/common/ports/AVR/chcore.h ****   uint8_t       r21;
+ 174:../../os/common/ports/AVR/chcore.h ****   uint8_t       r20;
+ 175:../../os/common/ports/AVR/chcore.h ****   uint8_t       r19;
+ 176:../../os/common/ports/AVR/chcore.h ****   uint8_t       r18;
+ 177:../../os/common/ports/AVR/chcore.h ****   uint8_t       sr;
+ 178:../../os/common/ports/AVR/chcore.h ****   uint8_t       r1;
+ 179:../../os/common/ports/AVR/chcore.h ****   uint8_t       r0;
+ 180:../../os/common/ports/AVR/chcore.h **** #if defined(__AVR_3_BYTE_PC__)
+ 181:../../os/common/ports/AVR/chcore.h ****   uint8_t       pcx;
+ 182:../../os/common/ports/AVR/chcore.h **** #endif
+ 183:../../os/common/ports/AVR/chcore.h ****   uint16_t      pc;
+ 184:../../os/common/ports/AVR/chcore.h **** };
+ 185:../../os/common/ports/AVR/chcore.h **** 
+ 186:../../os/common/ports/AVR/chcore.h **** /**
+ 187:../../os/common/ports/AVR/chcore.h ****  * @brief   System saved context.
+ 188:../../os/common/ports/AVR/chcore.h ****  * @details This structure represents the inner stack frame during a context
+ 189:../../os/common/ports/AVR/chcore.h ****  *          switching.
+ 190:../../os/common/ports/AVR/chcore.h ****  * @note    R2 and R13 are not saved because those are assumed to be immutable
+ 191:../../os/common/ports/AVR/chcore.h ****  *          during the system life cycle.
+ 192:../../os/common/ports/AVR/chcore.h ****  * @note    LR is stored in the caller context so it is not present in this
+ 193:../../os/common/ports/AVR/chcore.h ****  *          structure.
+ 194:../../os/common/ports/AVR/chcore.h ****  */
+ 195:../../os/common/ports/AVR/chcore.h **** struct port_intctx {
+ 196:../../os/common/ports/AVR/chcore.h ****   uint8_t       _next;
+ 197:../../os/common/ports/AVR/chcore.h ****   uint8_t       r29;
+ 198:../../os/common/ports/AVR/chcore.h ****   uint8_t       r28;
+ 199:../../os/common/ports/AVR/chcore.h ****   uint8_t       r17;
+ 200:../../os/common/ports/AVR/chcore.h ****   uint8_t       r16;
+ 201:../../os/common/ports/AVR/chcore.h ****   uint8_t       r15;
+ 202:../../os/common/ports/AVR/chcore.h ****   uint8_t       r14;
+ 203:../../os/common/ports/AVR/chcore.h ****   uint8_t       r13;
+ 204:../../os/common/ports/AVR/chcore.h ****   uint8_t       r12;
+ 205:../../os/common/ports/AVR/chcore.h ****   uint8_t       r11;
+ 206:../../os/common/ports/AVR/chcore.h ****   uint8_t       r10;
+ 207:../../os/common/ports/AVR/chcore.h ****   uint8_t       r9;
+ 208:../../os/common/ports/AVR/chcore.h ****   uint8_t       r8;
+ 209:../../os/common/ports/AVR/chcore.h ****   uint8_t       r7;
+ 210:../../os/common/ports/AVR/chcore.h ****   uint8_t       r6;
+ 211:../../os/common/ports/AVR/chcore.h ****   uint8_t       r5;
+ 212:../../os/common/ports/AVR/chcore.h ****   uint8_t       r4;
+ 213:../../os/common/ports/AVR/chcore.h ****   uint8_t       r3;
+ 214:../../os/common/ports/AVR/chcore.h ****   uint8_t       r2;
+ 215:../../os/common/ports/AVR/chcore.h **** #if defined(__AVR_3_BYTE_PC__)
+ 216:../../os/common/ports/AVR/chcore.h ****   uint8_t       pcx;
+ 217:../../os/common/ports/AVR/chcore.h **** #endif
+ 218:../../os/common/ports/AVR/chcore.h ****   uint8_t       pcl;
+ 219:../../os/common/ports/AVR/chcore.h ****   uint8_t       pch;
+ 220:../../os/common/ports/AVR/chcore.h **** };
+ 221:../../os/common/ports/AVR/chcore.h **** 
+ 222:../../os/common/ports/AVR/chcore.h **** /**
+ 223:../../os/common/ports/AVR/chcore.h ****  * @brief   Platform dependent part of the @p thread_t structure.
+ 224:../../os/common/ports/AVR/chcore.h ****  * @details This structure usually contains just the saved stack pointer
+ 225:../../os/common/ports/AVR/chcore.h ****  *          defined as a pointer to a @p port_intctx structure.
+ 226:../../os/common/ports/AVR/chcore.h ****  */
+ 227:../../os/common/ports/AVR/chcore.h **** struct port_context {
+ 228:../../os/common/ports/AVR/chcore.h ****   struct port_intctx *sp;
+ 229:../../os/common/ports/AVR/chcore.h **** };
+ 230:../../os/common/ports/AVR/chcore.h **** 
+ 231:../../os/common/ports/AVR/chcore.h **** #endif /* !defined(_FROM_ASM_) */
+ 232:../../os/common/ports/AVR/chcore.h **** 
+ 233:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 234:../../os/common/ports/AVR/chcore.h **** /* Module macros.                                                            */
+ 235:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 236:../../os/common/ports/AVR/chcore.h **** 
+ 237:../../os/common/ports/AVR/chcore.h **** /**
+ 238:../../os/common/ports/AVR/chcore.h ****  * @brief   Platform dependent part of the @p chThdCreateI() API.
+ 239:../../os/common/ports/AVR/chcore.h ****  * @details This code usually setup the context switching frame represented
+ 240:../../os/common/ports/AVR/chcore.h ****  *          by an @p port_intctx structure.
+ 241:../../os/common/ports/AVR/chcore.h ****  */
+ 242:../../os/common/ports/AVR/chcore.h **** #if defined(__AVR_3_BYTE_PC__) || defined(__DOXYGEN__)
+ 243:../../os/common/ports/AVR/chcore.h **** #define PORT_SETUP_CONTEXT(tp, wbase, wtop, pf, arg) {                      \
+ 244:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp = (struct port_intctx *)((uint8_t *)(wtop) -                   \
+ 245:../../os/common/ports/AVR/chcore.h ****                                       sizeof(struct port_intctx));          \
+ 246:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r2  = (uint8_t)(0xff & (uint16_t)pf);                         \
+ 247:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r3  = (uint8_t)((uint16_t)(pf) >> 8);                         \
+ 248:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r4  = (uint8_t)(0xff & (uint16_t)arg);                        \
+ 249:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r5  = (uint8_t)((uint16_t)(arg) >> 8);                        \
+ 250:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->pcx = (uint8_t)0;                                             \
+ 251:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->pcl = (uint16_t)_port_thread_start >> 8;                      \
+ 252:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->pch = (uint8_t)(0xff & (uint16_t)_port_thread_start);         \
+ 253:../../os/common/ports/AVR/chcore.h **** }
+ 254:../../os/common/ports/AVR/chcore.h **** #else /* !__AVR_3_BYTE_PC__ */
+ 255:../../os/common/ports/AVR/chcore.h **** #define PORT_SETUP_CONTEXT(tp, wbase, wtop, pf, arg) {                      \
+ 256:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp = (struct port_intctx *)((uint8_t *)(wtop) -                   \
+ 257:../../os/common/ports/AVR/chcore.h ****                                       sizeof(struct port_intctx));          \
+ 258:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r2  = (uint8_t)(0xff & (uint16_t)pf);                         \
+ 259:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r3  = (uint8_t)((uint16_t)(pf) >> 8);                         \
+ 260:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r4  = (uint8_t)(0xff & (uint16_t)arg);                        \
+ 261:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->r5  = (uint8_t)((uint16_t)(arg) >> 8);                        \
+ 262:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->pcl = (uint16_t)_port_thread_start >> 8;                      \
+ 263:../../os/common/ports/AVR/chcore.h ****   tp->ctx.sp->pch = (uint8_t)(0xff & (uint16_t)_port_thread_start);         \
+ 264:../../os/common/ports/AVR/chcore.h **** }
+ 265:../../os/common/ports/AVR/chcore.h **** #endif /* !__AVR_3_BYTE_PC__ */
+ 266:../../os/common/ports/AVR/chcore.h **** 
+ 267:../../os/common/ports/AVR/chcore.h **** /**
+ 268:../../os/common/ports/AVR/chcore.h ****  * @brief   Computes the thread working area global size.
+ 269:../../os/common/ports/AVR/chcore.h ****  * @note    There is no need to perform alignments in this macro.
+ 270:../../os/common/ports/AVR/chcore.h ****  */
+ 271:../../os/common/ports/AVR/chcore.h **** #define PORT_WA_SIZE(n) ((sizeof(struct port_intctx) - 1) +                \
+ 272:../../os/common/ports/AVR/chcore.h ****                          (sizeof(struct port_extctx) - 1) +                \
+ 273:../../os/common/ports/AVR/chcore.h ****                          ((size_t)(n)) + ((size_t)(PORT_INT_REQUIRED_STACK)))
+ 274:../../os/common/ports/AVR/chcore.h **** 
+ 275:../../os/common/ports/AVR/chcore.h **** /**
+ 276:../../os/common/ports/AVR/chcore.h ****  * @brief   Static working area allocation.
+ 277:../../os/common/ports/AVR/chcore.h ****  * @details This macro is used to allocate a static thread working area
+ 278:../../os/common/ports/AVR/chcore.h ****  *          aligned as both position and size.
+ 279:../../os/common/ports/AVR/chcore.h ****  *
+ 280:../../os/common/ports/AVR/chcore.h ****  * @param[in] s         the name to be assigned to the stack array
+ 281:../../os/common/ports/AVR/chcore.h ****  * @param[in] n         the stack size to be assigned to the thread
+ 282:../../os/common/ports/AVR/chcore.h ****  */
+ 283:../../os/common/ports/AVR/chcore.h **** #define PORT_WORKING_AREA(s, n)                                             \
+ 284:../../os/common/ports/AVR/chcore.h ****   stkalign_t s[THD_WORKING_AREA_SIZE(n) / sizeof (stkalign_t)]
+ 285:../../os/common/ports/AVR/chcore.h **** 
+ 286:../../os/common/ports/AVR/chcore.h **** /**
+ 287:../../os/common/ports/AVR/chcore.h ****  * @brief   Priority level verification macro.
+ 288:../../os/common/ports/AVR/chcore.h ****  */
+ 289:../../os/common/ports/AVR/chcore.h **** #define PORT_IRQ_IS_VALID_PRIORITY(n) false
+ 290:../../os/common/ports/AVR/chcore.h **** 
+ 291:../../os/common/ports/AVR/chcore.h **** /**
+ 292:../../os/common/ports/AVR/chcore.h ****  * @brief   Priority level verification macro.
+ 293:../../os/common/ports/AVR/chcore.h ****  */
+ 294:../../os/common/ports/AVR/chcore.h **** #define PORT_IRQ_IS_VALID_KERNEL_PRIORITY(n) false
+ 295:../../os/common/ports/AVR/chcore.h **** 
+ 296:../../os/common/ports/AVR/chcore.h **** /**
+ 297:../../os/common/ports/AVR/chcore.h ****  * @brief   IRQ prologue code.
+ 298:../../os/common/ports/AVR/chcore.h ****  * @details This macro must be inserted at the start of all IRQ handlers
+ 299:../../os/common/ports/AVR/chcore.h ****  *          enabled to invoke system APIs.
+ 300:../../os/common/ports/AVR/chcore.h ****  * @note    This code tricks the compiler to save all the specified registers
+ 301:../../os/common/ports/AVR/chcore.h ****  *          by "touching" them.
+ 302:../../os/common/ports/AVR/chcore.h ****  */
+ 303:../../os/common/ports/AVR/chcore.h **** #define PORT_IRQ_PROLOGUE() {                                               \
+ 304:../../os/common/ports/AVR/chcore.h ****   asm ("" : : : "r18", "r19", "r20", "r21", "r22", "r23", "r24",            \
+ 305:../../os/common/ports/AVR/chcore.h ****                 "r25", "r26", "r27", "r30", "r31");                         \
+ 306:../../os/common/ports/AVR/chcore.h ****   __avr_in_isr = true;                                                      \
+ 307:../../os/common/ports/AVR/chcore.h **** }
+ 308:../../os/common/ports/AVR/chcore.h **** 
+ 309:../../os/common/ports/AVR/chcore.h **** /**
+ 310:../../os/common/ports/AVR/chcore.h ****  * @brief   IRQ epilogue code.
+ 311:../../os/common/ports/AVR/chcore.h ****  * @details This macro must be inserted at the end of all IRQ handlers
+ 312:../../os/common/ports/AVR/chcore.h ****  *          enabled to invoke system APIs.
+ 313:../../os/common/ports/AVR/chcore.h ****  */
+ 314:../../os/common/ports/AVR/chcore.h **** #define PORT_IRQ_EPILOGUE() {                                               \
+ 315:../../os/common/ports/AVR/chcore.h ****   __avr_in_isr = false;                                                     \
+ 316:../../os/common/ports/AVR/chcore.h ****   __dbg_check_lock();                                                       \
+ 317:../../os/common/ports/AVR/chcore.h ****   if (chSchIsPreemptionRequired())                                          \
+ 318:../../os/common/ports/AVR/chcore.h ****     chSchDoPreemption();                                                    \
+ 319:../../os/common/ports/AVR/chcore.h ****   __dbg_check_unlock();                                                     \
+ 320:../../os/common/ports/AVR/chcore.h **** }
+ 321:../../os/common/ports/AVR/chcore.h **** 
+ 322:../../os/common/ports/AVR/chcore.h **** /**
+ 323:../../os/common/ports/AVR/chcore.h ****  * @brief   IRQ handler function declaration.
+ 324:../../os/common/ports/AVR/chcore.h ****  * @note    @p id can be a function name or a vector number depending on the
+ 325:../../os/common/ports/AVR/chcore.h ****  *          port implementation.
+ 326:../../os/common/ports/AVR/chcore.h ****  */
+ 327:../../os/common/ports/AVR/chcore.h **** #define PORT_IRQ_HANDLER(id) ISR(id)
+ 328:../../os/common/ports/AVR/chcore.h **** 
+ 329:../../os/common/ports/AVR/chcore.h **** /**
+ 330:../../os/common/ports/AVR/chcore.h ****  * @brief   Fast IRQ handler function declaration.
+ 331:../../os/common/ports/AVR/chcore.h ****  * @note    @p id can be a function name or a vector number depending on the
+ 332:../../os/common/ports/AVR/chcore.h ****  *          port implementation.
+ 333:../../os/common/ports/AVR/chcore.h ****  */
+ 334:../../os/common/ports/AVR/chcore.h **** #define PORT_FAST_IRQ_HANDLER(id) ISR(id)
+ 335:../../os/common/ports/AVR/chcore.h **** 
+ 336:../../os/common/ports/AVR/chcore.h **** /**
+ 337:../../os/common/ports/AVR/chcore.h ****  * @brief   Performs a context switch between two threads.
+ 338:../../os/common/ports/AVR/chcore.h ****  * @details This is the most critical code in any port, this function
+ 339:../../os/common/ports/AVR/chcore.h ****  *          is responsible for the context switch between 2 threads.
+ 340:../../os/common/ports/AVR/chcore.h ****  * @note    The implementation of this code affects <b>directly</b> the context
+ 341:../../os/common/ports/AVR/chcore.h ****  *          switch performance so optimize here as much as you can.
+ 342:../../os/common/ports/AVR/chcore.h ****  *
+ 343:../../os/common/ports/AVR/chcore.h ****  * @param[in] ntp       the thread to be switched in
+ 344:../../os/common/ports/AVR/chcore.h ****  * @param[in] otp       the thread to be switched out
+ 345:../../os/common/ports/AVR/chcore.h ****  */
+ 346:../../os/common/ports/AVR/chcore.h **** #define port_switch(ntp, otp) {                                             \
+ 347:../../os/common/ports/AVR/chcore.h ****   _port_switch(ntp, otp);                                                   \
+ 348:../../os/common/ports/AVR/chcore.h ****   asm volatile ("" : : : "memory");                                         \
+ 349:../../os/common/ports/AVR/chcore.h **** }
+ 350:../../os/common/ports/AVR/chcore.h **** 
+ 351:../../os/common/ports/AVR/chcore.h **** 
+ 352:../../os/common/ports/AVR/chcore.h **** /**
+ 353:../../os/common/ports/AVR/chcore.h ****  * @brief   Port-related initialization code.
+ 354:../../os/common/ports/AVR/chcore.h ****  * @note    This function is empty in this port.
+ 355:../../os/common/ports/AVR/chcore.h ****  */
+ 356:../../os/common/ports/AVR/chcore.h **** #define port_init(oip) {                                                    \
+ 357:../../os/common/ports/AVR/chcore.h ****   __avr_in_isr = true;                                                      \
+ 358:../../os/common/ports/AVR/chcore.h **** }
+ 359:../../os/common/ports/AVR/chcore.h **** 
+ 360:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 361:../../os/common/ports/AVR/chcore.h **** /* External declarations.                                                    */
+ 362:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 363:../../os/common/ports/AVR/chcore.h **** 
+ 364:../../os/common/ports/AVR/chcore.h **** /* The following code is not processed when the file is included from an
+ 365:../../os/common/ports/AVR/chcore.h ****    asm module.*/
+ 366:../../os/common/ports/AVR/chcore.h **** #if !defined(_FROM_ASM_)
+ 367:../../os/common/ports/AVR/chcore.h **** 
+ 368:../../os/common/ports/AVR/chcore.h **** #ifdef __cplusplus
+ 369:../../os/common/ports/AVR/chcore.h **** extern "C" {
+ 370:../../os/common/ports/AVR/chcore.h **** #endif
+ 371:../../os/common/ports/AVR/chcore.h ****   void _port_switch(thread_t *ntp, thread_t *otp);
+ 372:../../os/common/ports/AVR/chcore.h ****   void _port_thread_start(void);
+ 373:../../os/common/ports/AVR/chcore.h **** #ifdef __cplusplus
+ 374:../../os/common/ports/AVR/chcore.h **** }
+ 375:../../os/common/ports/AVR/chcore.h **** #endif
+ 376:../../os/common/ports/AVR/chcore.h **** 
+ 377:../../os/common/ports/AVR/chcore.h **** #endif /* !defined(_FROM_ASM_) */
+ 378:../../os/common/ports/AVR/chcore.h **** 
+ 379:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 380:../../os/common/ports/AVR/chcore.h **** /* Module inline functions.                                                  */
+ 381:../../os/common/ports/AVR/chcore.h **** /*===========================================================================*/
+ 382:../../os/common/ports/AVR/chcore.h **** 
+ 383:../../os/common/ports/AVR/chcore.h **** /* The following code is not processed when the file is included from an
+ 384:../../os/common/ports/AVR/chcore.h ****    asm module.*/
+ 385:../../os/common/ports/AVR/chcore.h **** #if !defined(_FROM_ASM_)
+ 386:../../os/common/ports/AVR/chcore.h **** 
+ 387:../../os/common/ports/AVR/chcore.h **** /**
+ 388:../../os/common/ports/AVR/chcore.h ****  * @brief   Returns a word encoding the current interrupts status.
+ 389:../../os/common/ports/AVR/chcore.h ****  *
+ 390:../../os/common/ports/AVR/chcore.h ****  * @return              The interrupts status.
+ 391:../../os/common/ports/AVR/chcore.h ****  */
+ 392:../../os/common/ports/AVR/chcore.h **** static inline syssts_t port_get_irq_status(void) {
+ 393:../../os/common/ports/AVR/chcore.h **** 
+ 394:../../os/common/ports/AVR/chcore.h ****   return SREG;
+ 395:../../os/common/ports/AVR/chcore.h **** }
+ 396:../../os/common/ports/AVR/chcore.h **** 
+ 397:../../os/common/ports/AVR/chcore.h **** /**
+ 398:../../os/common/ports/AVR/chcore.h ****  * @brief   Checks the interrupt status.
+ 399:../../os/common/ports/AVR/chcore.h ****  *
+ 400:../../os/common/ports/AVR/chcore.h ****  * @param[in] sts       the interrupt status word
+ 401:../../os/common/ports/AVR/chcore.h ****  *
+ 402:../../os/common/ports/AVR/chcore.h ****  * @return              The interrupt status.
+ 403:../../os/common/ports/AVR/chcore.h ****  * @retval false        the word specified a disabled interrupts status.
+ 404:../../os/common/ports/AVR/chcore.h ****  * @retval true         the word specified an enabled interrupts status.
+ 405:../../os/common/ports/AVR/chcore.h ****  */
+ 406:../../os/common/ports/AVR/chcore.h **** static inline bool port_irq_enabled(syssts_t sts) {
+ 407:../../os/common/ports/AVR/chcore.h **** 
+ 408:../../os/common/ports/AVR/chcore.h ****   return (bool)((sts & 0x80) != 0);
+ 409:../../os/common/ports/AVR/chcore.h **** }
+ 410:../../os/common/ports/AVR/chcore.h **** 
+ 411:../../os/common/ports/AVR/chcore.h **** /**
+ 412:../../os/common/ports/AVR/chcore.h ****  * @brief   Determines the current execution context.
+ 413:../../os/common/ports/AVR/chcore.h ****  *
+ 414:../../os/common/ports/AVR/chcore.h ****  * @return              The execution context.
+ 415:../../os/common/ports/AVR/chcore.h ****  * @retval false        not running in ISR mode.
+ 416:../../os/common/ports/AVR/chcore.h ****  * @retval true         running in ISR mode.
+ 417:../../os/common/ports/AVR/chcore.h ****  */
+ 418:../../os/common/ports/AVR/chcore.h **** static inline bool port_is_isr_context(void) {
+ 419:../../os/common/ports/AVR/chcore.h **** 
+ 420:../../os/common/ports/AVR/chcore.h ****   return __avr_in_isr;
+ 421:../../os/common/ports/AVR/chcore.h **** }
+ 422:../../os/common/ports/AVR/chcore.h **** 
+ 423:../../os/common/ports/AVR/chcore.h **** /**
+ 424:../../os/common/ports/AVR/chcore.h ****  * @brief   Kernel-lock action.
+ 425:../../os/common/ports/AVR/chcore.h ****  * @details Usually this function just disables interrupts but may perform more
+ 426:../../os/common/ports/AVR/chcore.h ****  *          actions.
+ 427:../../os/common/ports/AVR/chcore.h ****  */
+ 428:../../os/common/ports/AVR/chcore.h **** static inline void port_lock(void) {
+ 429:../../os/common/ports/AVR/chcore.h **** 
+ 430:../../os/common/ports/AVR/chcore.h ****   asm volatile ("cli" : : : "memory");
+  79               		.loc 2 430 0
+  80               	/* #APP */
+  81               	 ;  430 "../../os/common/ports/AVR/chcore.h" 1
+  82 0006 F894      		cli
+  83               	 ;  0 "" 2
+  84               	/* #NOAPP */
+  85               	.LBE89:
+  86               	.LBE88:
+  87               	.LBE87:
+  88               	.LBE86:
+  84:../../os/hal/src/hal_gpt.c ****   msg_t msg;
+  85:../../os/hal/src/hal_gpt.c **** 
+  86:../../os/hal/src/hal_gpt.c ****   osalDbgCheck((gptp != NULL) && (config != NULL));
+  87:../../os/hal/src/hal_gpt.c **** 
+  88:../../os/hal/src/hal_gpt.c ****   osalSysLock();
+  89:../../os/hal/src/hal_gpt.c **** 
+  90:../../os/hal/src/hal_gpt.c ****   osalDbgAssert((gptp->state == GPT_STOP) || (gptp->state == GPT_READY),
+  91:../../os/hal/src/hal_gpt.c ****               "invalid state");
+  92:../../os/hal/src/hal_gpt.c **** 
+  93:../../os/hal/src/hal_gpt.c ****   gptp->config = config;
+  89               		.loc 1 93 0
+  90 0008 7A83      		std Y+2,r23
+  91 000a 6983      		std Y+1,r22
+  94:../../os/hal/src/hal_gpt.c **** 
+  95:../../os/hal/src/hal_gpt.c **** #if defined(GPT_LLD_ENHANCED_API)
+  96:../../os/hal/src/hal_gpt.c ****   msg = gpt_lld_start(gptp);
+  97:../../os/hal/src/hal_gpt.c **** #else
+  98:../../os/hal/src/hal_gpt.c ****   gpt_lld_start(gptp);
+  92               		.loc 1 98 0
+  93 000c 0E94 0000 		call gpt_lld_start
+  94               	.LVL3:
+  99:../../os/hal/src/hal_gpt.c ****   msg = HAL_RET_SUCCESS;
+ 100:../../os/hal/src/hal_gpt.c **** #endif
+ 101:../../os/hal/src/hal_gpt.c ****   if (msg == HAL_RET_SUCCESS) {
+ 102:../../os/hal/src/hal_gpt.c ****     gptp->state = GPT_READY;
+  95               		.loc 1 102 0
+  96 0010 82E0      		ldi r24,lo8(2)
+  97 0012 8883      		st Y,r24
+  98               	.LBB90:
+  99               	.LBB91:
+ 100               	.LBB92:
+ 101               	.LBB93:
+ 102               	.LBB94:
+ 431:../../os/common/ports/AVR/chcore.h **** }
+ 432:../../os/common/ports/AVR/chcore.h **** 
+ 433:../../os/common/ports/AVR/chcore.h **** /**
+ 434:../../os/common/ports/AVR/chcore.h ****  * @brief   Kernel-unlock action.
+ 435:../../os/common/ports/AVR/chcore.h ****  * @details Usually this function just enables interrupts but may perform more
+ 436:../../os/common/ports/AVR/chcore.h ****  *          actions.
+ 437:../../os/common/ports/AVR/chcore.h ****  */
+ 438:../../os/common/ports/AVR/chcore.h **** static inline void port_unlock(void) {
+ 439:../../os/common/ports/AVR/chcore.h **** 
+ 440:../../os/common/ports/AVR/chcore.h ****   asm volatile ("sei" : : : "memory");
+ 103               		.loc 2 440 0
+ 104               	/* #APP */
+ 105               	 ;  440 "../../os/common/ports/AVR/chcore.h" 1
+ 106 0014 7894      		sei
+ 107               	 ;  0 "" 2
+ 108               	/* #NOAPP */
+ 109               	.LBE94:
+ 110               	.LBE93:
+ 111               	.LBE92:
+ 112               	.LBE91:
+ 113               	.LBE90:
+ 103:../../os/hal/src/hal_gpt.c ****   }
+ 104:../../os/hal/src/hal_gpt.c ****   else {
+ 105:../../os/hal/src/hal_gpt.c ****     gptp->state = GPT_STOP;
+ 106:../../os/hal/src/hal_gpt.c ****   }
+ 107:../../os/hal/src/hal_gpt.c **** 
+ 108:../../os/hal/src/hal_gpt.c ****   osalSysUnlock();
+ 109:../../os/hal/src/hal_gpt.c **** 
+ 110:../../os/hal/src/hal_gpt.c ****   return msg;
+ 111:../../os/hal/src/hal_gpt.c **** }
+ 114               		.loc 1 111 0
+ 115 0016 90E0      		ldi r25,0
+ 116 0018 80E0      		ldi r24,0
+ 117               	/* epilogue start */
+ 118 001a DF91      		pop r29
+ 119 001c CF91      		pop r28
+ 120               	.LVL4:
+ 121 001e 0895      		ret
+ 122               		.cfi_endproc
+ 123               	.LFE240:
+ 125               		.section	.text.gptStop,"ax",@progbits
+ 126               	.global	gptStop
+ 128               	gptStop:
+ 129               	.LFB241:
+ 112:../../os/hal/src/hal_gpt.c **** 
+ 113:../../os/hal/src/hal_gpt.c **** /**
+ 114:../../os/hal/src/hal_gpt.c ****  * @brief   Deactivates the GPT peripheral.
+ 115:../../os/hal/src/hal_gpt.c ****  *
+ 116:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 117:../../os/hal/src/hal_gpt.c ****  *
+ 118:../../os/hal/src/hal_gpt.c ****  * @api
+ 119:../../os/hal/src/hal_gpt.c ****  */
+ 120:../../os/hal/src/hal_gpt.c **** void gptStop(GPTDriver *gptp) {
+ 130               		.loc 1 120 0
+ 131               		.cfi_startproc
+ 132               	.LVL5:
+ 133 0000 CF93      		push r28
+ 134               	.LCFI2:
+ 135               		.cfi_def_cfa_offset 3
+ 136               		.cfi_offset 28, -2
+ 137 0002 DF93      		push r29
+ 138               	.LCFI3:
+ 139               		.cfi_def_cfa_offset 4
+ 140               		.cfi_offset 29, -3
+ 141               	/* prologue: function */
+ 142               	/* frame size = 0 */
+ 143               	/* stack size = 2 */
+ 144               	.L__stack_usage = 2
+ 145 0004 EC01      		movw r28,r24
+ 146               	.LBB95:
+ 147               	.LBB96:
+ 148               	.LBB97:
+ 149               	.LBB98:
+ 430:../../os/common/ports/AVR/chcore.h **** }
+ 150               		.loc 2 430 0
+ 151               	/* #APP */
+ 152               	 ;  430 "../../os/common/ports/AVR/chcore.h" 1
+ 153 0006 F894      		cli
+ 154               	 ;  0 "" 2
+ 155               	/* #NOAPP */
+ 156               	.LBE98:
+ 157               	.LBE97:
+ 158               	.LBE96:
+ 159               	.LBE95:
+ 121:../../os/hal/src/hal_gpt.c **** 
+ 122:../../os/hal/src/hal_gpt.c ****   osalDbgCheck(gptp != NULL);
+ 123:../../os/hal/src/hal_gpt.c **** 
+ 124:../../os/hal/src/hal_gpt.c ****   osalSysLock();
+ 125:../../os/hal/src/hal_gpt.c **** 
+ 126:../../os/hal/src/hal_gpt.c ****   osalDbgAssert((gptp->state == GPT_STOP) || (gptp->state == GPT_READY),
+ 127:../../os/hal/src/hal_gpt.c ****                 "invalid state");
+ 128:../../os/hal/src/hal_gpt.c **** 
+ 129:../../os/hal/src/hal_gpt.c ****   gpt_lld_stop(gptp);
+ 160               		.loc 1 129 0
+ 161 0008 0E94 0000 		call gpt_lld_stop
+ 162               	.LVL6:
+ 130:../../os/hal/src/hal_gpt.c ****   gptp->config = NULL;
+ 163               		.loc 1 130 0
+ 164 000c 1A82      		std Y+2,__zero_reg__
+ 165 000e 1982      		std Y+1,__zero_reg__
+ 131:../../os/hal/src/hal_gpt.c ****   gptp->state  = GPT_STOP;
+ 166               		.loc 1 131 0
+ 167 0010 81E0      		ldi r24,lo8(1)
+ 168 0012 8883      		st Y,r24
+ 169               	.LBB99:
+ 170               	.LBB100:
+ 171               	.LBB101:
+ 172               	.LBB102:
+ 173               	.LBB103:
+ 174               		.loc 2 440 0
+ 175               	/* #APP */
+ 176               	 ;  440 "../../os/common/ports/AVR/chcore.h" 1
+ 177 0014 7894      		sei
+ 178               	 ;  0 "" 2
+ 179               	/* epilogue start */
+ 180               	/* #NOAPP */
+ 181               	.LBE103:
+ 182               	.LBE102:
+ 183               	.LBE101:
+ 184               	.LBE100:
+ 185               	.LBE99:
+ 132:../../os/hal/src/hal_gpt.c **** 
+ 133:../../os/hal/src/hal_gpt.c ****   osalSysUnlock();
+ 134:../../os/hal/src/hal_gpt.c **** }
+ 186               		.loc 1 134 0
+ 187 0016 DF91      		pop r29
+ 188 0018 CF91      		pop r28
+ 189               	.LVL7:
+ 190 001a 0895      		ret
+ 191               		.cfi_endproc
+ 192               	.LFE241:
+ 194               		.section	.text.gptChangeInterval,"ax",@progbits
+ 195               	.global	gptChangeInterval
+ 197               	gptChangeInterval:
+ 198               	.LFB242:
+ 135:../../os/hal/src/hal_gpt.c **** 
+ 136:../../os/hal/src/hal_gpt.c **** /**
+ 137:../../os/hal/src/hal_gpt.c ****  * @brief   Changes the interval of GPT peripheral.
+ 138:../../os/hal/src/hal_gpt.c ****  * @details This function changes the interval of a running GPT unit.
+ 139:../../os/hal/src/hal_gpt.c ****  * @pre     The GPT unit must be running in continuous mode.
+ 140:../../os/hal/src/hal_gpt.c ****  * @post    The GPT unit interval is changed to the new value.
+ 141:../../os/hal/src/hal_gpt.c ****  *
+ 142:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to a @p GPTDriver object
+ 143:../../os/hal/src/hal_gpt.c ****  * @param[in] interval  new cycle time in timer ticks
+ 144:../../os/hal/src/hal_gpt.c ****  *
+ 145:../../os/hal/src/hal_gpt.c ****  * @api
+ 146:../../os/hal/src/hal_gpt.c ****  */
+ 147:../../os/hal/src/hal_gpt.c **** void gptChangeInterval(GPTDriver *gptp, gptcnt_t interval) {
+ 199               		.loc 1 147 0
+ 200               		.cfi_startproc
+ 201               	.LVL8:
+ 202               	/* prologue: function */
+ 203               	/* frame size = 0 */
+ 204               	/* stack size = 0 */
+ 205               	.L__stack_usage = 0
+ 206               	.LBB104:
+ 207               	.LBB105:
+ 208               	.LBB106:
+ 209               	.LBB107:
+ 430:../../os/common/ports/AVR/chcore.h **** }
+ 210               		.loc 2 430 0
+ 211               	/* #APP */
+ 212               	 ;  430 "../../os/common/ports/AVR/chcore.h" 1
+ 213 0000 F894      		cli
+ 214               	 ;  0 "" 2
+ 215               	/* #NOAPP */
+ 216               	.LBE107:
+ 217               	.LBE106:
+ 218               	.LBE105:
+ 219               	.LBE104:
+ 220               	.LBB108:
+ 221               	.LBB109:
+ 222               	.LBB110:
+ 223               	.LBB111:
+ 224               	.LBB112:
+ 225               		.loc 2 440 0
+ 226               	/* #APP */
+ 227               	 ;  440 "../../os/common/ports/AVR/chcore.h" 1
+ 228 0002 7894      		sei
+ 229               	 ;  0 "" 2
+ 230               	/* epilogue start */
+ 231               	/* #NOAPP */
+ 232               	.LBE112:
+ 233               	.LBE111:
+ 234               	.LBE110:
+ 235               	.LBE109:
+ 236               	.LBE108:
+ 148:../../os/hal/src/hal_gpt.c **** 
+ 149:../../os/hal/src/hal_gpt.c ****   osalDbgCheck(gptp != NULL);
+ 150:../../os/hal/src/hal_gpt.c **** 
+ 151:../../os/hal/src/hal_gpt.c ****   osalSysLock();
+ 152:../../os/hal/src/hal_gpt.c ****   osalDbgAssert(gptp->state == GPT_CONTINUOUS,
+ 153:../../os/hal/src/hal_gpt.c ****                 "invalid state");
+ 154:../../os/hal/src/hal_gpt.c ****   gptChangeIntervalI(gptp, interval);
+ 155:../../os/hal/src/hal_gpt.c ****   osalSysUnlock();
+ 156:../../os/hal/src/hal_gpt.c **** }
+ 237               		.loc 1 156 0
+ 238 0004 0895      		ret
+ 239               		.cfi_endproc
+ 240               	.LFE242:
+ 242               		.section	.text.gptStartContinuous,"ax",@progbits
+ 243               	.global	gptStartContinuous
+ 245               	gptStartContinuous:
+ 246               	.LFB243:
+ 157:../../os/hal/src/hal_gpt.c **** 
+ 158:../../os/hal/src/hal_gpt.c **** /**
+ 159:../../os/hal/src/hal_gpt.c ****  * @brief   Starts the timer in continuous mode.
+ 160:../../os/hal/src/hal_gpt.c ****  *
+ 161:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 162:../../os/hal/src/hal_gpt.c ****  * @param[in] interval  period in ticks
+ 163:../../os/hal/src/hal_gpt.c ****  *
+ 164:../../os/hal/src/hal_gpt.c ****  * @api
+ 165:../../os/hal/src/hal_gpt.c ****  */
+ 166:../../os/hal/src/hal_gpt.c **** void gptStartContinuous(GPTDriver *gptp, gptcnt_t interval) {
+ 247               		.loc 1 166 0
+ 248               		.cfi_startproc
+ 249               	.LVL9:
+ 250               	/* prologue: function */
+ 251               	/* frame size = 0 */
+ 252               	/* stack size = 0 */
+ 253               	.L__stack_usage = 0
+ 254               	.LBB113:
+ 255               	.LBB114:
+ 256               	.LBB115:
+ 257               	.LBB116:
+ 430:../../os/common/ports/AVR/chcore.h **** }
+ 258               		.loc 2 430 0
+ 259               	/* #APP */
+ 260               	 ;  430 "../../os/common/ports/AVR/chcore.h" 1
+ 261 0000 F894      		cli
+ 262               	 ;  0 "" 2
+ 263               	.LVL10:
+ 264               	/* #NOAPP */
+ 265               	.LBE116:
+ 266               	.LBE115:
+ 267               	.LBE114:
+ 268               	.LBE113:
+ 269               	.LBB117:
+ 270               	.LBB118:
+ 167:../../os/hal/src/hal_gpt.c **** 
+ 168:../../os/hal/src/hal_gpt.c ****   osalSysLock();
+ 169:../../os/hal/src/hal_gpt.c ****   gptStartContinuousI(gptp, interval);
+ 170:../../os/hal/src/hal_gpt.c ****   osalSysUnlock();
+ 171:../../os/hal/src/hal_gpt.c **** }
+ 172:../../os/hal/src/hal_gpt.c **** 
+ 173:../../os/hal/src/hal_gpt.c **** /**
+ 174:../../os/hal/src/hal_gpt.c ****  * @brief   Starts the timer in continuous mode.
+ 175:../../os/hal/src/hal_gpt.c ****  *
+ 176:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 177:../../os/hal/src/hal_gpt.c ****  * @param[in] interval  period in ticks
+ 178:../../os/hal/src/hal_gpt.c ****  *
+ 179:../../os/hal/src/hal_gpt.c ****  * @iclass
+ 180:../../os/hal/src/hal_gpt.c ****  */
+ 181:../../os/hal/src/hal_gpt.c **** void gptStartContinuousI(GPTDriver *gptp, gptcnt_t interval) {
+ 182:../../os/hal/src/hal_gpt.c **** 
+ 183:../../os/hal/src/hal_gpt.c ****   osalDbgCheckClassI();
+ 184:../../os/hal/src/hal_gpt.c ****   osalDbgCheck(gptp != NULL);
+ 185:../../os/hal/src/hal_gpt.c ****   osalDbgAssert(gptp->state == GPT_READY,
+ 186:../../os/hal/src/hal_gpt.c ****                 "invalid state");
+ 187:../../os/hal/src/hal_gpt.c **** 
+ 188:../../os/hal/src/hal_gpt.c ****   gptp->state = GPT_CONTINUOUS;
+ 271               		.loc 1 188 0
+ 272 0002 23E0      		ldi r18,lo8(3)
+ 273 0004 FC01      		movw r30,r24
+ 274 0006 2083      		st Z,r18
+ 189:../../os/hal/src/hal_gpt.c ****   gpt_lld_start_timer(gptp, interval);
+ 275               		.loc 1 189 0
+ 276 0008 0E94 0000 		call gpt_lld_start_timer
+ 277               	.LVL11:
+ 278               	.LBE118:
+ 279               	.LBE117:
+ 280               	.LBB119:
+ 281               	.LBB120:
+ 282               	.LBB121:
+ 283               	.LBB122:
+ 284               	.LBB123:
+ 285               		.loc 2 440 0
+ 286               	/* #APP */
+ 287               	 ;  440 "../../os/common/ports/AVR/chcore.h" 1
+ 288 000c 7894      		sei
+ 289               	 ;  0 "" 2
+ 290               	/* epilogue start */
+ 291               	/* #NOAPP */
+ 292               	.LBE123:
+ 293               	.LBE122:
+ 294               	.LBE121:
+ 295               	.LBE120:
+ 296               	.LBE119:
+ 171:../../os/hal/src/hal_gpt.c **** 
+ 297               		.loc 1 171 0
+ 298 000e 0895      		ret
+ 299               		.cfi_endproc
+ 300               	.LFE243:
+ 302               		.section	.text.gptStartContinuousI,"ax",@progbits
+ 303               	.global	gptStartContinuousI
+ 305               	gptStartContinuousI:
+ 306               	.LFB244:
+ 181:../../os/hal/src/hal_gpt.c **** 
+ 307               		.loc 1 181 0
+ 308               		.cfi_startproc
+ 309               	.LVL12:
+ 310               	/* prologue: function */
+ 311               	/* frame size = 0 */
+ 312               	/* stack size = 0 */
+ 313               	.L__stack_usage = 0
+ 188:../../os/hal/src/hal_gpt.c ****   gpt_lld_start_timer(gptp, interval);
+ 314               		.loc 1 188 0
+ 315 0000 23E0      		ldi r18,lo8(3)
+ 316 0002 FC01      		movw r30,r24
+ 317 0004 2083      		st Z,r18
+ 318               		.loc 1 189 0
+ 319 0006 0C94 0000 		jmp gpt_lld_start_timer
+ 320               	.LVL13:
+ 321               		.cfi_endproc
+ 322               	.LFE244:
+ 324               		.section	.text.gptStartOneShot,"ax",@progbits
+ 325               	.global	gptStartOneShot
+ 327               	gptStartOneShot:
+ 328               	.LFB245:
+ 190:../../os/hal/src/hal_gpt.c **** }
+ 191:../../os/hal/src/hal_gpt.c **** 
+ 192:../../os/hal/src/hal_gpt.c **** /**
+ 193:../../os/hal/src/hal_gpt.c ****  * @brief   Starts the timer in one shot mode.
+ 194:../../os/hal/src/hal_gpt.c ****  *
+ 195:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 196:../../os/hal/src/hal_gpt.c ****  * @param[in] interval  time interval in ticks
+ 197:../../os/hal/src/hal_gpt.c ****  *
+ 198:../../os/hal/src/hal_gpt.c ****  * @api
+ 199:../../os/hal/src/hal_gpt.c ****  */
+ 200:../../os/hal/src/hal_gpt.c **** void gptStartOneShot(GPTDriver *gptp, gptcnt_t interval) {
+ 329               		.loc 1 200 0
+ 330               		.cfi_startproc
+ 331               	.LVL14:
+ 332               	/* prologue: function */
+ 333               	/* frame size = 0 */
+ 334               	/* stack size = 0 */
+ 335               	.L__stack_usage = 0
+ 336               	.LBB124:
+ 337               	.LBB125:
+ 338               	.LBB126:
+ 339               	.LBB127:
+ 430:../../os/common/ports/AVR/chcore.h **** }
+ 340               		.loc 2 430 0
+ 341               	/* #APP */
+ 342               	 ;  430 "../../os/common/ports/AVR/chcore.h" 1
+ 343 0000 F894      		cli
+ 344               	 ;  0 "" 2
+ 345               	.LVL15:
+ 346               	/* #NOAPP */
+ 347               	.LBE127:
+ 348               	.LBE126:
+ 349               	.LBE125:
+ 350               	.LBE124:
+ 351               	.LBB128:
+ 352               	.LBB129:
+ 201:../../os/hal/src/hal_gpt.c **** 
+ 202:../../os/hal/src/hal_gpt.c ****   osalSysLock();
+ 203:../../os/hal/src/hal_gpt.c ****   gptStartOneShotI(gptp, interval);
+ 204:../../os/hal/src/hal_gpt.c ****   osalSysUnlock();
+ 205:../../os/hal/src/hal_gpt.c **** }
+ 206:../../os/hal/src/hal_gpt.c **** 
+ 207:../../os/hal/src/hal_gpt.c **** /**
+ 208:../../os/hal/src/hal_gpt.c ****  * @brief   Starts the timer in one shot mode.
+ 209:../../os/hal/src/hal_gpt.c ****  *
+ 210:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 211:../../os/hal/src/hal_gpt.c ****  * @param[in] interval  time interval in ticks
+ 212:../../os/hal/src/hal_gpt.c ****  *
+ 213:../../os/hal/src/hal_gpt.c ****  * @api
+ 214:../../os/hal/src/hal_gpt.c ****  */
+ 215:../../os/hal/src/hal_gpt.c **** void gptStartOneShotI(GPTDriver *gptp, gptcnt_t interval) {
+ 216:../../os/hal/src/hal_gpt.c **** 
+ 217:../../os/hal/src/hal_gpt.c ****   osalDbgCheckClassI();
+ 218:../../os/hal/src/hal_gpt.c ****   osalDbgCheck(gptp != NULL);
+ 219:../../os/hal/src/hal_gpt.c ****   osalDbgCheck(gptp->config->callback != NULL);
+ 220:../../os/hal/src/hal_gpt.c ****   osalDbgAssert(gptp->state == GPT_READY,
+ 221:../../os/hal/src/hal_gpt.c ****                 "invalid state");
+ 222:../../os/hal/src/hal_gpt.c **** 
+ 223:../../os/hal/src/hal_gpt.c ****   gptp->state = GPT_ONESHOT;
+ 353               		.loc 1 223 0
+ 354 0002 24E0      		ldi r18,lo8(4)
+ 355 0004 FC01      		movw r30,r24
+ 356 0006 2083      		st Z,r18
+ 224:../../os/hal/src/hal_gpt.c ****   gpt_lld_start_timer(gptp, interval);
+ 357               		.loc 1 224 0
+ 358 0008 0E94 0000 		call gpt_lld_start_timer
+ 359               	.LVL16:
+ 360               	.LBE129:
+ 361               	.LBE128:
+ 362               	.LBB130:
+ 363               	.LBB131:
+ 364               	.LBB132:
+ 365               	.LBB133:
+ 366               	.LBB134:
+ 367               		.loc 2 440 0
+ 368               	/* #APP */
+ 369               	 ;  440 "../../os/common/ports/AVR/chcore.h" 1
+ 370 000c 7894      		sei
+ 371               	 ;  0 "" 2
+ 372               	/* epilogue start */
+ 373               	/* #NOAPP */
+ 374               	.LBE134:
+ 375               	.LBE133:
+ 376               	.LBE132:
+ 377               	.LBE131:
+ 378               	.LBE130:
+ 205:../../os/hal/src/hal_gpt.c **** 
+ 379               		.loc 1 205 0
+ 380 000e 0895      		ret
+ 381               		.cfi_endproc
+ 382               	.LFE245:
+ 384               		.section	.text.gptStartOneShotI,"ax",@progbits
+ 385               	.global	gptStartOneShotI
+ 387               	gptStartOneShotI:
+ 388               	.LFB246:
+ 215:../../os/hal/src/hal_gpt.c **** 
+ 389               		.loc 1 215 0
+ 390               		.cfi_startproc
+ 391               	.LVL17:
+ 392               	/* prologue: function */
+ 393               	/* frame size = 0 */
+ 394               	/* stack size = 0 */
+ 395               	.L__stack_usage = 0
+ 223:../../os/hal/src/hal_gpt.c ****   gpt_lld_start_timer(gptp, interval);
+ 396               		.loc 1 223 0
+ 397 0000 24E0      		ldi r18,lo8(4)
+ 398 0002 FC01      		movw r30,r24
+ 399 0004 2083      		st Z,r18
+ 400               		.loc 1 224 0
+ 401 0006 0C94 0000 		jmp gpt_lld_start_timer
+ 402               	.LVL18:
+ 403               		.cfi_endproc
+ 404               	.LFE246:
+ 406               		.section	.text.gptStopTimer,"ax",@progbits
+ 407               	.global	gptStopTimer
+ 409               	gptStopTimer:
+ 410               	.LFB247:
+ 225:../../os/hal/src/hal_gpt.c **** }
+ 226:../../os/hal/src/hal_gpt.c **** 
+ 227:../../os/hal/src/hal_gpt.c **** /**
+ 228:../../os/hal/src/hal_gpt.c ****  * @brief   Stops the timer.
+ 229:../../os/hal/src/hal_gpt.c ****  *
+ 230:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 231:../../os/hal/src/hal_gpt.c ****  *
+ 232:../../os/hal/src/hal_gpt.c ****  * @api
+ 233:../../os/hal/src/hal_gpt.c ****  */
+ 234:../../os/hal/src/hal_gpt.c **** void gptStopTimer(GPTDriver *gptp) {
+ 411               		.loc 1 234 0
+ 412               		.cfi_startproc
+ 413               	.LVL19:
+ 414               	/* prologue: function */
+ 415               	/* frame size = 0 */
+ 416               	/* stack size = 0 */
+ 417               	.L__stack_usage = 0
+ 418               	.LBB135:
+ 419               	.LBB136:
+ 420               	.LBB137:
+ 421               	.LBB138:
+ 430:../../os/common/ports/AVR/chcore.h **** }
+ 422               		.loc 2 430 0
+ 423               	/* #APP */
+ 424               	 ;  430 "../../os/common/ports/AVR/chcore.h" 1
+ 425 0000 F894      		cli
+ 426               	 ;  0 "" 2
+ 427               	.LVL20:
+ 428               	/* #NOAPP */
+ 429               	.LBE138:
+ 430               	.LBE137:
+ 431               	.LBE136:
+ 432               	.LBE135:
+ 433               	.LBB139:
+ 434               	.LBB140:
+ 235:../../os/hal/src/hal_gpt.c **** 
+ 236:../../os/hal/src/hal_gpt.c ****   osalSysLock();
+ 237:../../os/hal/src/hal_gpt.c ****   gptStopTimerI(gptp);
+ 238:../../os/hal/src/hal_gpt.c ****   osalSysUnlock();
+ 239:../../os/hal/src/hal_gpt.c **** }
+ 240:../../os/hal/src/hal_gpt.c **** 
+ 241:../../os/hal/src/hal_gpt.c **** /**
+ 242:../../os/hal/src/hal_gpt.c ****  * @brief   Stops the timer.
+ 243:../../os/hal/src/hal_gpt.c ****  *
+ 244:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 245:../../os/hal/src/hal_gpt.c ****  *
+ 246:../../os/hal/src/hal_gpt.c ****  * @api
+ 247:../../os/hal/src/hal_gpt.c ****  */
+ 248:../../os/hal/src/hal_gpt.c **** void gptStopTimerI(GPTDriver *gptp) {
+ 249:../../os/hal/src/hal_gpt.c **** 
+ 250:../../os/hal/src/hal_gpt.c ****   osalDbgCheckClassI();
+ 251:../../os/hal/src/hal_gpt.c ****   osalDbgCheck(gptp != NULL);
+ 252:../../os/hal/src/hal_gpt.c ****   osalDbgAssert((gptp->state == GPT_READY) || (gptp->state == GPT_CONTINUOUS) ||
+ 253:../../os/hal/src/hal_gpt.c ****                 (gptp->state == GPT_ONESHOT),
+ 254:../../os/hal/src/hal_gpt.c ****                 "invalid state");
+ 255:../../os/hal/src/hal_gpt.c **** 
+ 256:../../os/hal/src/hal_gpt.c ****   gptp->state = GPT_READY;
+ 435               		.loc 1 256 0
+ 436 0002 22E0      		ldi r18,lo8(2)
+ 437 0004 FC01      		movw r30,r24
+ 438 0006 2083      		st Z,r18
+ 257:../../os/hal/src/hal_gpt.c ****   gpt_lld_stop_timer(gptp);
+ 439               		.loc 1 257 0
+ 440 0008 0E94 0000 		call gpt_lld_stop_timer
+ 441               	.LVL21:
+ 442               	.LBE140:
+ 443               	.LBE139:
+ 444               	.LBB141:
+ 445               	.LBB142:
+ 446               	.LBB143:
+ 447               	.LBB144:
+ 448               	.LBB145:
+ 449               		.loc 2 440 0
+ 450               	/* #APP */
+ 451               	 ;  440 "../../os/common/ports/AVR/chcore.h" 1
+ 452 000c 7894      		sei
+ 453               	 ;  0 "" 2
+ 454               	/* epilogue start */
+ 455               	/* #NOAPP */
+ 456               	.LBE145:
+ 457               	.LBE144:
+ 458               	.LBE143:
+ 459               	.LBE142:
+ 460               	.LBE141:
+ 239:../../os/hal/src/hal_gpt.c **** 
+ 461               		.loc 1 239 0
+ 462 000e 0895      		ret
+ 463               		.cfi_endproc
+ 464               	.LFE247:
+ 466               		.section	.text.gptStopTimerI,"ax",@progbits
+ 467               	.global	gptStopTimerI
+ 469               	gptStopTimerI:
+ 470               	.LFB248:
+ 248:../../os/hal/src/hal_gpt.c **** 
+ 471               		.loc 1 248 0
+ 472               		.cfi_startproc
+ 473               	.LVL22:
+ 474               	/* prologue: function */
+ 475               	/* frame size = 0 */
+ 476               	/* stack size = 0 */
+ 477               	.L__stack_usage = 0
+ 256:../../os/hal/src/hal_gpt.c ****   gpt_lld_stop_timer(gptp);
+ 478               		.loc 1 256 0
+ 479 0000 22E0      		ldi r18,lo8(2)
+ 480 0002 FC01      		movw r30,r24
+ 481 0004 2083      		st Z,r18
+ 482               		.loc 1 257 0
+ 483 0006 0C94 0000 		jmp gpt_lld_stop_timer
+ 484               	.LVL23:
+ 485               		.cfi_endproc
+ 486               	.LFE248:
+ 488               		.section	.text.gptPolledDelay,"ax",@progbits
+ 489               	.global	gptPolledDelay
+ 491               	gptPolledDelay:
+ 492               	.LFB249:
+ 258:../../os/hal/src/hal_gpt.c **** }
+ 259:../../os/hal/src/hal_gpt.c **** 
+ 260:../../os/hal/src/hal_gpt.c **** /**
+ 261:../../os/hal/src/hal_gpt.c ****  * @brief   Starts the timer in one shot mode and waits for completion.
+ 262:../../os/hal/src/hal_gpt.c ****  * @details This function specifically polls the timer waiting for completion
+ 263:../../os/hal/src/hal_gpt.c ****  *          in order to not have extra delays caused by interrupt servicing,
+ 264:../../os/hal/src/hal_gpt.c ****  *          this function is only recommended for short delays.
+ 265:../../os/hal/src/hal_gpt.c ****  * @note    The configured callback is not invoked when using this function.
+ 266:../../os/hal/src/hal_gpt.c ****  *
+ 267:../../os/hal/src/hal_gpt.c ****  * @param[in] gptp      pointer to the @p GPTDriver object
+ 268:../../os/hal/src/hal_gpt.c ****  * @param[in] interval  time interval in ticks
+ 269:../../os/hal/src/hal_gpt.c ****  *
+ 270:../../os/hal/src/hal_gpt.c ****  * @api
+ 271:../../os/hal/src/hal_gpt.c ****  */
+ 272:../../os/hal/src/hal_gpt.c **** void gptPolledDelay(GPTDriver *gptp, gptcnt_t interval) {
+ 493               		.loc 1 272 0
+ 494               		.cfi_startproc
+ 495               	.LVL24:
+ 496 0000 CF93      		push r28
+ 497               	.LCFI4:
+ 498               		.cfi_def_cfa_offset 3
+ 499               		.cfi_offset 28, -2
+ 500 0002 DF93      		push r29
+ 501               	.LCFI5:
+ 502               		.cfi_def_cfa_offset 4
+ 503               		.cfi_offset 29, -3
+ 504               	/* prologue: function */
+ 505               	/* frame size = 0 */
+ 506               	/* stack size = 2 */
+ 507               	.L__stack_usage = 2
+ 508 0004 EC01      		movw r28,r24
+ 273:../../os/hal/src/hal_gpt.c **** 
+ 274:../../os/hal/src/hal_gpt.c ****   osalDbgAssert(gptp->state == GPT_READY,
+ 275:../../os/hal/src/hal_gpt.c ****                 "invalid state");
+ 276:../../os/hal/src/hal_gpt.c **** 
+ 277:../../os/hal/src/hal_gpt.c ****   gptp->state = GPT_ONESHOT;
+ 509               		.loc 1 277 0
+ 510 0006 84E0      		ldi r24,lo8(4)
+ 511               	.LVL25:
+ 512 0008 8883      		st Y,r24
+ 278:../../os/hal/src/hal_gpt.c ****   gpt_lld_polled_delay(gptp, interval);
+ 513               		.loc 1 278 0
+ 514 000a CE01      		movw r24,r28
+ 515 000c 0E94 0000 		call gpt_lld_polled_delay
+ 516               	.LVL26:
+ 279:../../os/hal/src/hal_gpt.c ****   gptp->state = GPT_READY;
+ 517               		.loc 1 279 0
+ 518 0010 82E0      		ldi r24,lo8(2)
+ 519 0012 8883      		st Y,r24
+ 520               	/* epilogue start */
+ 280:../../os/hal/src/hal_gpt.c **** }
+ 521               		.loc 1 280 0
+ 522 0014 DF91      		pop r29
+ 523 0016 CF91      		pop r28
+ 524               	.LVL27:
+ 525 0018 0895      		ret
+ 526               		.cfi_endproc
+ 527               	.LFE249:
+ 529               		.text
+ 530               	.Letext0:
+ 531               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 532               		.file 4 "/usr/lib/avr/include/stdint.h"
+ 533               		.file 5 "../../os/common/ports/AVR/compilers/GCC/chtypes.h"
+ 534               		.file 6 "../../os/rt/include/chearly.h"
+ 535               		.file 7 "../../os/rt/include/chobjects.h"
+ 536               		.file 8 "../../os/rt/include/chrfcu.h"
+ 537               		.file 9 "../../os/rt/include/chdebug.h"
+ 538               		.file 10 "../../os/rt/include/chtime.h"
+ 539               		.file 11 "../../os/rt/include/chlists.h"
+ 540               		.file 12 "../../os/rt/include/chsem.h"
+ 541               		.file 13 "../../os/rt/include/chmtx.h"
+ 542               		.file 14 "../../os/rt/include/chsys.h"
+ 543               		.file 15 "../../os/rt/include/chregistry.h"
+ 544               		.file 16 "../../os/rt/include/chevents.h"
+ 545               		.file 17 "../../os/oslib/include/chmemcore.h"
+ 546               		.file 18 "../../os/hal/include/hal_queues.h"
+ 547               		.file 19 "../../os/hal/ports/AVR/MEGA/LLD/GPIOv1/hal_pal_lld.h"
+ 548               		.file 20 "../../os/hal/include/hal_gpt.h"
+ 549               		.file 21 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.h"
+ 550               		.file 22 "../../os/hal/include/hal_i2c.h"
+ 551               		.file 23 "../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.h"
+ 552               		.file 24 "../../os/hal/include/hal_serial.h"
+ 553               		.file 25 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
+ 554               		.file 26 "../../os/hal/osal/rt-nil/osal.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 hal_gpt.c
+     /tmp/cc8K4uf5.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc8K4uf5.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc8K4uf5.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc8K4uf5.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc8K4uf5.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc8K4uf5.s:13     .text.gptInit:0000000000000000 gptInit
+     /tmp/cc8K4uf5.s:31     .text.gptObjectInit:0000000000000000 gptObjectInit
+     /tmp/cc8K4uf5.s:56     .text.gptStart:0000000000000000 gptStart
+     /tmp/cc8K4uf5.s:128    .text.gptStop:0000000000000000 gptStop
+     /tmp/cc8K4uf5.s:197    .text.gptChangeInterval:0000000000000000 gptChangeInterval
+     /tmp/cc8K4uf5.s:245    .text.gptStartContinuous:0000000000000000 gptStartContinuous
+     /tmp/cc8K4uf5.s:305    .text.gptStartContinuousI:0000000000000000 gptStartContinuousI
+     /tmp/cc8K4uf5.s:327    .text.gptStartOneShot:0000000000000000 gptStartOneShot
+     /tmp/cc8K4uf5.s:387    .text.gptStartOneShotI:0000000000000000 gptStartOneShotI
+     /tmp/cc8K4uf5.s:409    .text.gptStopTimer:0000000000000000 gptStopTimer
+     /tmp/cc8K4uf5.s:469    .text.gptStopTimerI:0000000000000000 gptStopTimerI
+     /tmp/cc8K4uf5.s:491    .text.gptPolledDelay:0000000000000000 gptPolledDelay
+
+UNDEFINED SYMBOLS
+gpt_lld_init
+gpt_lld_start
+gpt_lld_stop
+gpt_lld_start_timer
+gpt_lld_stop_timer
+gpt_lld_polled_delay

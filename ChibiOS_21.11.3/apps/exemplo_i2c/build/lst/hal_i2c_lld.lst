@@ -1,0 +1,1856 @@
+   1               		.file	"hal_i2c_lld.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.__vector_24,"ax",@progbits
+  11               	.global	__vector_24
+  13               	__vector_24:
+  14               	.LFB238:
+  15               		.file 1 "../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c"
+   1:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*
+   2:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+   4:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     you may not use this file except in compliance with the License.
+   6:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     You may obtain a copy of the License at
+   7:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+   8:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  10:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     Unless required by applicable law or agreed to in writing, software
+  11:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     See the License for the specific language governing permissions and
+  14:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     limitations under the License.
+  15:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** */
+  16:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  17:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+  18:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @file    I2Cv1/hal_i2c_lld.c
+  19:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   AVR/MEGA I2C subsystem low level driver source.
+  20:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+  21:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @addtogroup I2C
+  22:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @{
+  23:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+  24:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  25:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** #include "hal.h"
+  26:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  27:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** #if HAL_USE_I2C || defined(__DOXYGEN__)
+  28:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  29:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  30:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /* Driver local definitions.                                                */
+  31:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  32:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  33:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  34:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /* Driver exported variables.                                               */
+  35:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  36:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  37:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /** @brief I2C driver identifier. */
+  38:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** #if AVR_I2C_USE_I2C1 || defined(__DOXYGEN__)
+  39:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** I2CDriver I2CD1;
+  40:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** #endif
+  41:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  42:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  43:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /* Driver local variables and types.                                        */
+  44:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  45:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  46:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  47:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /* Driver local functions.                                                  */
+  48:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  49:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  50:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  51:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /* Driver interrupt handlers.                                               */
+  52:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+  53:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  54:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** #if AVR_I2C_USE_I2C1 || defined(__DOXYGEN__)
+  55:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+  56:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   I2C event interrupt handler.
+  57:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+  58:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @notapi
+  59:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+  60:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** OSAL_IRQ_HANDLER(TWI_vect) {
+  16               		.loc 1 60 0
+  17               		.cfi_startproc
+  18 0000 1F92      		push r1
+  19               	.LCFI0:
+  20               		.cfi_def_cfa_offset 3
+  21               		.cfi_offset 1, -2
+  22 0002 0F92      		push r0
+  23               	.LCFI1:
+  24               		.cfi_def_cfa_offset 4
+  25               		.cfi_offset 0, -3
+  26 0004 0FB6      		in r0,__SREG__
+  27 0006 0F92      		push r0
+  28 0008 1124      		clr __zero_reg__
+  29 000a 2F93      		push r18
+  30               	.LCFI2:
+  31               		.cfi_def_cfa_offset 5
+  32               		.cfi_offset 18, -4
+  33 000c 3F93      		push r19
+  34               	.LCFI3:
+  35               		.cfi_def_cfa_offset 6
+  36               		.cfi_offset 19, -5
+  37 000e 4F93      		push r20
+  38               	.LCFI4:
+  39               		.cfi_def_cfa_offset 7
+  40               		.cfi_offset 20, -6
+  41 0010 5F93      		push r21
+  42               	.LCFI5:
+  43               		.cfi_def_cfa_offset 8
+  44               		.cfi_offset 21, -7
+  45 0012 6F93      		push r22
+  46               	.LCFI6:
+  47               		.cfi_def_cfa_offset 9
+  48               		.cfi_offset 22, -8
+  49 0014 7F93      		push r23
+  50               	.LCFI7:
+  51               		.cfi_def_cfa_offset 10
+  52               		.cfi_offset 23, -9
+  53 0016 8F93      		push r24
+  54               	.LCFI8:
+  55               		.cfi_def_cfa_offset 11
+  56               		.cfi_offset 24, -10
+  57 0018 9F93      		push r25
+  58               	.LCFI9:
+  59               		.cfi_def_cfa_offset 12
+  60               		.cfi_offset 25, -11
+  61 001a AF93      		push r26
+  62               	.LCFI10:
+  63               		.cfi_def_cfa_offset 13
+  64               		.cfi_offset 26, -12
+  65 001c BF93      		push r27
+  66               	.LCFI11:
+  67               		.cfi_def_cfa_offset 14
+  68               		.cfi_offset 27, -13
+  69 001e EF93      		push r30
+  70               	.LCFI12:
+  71               		.cfi_def_cfa_offset 15
+  72               		.cfi_offset 30, -14
+  73 0020 FF93      		push r31
+  74               	.LCFI13:
+  75               		.cfi_def_cfa_offset 16
+  76               		.cfi_offset 31, -15
+  77               	/* prologue: Signal */
+  78               	/* frame size = 0 */
+  79               	/* stack size = 15 */
+  80               	.L__stack_usage = 15
+  61:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   OSAL_IRQ_PROLOGUE();
+  81               		.loc 1 61 0
+  82 0022 81E0      		ldi r24,lo8(1)
+  83 0024 8093 0000 		sts __avr_in_isr,r24
+  84               	.LVL0:
+  62:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  63:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   I2CDriver *i2cp = &I2CD1;
+  64:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+  65:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   switch (TWSR & 0xF8) {
+  85               		.loc 1 65 0
+  86 0028 E091 B900 		lds r30,185
+  87 002c E87F      		andi r30,lo8(-8)
+  88 002e E935      		cpi r30,lo8(89)
+  89 0030 00F0      		brlo .L42
+  90               	.L2:
+  66:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_START:
+  67:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_REPEAT_START:
+  68:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWDR = (i2cp->addr << 1);
+  69:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     if ((i2cp->txbuf == NULL) || (i2cp->txbytes == 0) || (i2cp->txidx == i2cp->txbytes)) {
+  70:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWDR |= 0x01;
+  71:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+  72:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWCR = ((1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+  73:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+  74:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_TX_ADDR_ACK:
+  75:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_TX_DATA_ACK:
+  76:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     if (i2cp->txidx < i2cp->txbytes) {
+  77:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWDR = i2cp->txbuf[i2cp->txidx++];
+  78:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+  79:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+  80:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     else {
+  81:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       if (i2cp->rxbuf && i2cp->rxbytes) {
+  82:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         TWCR = ((1 << TWSTA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+  83:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       }
+  84:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       else {
+  85:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         TWCR = ((1 << TWSTO) | (1 << TWINT) | (1 << TWEN));
+  86:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         _i2c_wakeup_isr(i2cp);
+  87:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       }
+  88:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+  89:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+  90:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_RX_ADDR_ACK:
+  91:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     if (i2cp->rxidx == (i2cp->rxbytes - 1)) {
+  92:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+  93:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+  94:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     else {
+  95:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+  96:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+  97:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+  98:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_RX_DATA_ACK:
+  99:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     i2cp->rxbuf[i2cp->rxidx++] = TWDR;
+ 100:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     if (i2cp->rxidx == (i2cp->rxbytes - 1)) {
+ 101:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 102:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+ 103:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     else {
+ 104:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 105:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+ 106:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 107:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_RX_DATA_NACK:
+ 108:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     i2cp->rxbuf[i2cp->rxidx] = TWDR;
+ 109:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWCR = ((1 << TWSTO) | (1 << TWINT) | (1 << TWEN));
+ 110:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     _i2c_wakeup_isr(i2cp);
+ 111:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_TX_ADDR_NACK:
+ 112:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_TX_DATA_NACK:
+ 113:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_MASTER_RX_ADDR_NACK:
+ 114:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     i2cp->errors |= I2C_ACK_FAILURE;
+ 115:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 116:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_ARBITRATION_LOST:
+ 117:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     i2cp->errors |= I2C_ARBITRATION_LOST;
+ 118:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 119:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_BUS_ERROR:
+ 120:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     i2cp->errors |= I2C_BUS_ERROR;
+ 121:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 122:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   default:
+ 123:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     /* FIXME: only gets here if there are other MASTERs in the bus. */
+ 124:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWCR = ((1 << TWSTO) | (1 << TWINT) | (1 << TWEN));
+  91               		.loc 1 124 0
+  92 0032 84E9      		ldi r24,lo8(-108)
+  93 0034 8093 BC00 		sts 188,r24
+  94               	.LVL1:
+  95               	.LBB38:
+  96               	.LBB39:
+  97               		.file 2 "../../os/hal/osal/rt-nil/osal.h"
+   1:../../os/hal/osal/rt-nil/osal.h **** /*
+   2:../../os/hal/osal/rt-nil/osal.h ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:../../os/hal/osal/rt-nil/osal.h **** 
+   4:../../os/hal/osal/rt-nil/osal.h ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:../../os/hal/osal/rt-nil/osal.h ****     you may not use this file except in compliance with the License.
+   6:../../os/hal/osal/rt-nil/osal.h ****     You may obtain a copy of the License at
+   7:../../os/hal/osal/rt-nil/osal.h **** 
+   8:../../os/hal/osal/rt-nil/osal.h ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:../../os/hal/osal/rt-nil/osal.h **** 
+  10:../../os/hal/osal/rt-nil/osal.h ****     Unless required by applicable law or agreed to in writing, software
+  11:../../os/hal/osal/rt-nil/osal.h ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:../../os/hal/osal/rt-nil/osal.h ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:../../os/hal/osal/rt-nil/osal.h ****     See the License for the specific language governing permissions and
+  14:../../os/hal/osal/rt-nil/osal.h ****     limitations under the License.
+  15:../../os/hal/osal/rt-nil/osal.h **** */
+  16:../../os/hal/osal/rt-nil/osal.h **** 
+  17:../../os/hal/osal/rt-nil/osal.h **** /**
+  18:../../os/hal/osal/rt-nil/osal.h ****  * @file    osal.h
+  19:../../os/hal/osal/rt-nil/osal.h ****  * @brief   OSAL module header.
+  20:../../os/hal/osal/rt-nil/osal.h ****  *
+  21:../../os/hal/osal/rt-nil/osal.h ****  * @addtogroup OSAL
+  22:../../os/hal/osal/rt-nil/osal.h ****  * @{
+  23:../../os/hal/osal/rt-nil/osal.h ****  */
+  24:../../os/hal/osal/rt-nil/osal.h **** 
+  25:../../os/hal/osal/rt-nil/osal.h **** #ifndef OSAL_H
+  26:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_H
+  27:../../os/hal/osal/rt-nil/osal.h **** 
+  28:../../os/hal/osal/rt-nil/osal.h **** #include <stddef.h>
+  29:../../os/hal/osal/rt-nil/osal.h **** #include <stdint.h>
+  30:../../os/hal/osal/rt-nil/osal.h **** #include <stdbool.h>
+  31:../../os/hal/osal/rt-nil/osal.h **** 
+  32:../../os/hal/osal/rt-nil/osal.h **** #include "ch.h"
+  33:../../os/hal/osal/rt-nil/osal.h **** 
+  34:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+  35:../../os/hal/osal/rt-nil/osal.h **** /* Module constants.                                                         */
+  36:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+  37:../../os/hal/osal/rt-nil/osal.h **** 
+  38:../../os/hal/osal/rt-nil/osal.h **** /**
+  39:../../os/hal/osal/rt-nil/osal.h ****  * @name    Common constants
+  40:../../os/hal/osal/rt-nil/osal.h ****  * @{
+  41:../../os/hal/osal/rt-nil/osal.h ****  */
+  42:../../os/hal/osal/rt-nil/osal.h **** #if !defined(FALSE) || defined(__DOXYGEN__)
+  43:../../os/hal/osal/rt-nil/osal.h **** #define FALSE                               0
+  44:../../os/hal/osal/rt-nil/osal.h **** #endif
+  45:../../os/hal/osal/rt-nil/osal.h **** 
+  46:../../os/hal/osal/rt-nil/osal.h **** #if !defined(TRUE) || defined(__DOXYGEN__)
+  47:../../os/hal/osal/rt-nil/osal.h **** #define TRUE                                1
+  48:../../os/hal/osal/rt-nil/osal.h **** #endif
+  49:../../os/hal/osal/rt-nil/osal.h **** 
+  50:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_SUCCESS                        false
+  51:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_FAILED                         true
+  52:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+  53:../../os/hal/osal/rt-nil/osal.h **** 
+  54:../../os/hal/osal/rt-nil/osal.h **** #if 0
+  55:../../os/hal/osal/rt-nil/osal.h **** /**
+  56:../../os/hal/osal/rt-nil/osal.h ****  * @name    Messages
+  57:../../os/hal/osal/rt-nil/osal.h ****  * @{
+  58:../../os/hal/osal/rt-nil/osal.h ****  */
+  59:../../os/hal/osal/rt-nil/osal.h **** #define MSG_OK                              (msg_t)0
+  60:../../os/hal/osal/rt-nil/osal.h **** #define MSG_TIMEOUT                         (msg_t)-1
+  61:../../os/hal/osal/rt-nil/osal.h **** #define MSG_RESET                           (msg_t)-2
+  62:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+  63:../../os/hal/osal/rt-nil/osal.h **** #endif
+  64:../../os/hal/osal/rt-nil/osal.h **** 
+  65:../../os/hal/osal/rt-nil/osal.h **** #if 0
+  66:../../os/hal/osal/rt-nil/osal.h **** /**
+  67:../../os/hal/osal/rt-nil/osal.h ****  * @name    Special time constants
+  68:../../os/hal/osal/rt-nil/osal.h ****  * @{
+  69:../../os/hal/osal/rt-nil/osal.h ****  */
+  70:../../os/hal/osal/rt-nil/osal.h **** #define TIME_IMMEDIATE                      ((sysinterval_t)0)
+  71:../../os/hal/osal/rt-nil/osal.h **** #define TIME_INFINITE                       ((sysinterval_t)-1)
+  72:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+  73:../../os/hal/osal/rt-nil/osal.h **** #endif
+  74:../../os/hal/osal/rt-nil/osal.h **** 
+  75:../../os/hal/osal/rt-nil/osal.h **** /**
+  76:../../os/hal/osal/rt-nil/osal.h ****  * @name    Systick modes.
+  77:../../os/hal/osal/rt-nil/osal.h ****  * @{
+  78:../../os/hal/osal/rt-nil/osal.h ****  */
+  79:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_MODE_NONE                   0
+  80:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_MODE_PERIODIC               1
+  81:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_MODE_FREERUNNING            2
+  82:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+  83:../../os/hal/osal/rt-nil/osal.h **** 
+  84:../../os/hal/osal/rt-nil/osal.h **** /**
+  85:../../os/hal/osal/rt-nil/osal.h ****  * @name    Systick parameters.
+  86:../../os/hal/osal/rt-nil/osal.h ****  * @{
+  87:../../os/hal/osal/rt-nil/osal.h ****  */
+  88:../../os/hal/osal/rt-nil/osal.h **** /**
+  89:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Size in bits of the @p systick_t type.
+  90:../../os/hal/osal/rt-nil/osal.h ****  */
+  91:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_RESOLUTION                  CH_CFG_ST_RESOLUTION
+  92:../../os/hal/osal/rt-nil/osal.h **** 
+  93:../../os/hal/osal/rt-nil/osal.h **** /**
+  94:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Required systick frequency or resolution.
+  95:../../os/hal/osal/rt-nil/osal.h ****  */
+  96:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_FREQUENCY                   CH_CFG_ST_FREQUENCY
+  97:../../os/hal/osal/rt-nil/osal.h **** 
+  98:../../os/hal/osal/rt-nil/osal.h **** /**
+  99:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Systick mode required by the underlying OS.
+ 100:../../os/hal/osal/rt-nil/osal.h ****  */
+ 101:../../os/hal/osal/rt-nil/osal.h **** #if (CH_CFG_ST_TIMEDELTA == 0) || defined(__DOXYGEN__)
+ 102:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_MODE                        OSAL_ST_MODE_PERIODIC
+ 103:../../os/hal/osal/rt-nil/osal.h **** #else
+ 104:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_ST_MODE                        OSAL_ST_MODE_FREERUNNING
+ 105:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 106:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+ 107:../../os/hal/osal/rt-nil/osal.h **** 
+ 108:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 109:../../os/hal/osal/rt-nil/osal.h **** /* Module pre-compile time settings.                                         */
+ 110:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 111:../../os/hal/osal/rt-nil/osal.h **** 
+ 112:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 113:../../os/hal/osal/rt-nil/osal.h **** /* Derived constants and error checks.                                       */
+ 114:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 115:../../os/hal/osal/rt-nil/osal.h **** 
+ 116:../../os/hal/osal/rt-nil/osal.h **** #if !(OSAL_ST_MODE == OSAL_ST_MODE_NONE) &&                                 \
+ 117:../../os/hal/osal/rt-nil/osal.h ****     !(OSAL_ST_MODE == OSAL_ST_MODE_PERIODIC) &&                             \
+ 118:../../os/hal/osal/rt-nil/osal.h ****     !(OSAL_ST_MODE == OSAL_ST_MODE_FREERUNNING)
+ 119:../../os/hal/osal/rt-nil/osal.h **** #error "invalid OSAL_ST_MODE setting in osal.h"
+ 120:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 121:../../os/hal/osal/rt-nil/osal.h **** 
+ 122:../../os/hal/osal/rt-nil/osal.h **** #if (OSAL_ST_RESOLUTION != 16) && (OSAL_ST_RESOLUTION != 32) &&             \
+ 123:../../os/hal/osal/rt-nil/osal.h ****     (OSAL_ST_RESOLUTION != 64)
+ 124:../../os/hal/osal/rt-nil/osal.h **** #error "invalid OSAL_ST_RESOLUTION, must be 16, 32 or 64"
+ 125:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 126:../../os/hal/osal/rt-nil/osal.h **** 
+ 127:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 128:../../os/hal/osal/rt-nil/osal.h **** /* Module data structures and types.                                         */
+ 129:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 130:../../os/hal/osal/rt-nil/osal.h **** 
+ 131:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 132:../../os/hal/osal/rt-nil/osal.h **** /**
+ 133:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of a system status word.
+ 134:../../os/hal/osal/rt-nil/osal.h ****  */
+ 135:../../os/hal/osal/rt-nil/osal.h **** typedef uint32_t syssts_t;
+ 136:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 137:../../os/hal/osal/rt-nil/osal.h **** 
+ 138:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 139:../../os/hal/osal/rt-nil/osal.h **** /**
+ 140:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of a message.
+ 141:../../os/hal/osal/rt-nil/osal.h ****  */
+ 142:../../os/hal/osal/rt-nil/osal.h **** typedef int32_t msg_t;
+ 143:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 144:../../os/hal/osal/rt-nil/osal.h **** 
+ 145:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 146:../../os/hal/osal/rt-nil/osal.h **** /**
+ 147:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of system time counter.
+ 148:../../os/hal/osal/rt-nil/osal.h ****  */
+ 149:../../os/hal/osal/rt-nil/osal.h **** typedef uint32_t systime_t;
+ 150:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 151:../../os/hal/osal/rt-nil/osal.h **** 
+ 152:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 153:../../os/hal/osal/rt-nil/osal.h **** /**
+ 154:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of system time interval.
+ 155:../../os/hal/osal/rt-nil/osal.h ****  */
+ 156:../../os/hal/osal/rt-nil/osal.h **** typedef uint32_t sysinterval_t;
+ 157:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 158:../../os/hal/osal/rt-nil/osal.h **** 
+ 159:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 160:../../os/hal/osal/rt-nil/osal.h **** /**
+ 161:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of time conversion variable.
+ 162:../../os/hal/osal/rt-nil/osal.h ****  * @note    This type must have double width than other time types, it is
+ 163:../../os/hal/osal/rt-nil/osal.h ****  *          only used internally for conversions.
+ 164:../../os/hal/osal/rt-nil/osal.h ****  */
+ 165:../../os/hal/osal/rt-nil/osal.h **** typedef uint64_t time_conv_t;
+ 166:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 167:../../os/hal/osal/rt-nil/osal.h **** 
+ 168:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 169:../../os/hal/osal/rt-nil/osal.h **** /**
+ 170:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of realtime counter.
+ 171:../../os/hal/osal/rt-nil/osal.h ****  */
+ 172:../../os/hal/osal/rt-nil/osal.h **** typedef uint32_t rtcnt_t;
+ 173:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 174:../../os/hal/osal/rt-nil/osal.h **** 
+ 175:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 176:../../os/hal/osal/rt-nil/osal.h **** /**
+ 177:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of a thread reference.
+ 178:../../os/hal/osal/rt-nil/osal.h ****  */
+ 179:../../os/hal/osal/rt-nil/osal.h **** typedef thread_t * thread_reference_t;
+ 180:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 181:../../os/hal/osal/rt-nil/osal.h **** 
+ 182:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 183:../../os/hal/osal/rt-nil/osal.h **** /**
+ 184:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of an event flags mask.
+ 185:../../os/hal/osal/rt-nil/osal.h ****  */
+ 186:../../os/hal/osal/rt-nil/osal.h **** typedef uint32_t eventflags_t;
+ 187:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 188:../../os/hal/osal/rt-nil/osal.h **** 
+ 189:../../os/hal/osal/rt-nil/osal.h **** #if (CH_CFG_USE_EVENTS == FALSE) || defined(__DOXYGEN__)
+ 190:../../os/hal/osal/rt-nil/osal.h **** /**
+ 191:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of an event flags object.
+ 192:../../os/hal/osal/rt-nil/osal.h ****  * @note    The content of this structure is not part of the API and should
+ 193:../../os/hal/osal/rt-nil/osal.h ****  *          not be relied upon. Implementers may define this structure in
+ 194:../../os/hal/osal/rt-nil/osal.h ****  *          an entirely different way.
+ 195:../../os/hal/osal/rt-nil/osal.h ****  * @note    Retrieval and clearing of the flags are not defined in this
+ 196:../../os/hal/osal/rt-nil/osal.h ****  *          API and are implementation-dependent.
+ 197:../../os/hal/osal/rt-nil/osal.h ****  */
+ 198:../../os/hal/osal/rt-nil/osal.h **** typedef struct event_source event_source_t;
+ 199:../../os/hal/osal/rt-nil/osal.h **** 
+ 200:../../os/hal/osal/rt-nil/osal.h **** /**
+ 201:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of an event source callback.
+ 202:../../os/hal/osal/rt-nil/osal.h ****  * @note    This type is not part of the OSAL API and is provided
+ 203:../../os/hal/osal/rt-nil/osal.h ****  *          exclusively as an example and for convenience.
+ 204:../../os/hal/osal/rt-nil/osal.h ****  */
+ 205:../../os/hal/osal/rt-nil/osal.h **** typedef void (*eventcallback_t)(event_source_t *esp);
+ 206:../../os/hal/osal/rt-nil/osal.h **** 
+ 207:../../os/hal/osal/rt-nil/osal.h **** /**
+ 208:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Events source object.
+ 209:../../os/hal/osal/rt-nil/osal.h ****  * @note    The content of this structure is not part of the API and should
+ 210:../../os/hal/osal/rt-nil/osal.h ****  *          not be relied upon. Implementers may define this structure in
+ 211:../../os/hal/osal/rt-nil/osal.h ****  *          an entirely different way.
+ 212:../../os/hal/osal/rt-nil/osal.h ****  * @note    Retrieval and clearing of the flags are not defined in this
+ 213:../../os/hal/osal/rt-nil/osal.h ****  *          API and are implementation-dependent.
+ 214:../../os/hal/osal/rt-nil/osal.h ****  */
+ 215:../../os/hal/osal/rt-nil/osal.h **** struct event_source {
+ 216:../../os/hal/osal/rt-nil/osal.h ****   volatile eventflags_t flags;      /**< @brief Stored event flags.         */
+ 217:../../os/hal/osal/rt-nil/osal.h ****   eventcallback_t       cb;         /**< @brief Event source callback.      */
+ 218:../../os/hal/osal/rt-nil/osal.h ****   void                  *param;     /**< @brief User defined field.         */
+ 219:../../os/hal/osal/rt-nil/osal.h **** };
+ 220:../../os/hal/osal/rt-nil/osal.h **** #endif /* CH_CFG_USE_EVENTS == FALSE */
+ 221:../../os/hal/osal/rt-nil/osal.h **** 
+ 222:../../os/hal/osal/rt-nil/osal.h **** /**
+ 223:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of a mutex.
+ 224:../../os/hal/osal/rt-nil/osal.h ****  * @note    If the OS does not support mutexes or there is no OS then the
+ 225:../../os/hal/osal/rt-nil/osal.h ****  *          mechanism can be simulated.
+ 226:../../os/hal/osal/rt-nil/osal.h ****  */
+ 227:../../os/hal/osal/rt-nil/osal.h **** #if CH_CFG_USE_MUTEXES || defined(__DOXYGEN__)
+ 228:../../os/hal/osal/rt-nil/osal.h **** #elif CH_CFG_USE_SEMAPHORES
+ 229:../../os/hal/osal/rt-nil/osal.h **** typedef semaphore_t mutex_t;
+ 230:../../os/hal/osal/rt-nil/osal.h **** #else
+ 231:../../os/hal/osal/rt-nil/osal.h **** typedef uint32_t mutex_t;
+ 232:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 233:../../os/hal/osal/rt-nil/osal.h **** 
+ 234:../../os/hal/osal/rt-nil/osal.h **** #if 0
+ 235:../../os/hal/osal/rt-nil/osal.h **** /**
+ 236:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Type of a thread queue.
+ 237:../../os/hal/osal/rt-nil/osal.h ****  * @details A thread queue is a queue of sleeping threads, queued threads
+ 238:../../os/hal/osal/rt-nil/osal.h ****  *          can be dequeued one at time or all together.
+ 239:../../os/hal/osal/rt-nil/osal.h ****  * @note    In this implementation it is implemented as a single reference
+ 240:../../os/hal/osal/rt-nil/osal.h ****  *          because there are no real threads.
+ 241:../../os/hal/osal/rt-nil/osal.h ****  */
+ 242:../../os/hal/osal/rt-nil/osal.h **** typedef struct {
+ 243:../../os/hal/osal/rt-nil/osal.h ****   thread_reference_t    tr;
+ 244:../../os/hal/osal/rt-nil/osal.h **** } threads_queue_t;
+ 245:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 246:../../os/hal/osal/rt-nil/osal.h **** 
+ 247:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 248:../../os/hal/osal/rt-nil/osal.h **** /* Module macros.                                                            */
+ 249:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 250:../../os/hal/osal/rt-nil/osal.h **** 
+ 251:../../os/hal/osal/rt-nil/osal.h **** /**
+ 252:../../os/hal/osal/rt-nil/osal.h ****  * @name    Debug related macros
+ 253:../../os/hal/osal/rt-nil/osal.h ****  * @{
+ 254:../../os/hal/osal/rt-nil/osal.h ****  */
+ 255:../../os/hal/osal/rt-nil/osal.h **** /**
+ 256:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Condition assertion.
+ 257:../../os/hal/osal/rt-nil/osal.h ****  * @details If the condition check fails then the OSAL panics with a
+ 258:../../os/hal/osal/rt-nil/osal.h ****  *          message and halts.
+ 259:../../os/hal/osal/rt-nil/osal.h ****  * @note    The condition is tested only if the @p OSAL_ENABLE_ASSERTIONS
+ 260:../../os/hal/osal/rt-nil/osal.h ****  *          switch is enabled.
+ 261:../../os/hal/osal/rt-nil/osal.h ****  * @note    The remark string is not currently used except for putting a
+ 262:../../os/hal/osal/rt-nil/osal.h ****  *          comment in the code about the assertion.
+ 263:../../os/hal/osal/rt-nil/osal.h ****  *
+ 264:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] c         the condition to be verified to be true
+ 265:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] remark    a remark string
+ 266:../../os/hal/osal/rt-nil/osal.h ****  *
+ 267:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 268:../../os/hal/osal/rt-nil/osal.h ****  */
+ 269:../../os/hal/osal/rt-nil/osal.h **** #define osalDbgAssert(c, remark) chDbgAssert(c, remark)
+ 270:../../os/hal/osal/rt-nil/osal.h **** 
+ 271:../../os/hal/osal/rt-nil/osal.h **** /**
+ 272:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Function parameters check.
+ 273:../../os/hal/osal/rt-nil/osal.h ****  * @details If the condition check fails then the OSAL panics and halts.
+ 274:../../os/hal/osal/rt-nil/osal.h ****  * @note    The condition is tested only if the @p OSAL_ENABLE_CHECKS switch
+ 275:../../os/hal/osal/rt-nil/osal.h ****  *          is enabled.
+ 276:../../os/hal/osal/rt-nil/osal.h ****  *
+ 277:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] c         the condition to be verified to be true
+ 278:../../os/hal/osal/rt-nil/osal.h ****  *
+ 279:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 280:../../os/hal/osal/rt-nil/osal.h ****  */
+ 281:../../os/hal/osal/rt-nil/osal.h **** #define osalDbgCheck(c) chDbgCheck(c)
+ 282:../../os/hal/osal/rt-nil/osal.h **** 
+ 283:../../os/hal/osal/rt-nil/osal.h **** /**
+ 284:../../os/hal/osal/rt-nil/osal.h ****  * @brief   I-Class state check.
+ 285:../../os/hal/osal/rt-nil/osal.h ****  * @note    Not implemented in this simplified OSAL.
+ 286:../../os/hal/osal/rt-nil/osal.h ****  */
+ 287:../../os/hal/osal/rt-nil/osal.h **** #define osalDbgCheckClassI() chDbgCheckClassI()
+ 288:../../os/hal/osal/rt-nil/osal.h **** 
+ 289:../../os/hal/osal/rt-nil/osal.h **** /**
+ 290:../../os/hal/osal/rt-nil/osal.h ****  * @brief   S-Class state check.
+ 291:../../os/hal/osal/rt-nil/osal.h ****  * @note    Not implemented in this simplified OSAL.
+ 292:../../os/hal/osal/rt-nil/osal.h ****  */
+ 293:../../os/hal/osal/rt-nil/osal.h **** #define osalDbgCheckClassS() chDbgCheckClassS()
+ 294:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+ 295:../../os/hal/osal/rt-nil/osal.h **** 
+ 296:../../os/hal/osal/rt-nil/osal.h **** /**
+ 297:../../os/hal/osal/rt-nil/osal.h ****  * @name    IRQ service routines wrappers
+ 298:../../os/hal/osal/rt-nil/osal.h ****  * @{
+ 299:../../os/hal/osal/rt-nil/osal.h ****  */
+ 300:../../os/hal/osal/rt-nil/osal.h **** /**
+ 301:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Priority level verification macro.
+ 302:../../os/hal/osal/rt-nil/osal.h ****  */
+ 303:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_IRQ_IS_VALID_PRIORITY(n) CH_IRQ_IS_VALID_KERNEL_PRIORITY(n)
+ 304:../../os/hal/osal/rt-nil/osal.h **** 
+ 305:../../os/hal/osal/rt-nil/osal.h **** /**
+ 306:../../os/hal/osal/rt-nil/osal.h ****  * @brief   IRQ prologue code.
+ 307:../../os/hal/osal/rt-nil/osal.h ****  * @details This macro must be inserted at the start of all IRQ handlers.
+ 308:../../os/hal/osal/rt-nil/osal.h ****  */
+ 309:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_IRQ_PROLOGUE() CH_IRQ_PROLOGUE()
+ 310:../../os/hal/osal/rt-nil/osal.h **** 
+ 311:../../os/hal/osal/rt-nil/osal.h **** /**
+ 312:../../os/hal/osal/rt-nil/osal.h ****  * @brief   IRQ epilogue code.
+ 313:../../os/hal/osal/rt-nil/osal.h ****  * @details This macro must be inserted at the end of all IRQ handlers.
+ 314:../../os/hal/osal/rt-nil/osal.h ****  */
+ 315:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_IRQ_EPILOGUE() CH_IRQ_EPILOGUE()
+ 316:../../os/hal/osal/rt-nil/osal.h **** 
+ 317:../../os/hal/osal/rt-nil/osal.h **** /**
+ 318:../../os/hal/osal/rt-nil/osal.h ****  * @brief   IRQ handler function declaration.
+ 319:../../os/hal/osal/rt-nil/osal.h ****  * @details This macro hides the details of an ISR function declaration.
+ 320:../../os/hal/osal/rt-nil/osal.h ****  *
+ 321:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] id        a vector name as defined in @p vectors.s
+ 322:../../os/hal/osal/rt-nil/osal.h ****  */
+ 323:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_IRQ_HANDLER(id) CH_IRQ_HANDLER(id)
+ 324:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+ 325:../../os/hal/osal/rt-nil/osal.h **** 
+ 326:../../os/hal/osal/rt-nil/osal.h **** /**
+ 327:../../os/hal/osal/rt-nil/osal.h ****  * @name    Time conversion utilities
+ 328:../../os/hal/osal/rt-nil/osal.h ****  * @{
+ 329:../../os/hal/osal/rt-nil/osal.h ****  */
+ 330:../../os/hal/osal/rt-nil/osal.h **** /**
+ 331:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Seconds to time interval.
+ 332:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from seconds to system ticks number.
+ 333:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded upward to the next tick boundary.
+ 334:../../os/hal/osal/rt-nil/osal.h ****  * @note    Use of this macro for large values is not secure because
+ 335:../../os/hal/osal/rt-nil/osal.h ****  *          integer overflows, make sure your value can be correctly
+ 336:../../os/hal/osal/rt-nil/osal.h ****  *          converted.
+ 337:../../os/hal/osal/rt-nil/osal.h ****  *
+ 338:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] secs      number of seconds
+ 339:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of ticks.
+ 340:../../os/hal/osal/rt-nil/osal.h ****  *
+ 341:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 342:../../os/hal/osal/rt-nil/osal.h ****  */
+ 343:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_S2I(secs) TIME_S2I(secs)
+ 344:../../os/hal/osal/rt-nil/osal.h **** 
+ 345:../../os/hal/osal/rt-nil/osal.h **** /**
+ 346:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Milliseconds to time interval.
+ 347:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from milliseconds to system ticks number.
+ 348:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded upward to the next tick boundary.
+ 349:../../os/hal/osal/rt-nil/osal.h ****  * @note    Use of this macro for large values is not secure because
+ 350:../../os/hal/osal/rt-nil/osal.h ****  *          integer overflows, make sure your value can be correctly
+ 351:../../os/hal/osal/rt-nil/osal.h ****  *          converted.
+ 352:../../os/hal/osal/rt-nil/osal.h ****  *
+ 353:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] msecs     number of milliseconds
+ 354:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of ticks.
+ 355:../../os/hal/osal/rt-nil/osal.h ****  *
+ 356:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 357:../../os/hal/osal/rt-nil/osal.h ****  */
+ 358:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_MS2I(msecs) TIME_MS2I(msecs)
+ 359:../../os/hal/osal/rt-nil/osal.h **** 
+ 360:../../os/hal/osal/rt-nil/osal.h **** /**
+ 361:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Microseconds to time interval.
+ 362:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from microseconds to system ticks number.
+ 363:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded upward to the next tick boundary.
+ 364:../../os/hal/osal/rt-nil/osal.h ****  * @note    Use of this macro for large values is not secure because
+ 365:../../os/hal/osal/rt-nil/osal.h ****  *          integer overflows, make sure your value can be correctly
+ 366:../../os/hal/osal/rt-nil/osal.h ****  *          converted.
+ 367:../../os/hal/osal/rt-nil/osal.h ****  *
+ 368:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] usecs     number of microseconds
+ 369:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of ticks.
+ 370:../../os/hal/osal/rt-nil/osal.h ****  *
+ 371:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 372:../../os/hal/osal/rt-nil/osal.h ****  */
+ 373:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_US2I(usecs) TIME_US2I(usecs)
+ 374:../../os/hal/osal/rt-nil/osal.h **** 
+ 375:../../os/hal/osal/rt-nil/osal.h **** /**
+ 376:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Time interval to seconds.
+ 377:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from system ticks number to seconds.
+ 378:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded up to the next second boundary.
+ 379:../../os/hal/osal/rt-nil/osal.h ****  * @note    Use of this macro for large values is not secure because
+ 380:../../os/hal/osal/rt-nil/osal.h ****  *          integer overflows, make sure your value can be correctly
+ 381:../../os/hal/osal/rt-nil/osal.h ****  *          converted.
+ 382:../../os/hal/osal/rt-nil/osal.h ****  *
+ 383:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] interval  interval in ticks
+ 384:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of seconds.
+ 385:../../os/hal/osal/rt-nil/osal.h ****  *
+ 386:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 387:../../os/hal/osal/rt-nil/osal.h ****  */
+ 388:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_I2S(interval) TIME_I2S(interval)
+ 389:../../os/hal/osal/rt-nil/osal.h **** 
+ 390:../../os/hal/osal/rt-nil/osal.h **** /**
+ 391:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Time interval to milliseconds.
+ 392:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from system ticks number to milliseconds.
+ 393:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded up to the next millisecond boundary.
+ 394:../../os/hal/osal/rt-nil/osal.h ****  * @note    Use of this macro for large values is not secure because
+ 395:../../os/hal/osal/rt-nil/osal.h ****  *          integer overflows, make sure your value can be correctly
+ 396:../../os/hal/osal/rt-nil/osal.h ****  *          converted.
+ 397:../../os/hal/osal/rt-nil/osal.h ****  *
+ 398:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] interval  interval in ticks
+ 399:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of milliseconds.
+ 400:../../os/hal/osal/rt-nil/osal.h ****  *
+ 401:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 402:../../os/hal/osal/rt-nil/osal.h ****  */
+ 403:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_I2MS(interval) TIME_I2MS(interval)
+ 404:../../os/hal/osal/rt-nil/osal.h **** 
+ 405:../../os/hal/osal/rt-nil/osal.h **** /**
+ 406:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Time interval to microseconds.
+ 407:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from system ticks number to microseconds.
+ 408:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded up to the next microsecond boundary.
+ 409:../../os/hal/osal/rt-nil/osal.h ****  * @note    Use of this macro for large values is not secure because
+ 410:../../os/hal/osal/rt-nil/osal.h ****  *          integer overflows, make sure your value can be correctly
+ 411:../../os/hal/osal/rt-nil/osal.h ****  *          converted.
+ 412:../../os/hal/osal/rt-nil/osal.h ****  *
+ 413:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] interval  interval in ticks
+ 414:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of microseconds.
+ 415:../../os/hal/osal/rt-nil/osal.h ****  *
+ 416:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 417:../../os/hal/osal/rt-nil/osal.h ****  */
+ 418:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_I2US(interval) TIME_I2US(interval)
+ 419:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+ 420:../../os/hal/osal/rt-nil/osal.h **** 
+ 421:../../os/hal/osal/rt-nil/osal.h **** /**
+ 422:../../os/hal/osal/rt-nil/osal.h ****  * @name    Time conversion utilities for the realtime counter
+ 423:../../os/hal/osal/rt-nil/osal.h ****  * @{
+ 424:../../os/hal/osal/rt-nil/osal.h ****  */
+ 425:../../os/hal/osal/rt-nil/osal.h **** /**
+ 426:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Seconds to realtime counter.
+ 427:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from seconds to realtime counter cycles.
+ 428:../../os/hal/osal/rt-nil/osal.h ****  * @note    The macro assumes that @p freq >= @p 1.
+ 429:../../os/hal/osal/rt-nil/osal.h ****  *
+ 430:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] freq      clock frequency, in Hz, of the realtime counter
+ 431:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] sec       number of seconds
+ 432:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of cycles.
+ 433:../../os/hal/osal/rt-nil/osal.h ****  *
+ 434:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 435:../../os/hal/osal/rt-nil/osal.h ****  */
+ 436:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_S2RTC(freq, sec) S2RTC(freq, sec)
+ 437:../../os/hal/osal/rt-nil/osal.h **** 
+ 438:../../os/hal/osal/rt-nil/osal.h **** /**
+ 439:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Milliseconds to realtime counter.
+ 440:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from milliseconds to realtime counter cycles.
+ 441:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded upward to the next millisecond boundary.
+ 442:../../os/hal/osal/rt-nil/osal.h ****  * @note    The macro assumes that @p freq >= @p 1000.
+ 443:../../os/hal/osal/rt-nil/osal.h ****  *
+ 444:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] freq      clock frequency, in Hz, of the realtime counter
+ 445:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] msec      number of milliseconds
+ 446:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of cycles.
+ 447:../../os/hal/osal/rt-nil/osal.h ****  *
+ 448:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 449:../../os/hal/osal/rt-nil/osal.h ****  */
+ 450:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_MS2RTC(freq, msec) MS2RTC(freq, msec)
+ 451:../../os/hal/osal/rt-nil/osal.h **** 
+ 452:../../os/hal/osal/rt-nil/osal.h **** /**
+ 453:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Microseconds to realtime counter.
+ 454:../../os/hal/osal/rt-nil/osal.h ****  * @details Converts from microseconds to realtime counter cycles.
+ 455:../../os/hal/osal/rt-nil/osal.h ****  * @note    The result is rounded upward to the next microsecond boundary.
+ 456:../../os/hal/osal/rt-nil/osal.h ****  * @note    The macro assumes that @p freq >= @p 1000000.
+ 457:../../os/hal/osal/rt-nil/osal.h ****  *
+ 458:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] freq      clock frequency, in Hz, of the realtime counter
+ 459:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] usec      number of microseconds
+ 460:../../os/hal/osal/rt-nil/osal.h ****  * @return              The number of cycles.
+ 461:../../os/hal/osal/rt-nil/osal.h ****  *
+ 462:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 463:../../os/hal/osal/rt-nil/osal.h ****  */
+ 464:../../os/hal/osal/rt-nil/osal.h **** #define OSAL_US2RTC(freq, usec) US2RTC(freq, usec)
+ 465:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+ 466:../../os/hal/osal/rt-nil/osal.h **** 
+ 467:../../os/hal/osal/rt-nil/osal.h **** /**
+ 468:../../os/hal/osal/rt-nil/osal.h ****  * @name    Sleep macros using absolute time
+ 469:../../os/hal/osal/rt-nil/osal.h ****  * @{
+ 470:../../os/hal/osal/rt-nil/osal.h ****  */
+ 471:../../os/hal/osal/rt-nil/osal.h **** /**
+ 472:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Delays the invoking thread for the specified number of seconds.
+ 473:../../os/hal/osal/rt-nil/osal.h ****  * @note    The specified time is rounded up to a value allowed by the real
+ 474:../../os/hal/osal/rt-nil/osal.h ****  *          system tick clock.
+ 475:../../os/hal/osal/rt-nil/osal.h ****  * @note    The maximum specifiable value is implementation dependent.
+ 476:../../os/hal/osal/rt-nil/osal.h ****  *
+ 477:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] secs      time in seconds, must be different from zero
+ 478:../../os/hal/osal/rt-nil/osal.h ****  *
+ 479:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 480:../../os/hal/osal/rt-nil/osal.h ****  */
+ 481:../../os/hal/osal/rt-nil/osal.h **** #define osalThreadSleepSeconds(secs) osalThreadSleep(OSAL_S2I(secs))
+ 482:../../os/hal/osal/rt-nil/osal.h **** 
+ 483:../../os/hal/osal/rt-nil/osal.h **** /**
+ 484:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Delays the invoking thread for the specified number of
+ 485:../../os/hal/osal/rt-nil/osal.h ****  *          milliseconds.
+ 486:../../os/hal/osal/rt-nil/osal.h ****  * @note    The specified time is rounded up to a value allowed by the real
+ 487:../../os/hal/osal/rt-nil/osal.h ****  *          system tick clock.
+ 488:../../os/hal/osal/rt-nil/osal.h ****  * @note    The maximum specifiable value is implementation dependent.
+ 489:../../os/hal/osal/rt-nil/osal.h ****  *
+ 490:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] msecs     time in milliseconds, must be different from zero
+ 491:../../os/hal/osal/rt-nil/osal.h ****  *
+ 492:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 493:../../os/hal/osal/rt-nil/osal.h ****  */
+ 494:../../os/hal/osal/rt-nil/osal.h **** #define osalThreadSleepMilliseconds(msecs) osalThreadSleep(OSAL_MS2I(msecs))
+ 495:../../os/hal/osal/rt-nil/osal.h **** 
+ 496:../../os/hal/osal/rt-nil/osal.h **** /**
+ 497:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Delays the invoking thread for the specified number of
+ 498:../../os/hal/osal/rt-nil/osal.h ****  *          microseconds.
+ 499:../../os/hal/osal/rt-nil/osal.h ****  * @note    The specified time is rounded up to a value allowed by the real
+ 500:../../os/hal/osal/rt-nil/osal.h ****  *          system tick clock.
+ 501:../../os/hal/osal/rt-nil/osal.h ****  * @note    The maximum specifiable value is implementation dependent.
+ 502:../../os/hal/osal/rt-nil/osal.h ****  *
+ 503:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] usecs     time in microseconds, must be different from zero
+ 504:../../os/hal/osal/rt-nil/osal.h ****  *
+ 505:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 506:../../os/hal/osal/rt-nil/osal.h ****  */
+ 507:../../os/hal/osal/rt-nil/osal.h **** #define osalThreadSleepMicroseconds(usecs) osalThreadSleep(OSAL_US2I(usecs))
+ 508:../../os/hal/osal/rt-nil/osal.h **** /** @} */
+ 509:../../os/hal/osal/rt-nil/osal.h **** 
+ 510:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 511:../../os/hal/osal/rt-nil/osal.h **** /* External declarations.                                                    */
+ 512:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 513:../../os/hal/osal/rt-nil/osal.h **** 
+ 514:../../os/hal/osal/rt-nil/osal.h **** #ifdef __cplusplus
+ 515:../../os/hal/osal/rt-nil/osal.h **** extern "C" {
+ 516:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 517:../../os/hal/osal/rt-nil/osal.h **** 
+ 518:../../os/hal/osal/rt-nil/osal.h **** #ifdef __cplusplus
+ 519:../../os/hal/osal/rt-nil/osal.h **** }
+ 520:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 521:../../os/hal/osal/rt-nil/osal.h **** 
+ 522:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 523:../../os/hal/osal/rt-nil/osal.h **** /* Module inline functions.                                                  */
+ 524:../../os/hal/osal/rt-nil/osal.h **** /*===========================================================================*/
+ 525:../../os/hal/osal/rt-nil/osal.h **** 
+ 526:../../os/hal/osal/rt-nil/osal.h **** /**
+ 527:../../os/hal/osal/rt-nil/osal.h ****  * @brief   OSAL module initialization.
+ 528:../../os/hal/osal/rt-nil/osal.h ****  *
+ 529:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 530:../../os/hal/osal/rt-nil/osal.h ****  */
+ 531:../../os/hal/osal/rt-nil/osal.h **** static inline void osalInit(void) {
+ 532:../../os/hal/osal/rt-nil/osal.h **** 
+ 533:../../os/hal/osal/rt-nil/osal.h **** }
+ 534:../../os/hal/osal/rt-nil/osal.h **** 
+ 535:../../os/hal/osal/rt-nil/osal.h **** /**
+ 536:../../os/hal/osal/rt-nil/osal.h ****  * @brief   System halt with error message.
+ 537:../../os/hal/osal/rt-nil/osal.h ****  *
+ 538:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] reason    the halt message pointer
+ 539:../../os/hal/osal/rt-nil/osal.h ****  *
+ 540:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 541:../../os/hal/osal/rt-nil/osal.h ****  */
+ 542:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysHalt(const char *reason) {
+ 543:../../os/hal/osal/rt-nil/osal.h **** 
+ 544:../../os/hal/osal/rt-nil/osal.h ****   chSysHalt(reason);
+ 545:../../os/hal/osal/rt-nil/osal.h **** }
+ 546:../../os/hal/osal/rt-nil/osal.h **** 
+ 547:../../os/hal/osal/rt-nil/osal.h **** /**
+ 548:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Disables interrupts globally.
+ 549:../../os/hal/osal/rt-nil/osal.h ****  *
+ 550:../../os/hal/osal/rt-nil/osal.h ****  * @special
+ 551:../../os/hal/osal/rt-nil/osal.h ****  */
+ 552:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysDisable(void) {
+ 553:../../os/hal/osal/rt-nil/osal.h **** 
+ 554:../../os/hal/osal/rt-nil/osal.h ****   chSysDisable();
+ 555:../../os/hal/osal/rt-nil/osal.h **** }
+ 556:../../os/hal/osal/rt-nil/osal.h **** 
+ 557:../../os/hal/osal/rt-nil/osal.h **** /**
+ 558:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Enables interrupts globally.
+ 559:../../os/hal/osal/rt-nil/osal.h ****  *
+ 560:../../os/hal/osal/rt-nil/osal.h ****  * @special
+ 561:../../os/hal/osal/rt-nil/osal.h ****  */
+ 562:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysEnable(void) {
+ 563:../../os/hal/osal/rt-nil/osal.h **** 
+ 564:../../os/hal/osal/rt-nil/osal.h ****   chSysEnable();
+ 565:../../os/hal/osal/rt-nil/osal.h **** }
+ 566:../../os/hal/osal/rt-nil/osal.h **** 
+ 567:../../os/hal/osal/rt-nil/osal.h **** /**
+ 568:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Enters a critical zone from thread context.
+ 569:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function cannot be used for reentrant critical zones.
+ 570:../../os/hal/osal/rt-nil/osal.h ****  *
+ 571:../../os/hal/osal/rt-nil/osal.h ****  * @special
+ 572:../../os/hal/osal/rt-nil/osal.h ****  */
+ 573:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysLock(void) {
+ 574:../../os/hal/osal/rt-nil/osal.h **** 
+ 575:../../os/hal/osal/rt-nil/osal.h ****   chSysLock();
+ 576:../../os/hal/osal/rt-nil/osal.h **** }
+ 577:../../os/hal/osal/rt-nil/osal.h **** 
+ 578:../../os/hal/osal/rt-nil/osal.h **** /**
+ 579:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Leaves a critical zone from thread context.
+ 580:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function cannot be used for reentrant critical zones.
+ 581:../../os/hal/osal/rt-nil/osal.h ****  *
+ 582:../../os/hal/osal/rt-nil/osal.h ****  * @special
+ 583:../../os/hal/osal/rt-nil/osal.h ****  */
+ 584:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysUnlock(void) {
+ 585:../../os/hal/osal/rt-nil/osal.h **** 
+ 586:../../os/hal/osal/rt-nil/osal.h ****   chSysUnlock();
+ 587:../../os/hal/osal/rt-nil/osal.h **** }
+ 588:../../os/hal/osal/rt-nil/osal.h **** 
+ 589:../../os/hal/osal/rt-nil/osal.h **** /**
+ 590:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Enters a critical zone from ISR context.
+ 591:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function cannot be used for reentrant critical zones.
+ 592:../../os/hal/osal/rt-nil/osal.h ****  *
+ 593:../../os/hal/osal/rt-nil/osal.h ****  * @special
+ 594:../../os/hal/osal/rt-nil/osal.h ****  */
+ 595:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysLockFromISR(void) {
+ 596:../../os/hal/osal/rt-nil/osal.h **** 
+ 597:../../os/hal/osal/rt-nil/osal.h ****   chSysLockFromISR();
+ 598:../../os/hal/osal/rt-nil/osal.h **** }
+ 599:../../os/hal/osal/rt-nil/osal.h **** 
+ 600:../../os/hal/osal/rt-nil/osal.h **** /**
+ 601:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Leaves a critical zone from ISR context.
+ 602:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function cannot be used for reentrant critical zones.
+ 603:../../os/hal/osal/rt-nil/osal.h ****  *
+ 604:../../os/hal/osal/rt-nil/osal.h ****  * @special
+ 605:../../os/hal/osal/rt-nil/osal.h ****  */
+ 606:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysUnlockFromISR(void) {
+ 607:../../os/hal/osal/rt-nil/osal.h **** 
+ 608:../../os/hal/osal/rt-nil/osal.h ****   chSysUnlockFromISR();
+ 609:../../os/hal/osal/rt-nil/osal.h **** }
+ 610:../../os/hal/osal/rt-nil/osal.h **** 
+ 611:../../os/hal/osal/rt-nil/osal.h **** /**
+ 612:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Returns the execution status and enters a critical zone.
+ 613:../../os/hal/osal/rt-nil/osal.h ****  * @details This functions enters into a critical zone and can be called
+ 614:../../os/hal/osal/rt-nil/osal.h ****  *          from any context. Because its flexibility it is less efficient
+ 615:../../os/hal/osal/rt-nil/osal.h ****  *          than @p chSysLock() which is preferable when the calling context
+ 616:../../os/hal/osal/rt-nil/osal.h ****  *          is known.
+ 617:../../os/hal/osal/rt-nil/osal.h ****  * @post    The system is in a critical zone.
+ 618:../../os/hal/osal/rt-nil/osal.h ****  *
+ 619:../../os/hal/osal/rt-nil/osal.h ****  * @return              The previous system status, the encoding of this
+ 620:../../os/hal/osal/rt-nil/osal.h ****  *                      status word is architecture-dependent and opaque.
+ 621:../../os/hal/osal/rt-nil/osal.h ****  *
+ 622:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 623:../../os/hal/osal/rt-nil/osal.h ****  */
+ 624:../../os/hal/osal/rt-nil/osal.h **** static inline syssts_t osalSysGetStatusAndLockX(void) {
+ 625:../../os/hal/osal/rt-nil/osal.h **** 
+ 626:../../os/hal/osal/rt-nil/osal.h ****   return chSysGetStatusAndLockX();
+ 627:../../os/hal/osal/rt-nil/osal.h **** }
+ 628:../../os/hal/osal/rt-nil/osal.h **** 
+ 629:../../os/hal/osal/rt-nil/osal.h **** /**
+ 630:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Restores the specified execution status and leaves a critical zone.
+ 631:../../os/hal/osal/rt-nil/osal.h ****  * @note    A call to @p chSchRescheduleS() is automatically performed
+ 632:../../os/hal/osal/rt-nil/osal.h ****  *          if exiting the critical zone and if not in ISR context.
+ 633:../../os/hal/osal/rt-nil/osal.h ****  *
+ 634:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] sts       the system status to be restored.
+ 635:../../os/hal/osal/rt-nil/osal.h ****  *
+ 636:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 637:../../os/hal/osal/rt-nil/osal.h ****  */
+ 638:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysRestoreStatusX(syssts_t sts) {
+ 639:../../os/hal/osal/rt-nil/osal.h **** 
+ 640:../../os/hal/osal/rt-nil/osal.h ****   chSysRestoreStatusX(sts);
+ 641:../../os/hal/osal/rt-nil/osal.h **** }
+ 642:../../os/hal/osal/rt-nil/osal.h **** 
+ 643:../../os/hal/osal/rt-nil/osal.h **** /**
+ 644:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Polled delay.
+ 645:../../os/hal/osal/rt-nil/osal.h ****  * @note    The real delay is always few cycles in excess of the specified
+ 646:../../os/hal/osal/rt-nil/osal.h ****  *          value.
+ 647:../../os/hal/osal/rt-nil/osal.h ****  *
+ 648:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] cycles    number of cycles
+ 649:../../os/hal/osal/rt-nil/osal.h ****  *
+ 650:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 651:../../os/hal/osal/rt-nil/osal.h ****  */
+ 652:../../os/hal/osal/rt-nil/osal.h **** #if (PORT_SUPPORTS_RT == TRUE) || defined(__DOXYGEN__)
+ 653:../../os/hal/osal/rt-nil/osal.h **** static inline void osalSysPolledDelayX(rtcnt_t cycles) {
+ 654:../../os/hal/osal/rt-nil/osal.h **** 
+ 655:../../os/hal/osal/rt-nil/osal.h ****   chSysPolledDelayX(cycles);
+ 656:../../os/hal/osal/rt-nil/osal.h **** }
+ 657:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 658:../../os/hal/osal/rt-nil/osal.h **** 
+ 659:../../os/hal/osal/rt-nil/osal.h **** /**
+ 660:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Systick callback for the underlying OS.
+ 661:../../os/hal/osal/rt-nil/osal.h ****  * @note    This callback is only defined if the OSAL requires such a
+ 662:../../os/hal/osal/rt-nil/osal.h ****  *          service from the HAL.
+ 663:../../os/hal/osal/rt-nil/osal.h ****  */
+ 664:../../os/hal/osal/rt-nil/osal.h **** #if (OSAL_ST_MODE != OSAL_ST_MODE_NONE) || defined(__DOXYGEN__)
+ 665:../../os/hal/osal/rt-nil/osal.h **** static inline void osalOsTimerHandlerI(void) {
+ 666:../../os/hal/osal/rt-nil/osal.h **** 
+ 667:../../os/hal/osal/rt-nil/osal.h ****   chSysTimerHandlerI();
+ 668:../../os/hal/osal/rt-nil/osal.h **** }
+ 669:../../os/hal/osal/rt-nil/osal.h **** #endif
+ 670:../../os/hal/osal/rt-nil/osal.h **** 
+ 671:../../os/hal/osal/rt-nil/osal.h **** /**
+ 672:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Checks if a reschedule is required and performs it.
+ 673:../../os/hal/osal/rt-nil/osal.h ****  * @note    I-Class functions invoked from thread context must not reschedule
+ 674:../../os/hal/osal/rt-nil/osal.h ****  *          by themselves, an explicit reschedule using this function is
+ 675:../../os/hal/osal/rt-nil/osal.h ****  *          required in this scenario.
+ 676:../../os/hal/osal/rt-nil/osal.h ****  * @note    Not implemented in this simplified OSAL.
+ 677:../../os/hal/osal/rt-nil/osal.h ****  *
+ 678:../../os/hal/osal/rt-nil/osal.h ****  * @sclass
+ 679:../../os/hal/osal/rt-nil/osal.h ****  */
+ 680:../../os/hal/osal/rt-nil/osal.h **** static inline void osalOsRescheduleS(void) {
+ 681:../../os/hal/osal/rt-nil/osal.h **** 
+ 682:../../os/hal/osal/rt-nil/osal.h ****   chSchRescheduleS();
+ 683:../../os/hal/osal/rt-nil/osal.h **** }
+ 684:../../os/hal/osal/rt-nil/osal.h **** 
+ 685:../../os/hal/osal/rt-nil/osal.h **** /**
+ 686:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Current system time.
+ 687:../../os/hal/osal/rt-nil/osal.h ****  * @details Returns the number of system ticks since the @p osalInit()
+ 688:../../os/hal/osal/rt-nil/osal.h ****  *          invocation.
+ 689:../../os/hal/osal/rt-nil/osal.h ****  * @note    The counter can reach its maximum and then restart from zero.
+ 690:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function can be called from any context but its atomicity
+ 691:../../os/hal/osal/rt-nil/osal.h ****  *          is not guaranteed on architectures whose word size is less than
+ 692:../../os/hal/osal/rt-nil/osal.h ****  *          @p systime_t size.
+ 693:../../os/hal/osal/rt-nil/osal.h ****  *
+ 694:../../os/hal/osal/rt-nil/osal.h ****  * @return              The system time in ticks.
+ 695:../../os/hal/osal/rt-nil/osal.h ****  *
+ 696:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 697:../../os/hal/osal/rt-nil/osal.h ****  */
+ 698:../../os/hal/osal/rt-nil/osal.h **** static inline systime_t osalOsGetSystemTimeX(void) {
+ 699:../../os/hal/osal/rt-nil/osal.h **** 
+ 700:../../os/hal/osal/rt-nil/osal.h ****   return chVTGetSystemTimeX();
+ 701:../../os/hal/osal/rt-nil/osal.h **** }
+ 702:../../os/hal/osal/rt-nil/osal.h **** 
+ 703:../../os/hal/osal/rt-nil/osal.h **** /**
+ 704:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Adds an interval to a system time returning a system time.
+ 705:../../os/hal/osal/rt-nil/osal.h ****  *
+ 706:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] systime   base system time
+ 707:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] interval  interval to be added
+ 708:../../os/hal/osal/rt-nil/osal.h ****  * @return              The new system time.
+ 709:../../os/hal/osal/rt-nil/osal.h ****  *
+ 710:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 711:../../os/hal/osal/rt-nil/osal.h ****  */
+ 712:../../os/hal/osal/rt-nil/osal.h **** static inline systime_t osalTimeAddX(systime_t systime,
+ 713:../../os/hal/osal/rt-nil/osal.h ****                                      sysinterval_t interval) {
+ 714:../../os/hal/osal/rt-nil/osal.h **** 
+ 715:../../os/hal/osal/rt-nil/osal.h ****   return chTimeAddX(systime, interval);
+ 716:../../os/hal/osal/rt-nil/osal.h **** }
+ 717:../../os/hal/osal/rt-nil/osal.h **** 
+ 718:../../os/hal/osal/rt-nil/osal.h **** /**
+ 719:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Subtracts two system times returning an interval.
+ 720:../../os/hal/osal/rt-nil/osal.h ****  *
+ 721:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] start     first system time
+ 722:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] end       second system time
+ 723:../../os/hal/osal/rt-nil/osal.h ****  * @return              The interval representing the time difference.
+ 724:../../os/hal/osal/rt-nil/osal.h ****  *
+ 725:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 726:../../os/hal/osal/rt-nil/osal.h ****  */
+ 727:../../os/hal/osal/rt-nil/osal.h **** static inline sysinterval_t osalTimeDiffX(systime_t start, systime_t end) {
+ 728:../../os/hal/osal/rt-nil/osal.h **** 
+ 729:../../os/hal/osal/rt-nil/osal.h ****   return chTimeDiffX(start, end);
+ 730:../../os/hal/osal/rt-nil/osal.h **** }
+ 731:../../os/hal/osal/rt-nil/osal.h **** 
+ 732:../../os/hal/osal/rt-nil/osal.h **** /**
+ 733:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Checks if the specified time is within the specified time window.
+ 734:../../os/hal/osal/rt-nil/osal.h ****  * @note    When start==end then the function returns always true because the
+ 735:../../os/hal/osal/rt-nil/osal.h ****  *          whole time range is specified.
+ 736:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function can be called from any context.
+ 737:../../os/hal/osal/rt-nil/osal.h ****  *
+ 738:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] time      the time to be verified
+ 739:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] start     the start of the time window (inclusive)
+ 740:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] end       the end of the time window (non inclusive)
+ 741:../../os/hal/osal/rt-nil/osal.h ****  * @retval true         current time within the specified time window.
+ 742:../../os/hal/osal/rt-nil/osal.h ****  * @retval false        current time not within the specified time window.
+ 743:../../os/hal/osal/rt-nil/osal.h ****  *
+ 744:../../os/hal/osal/rt-nil/osal.h ****  * @xclass
+ 745:../../os/hal/osal/rt-nil/osal.h ****  */
+ 746:../../os/hal/osal/rt-nil/osal.h **** static inline bool osalTimeIsInRangeX(systime_t time,
+ 747:../../os/hal/osal/rt-nil/osal.h ****                                       systime_t start,
+ 748:../../os/hal/osal/rt-nil/osal.h ****                                       systime_t end) {
+ 749:../../os/hal/osal/rt-nil/osal.h **** 
+ 750:../../os/hal/osal/rt-nil/osal.h ****   return chTimeIsInRangeX(time, start, end);
+ 751:../../os/hal/osal/rt-nil/osal.h **** }
+ 752:../../os/hal/osal/rt-nil/osal.h **** 
+ 753:../../os/hal/osal/rt-nil/osal.h **** /**
+ 754:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Suspends the invoking thread for the specified time.
+ 755:../../os/hal/osal/rt-nil/osal.h ****  *
+ 756:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] delay     the delay in system ticks, the special values are
+ 757:../../os/hal/osal/rt-nil/osal.h ****  *                      handled as follow:
+ 758:../../os/hal/osal/rt-nil/osal.h ****  *                      - @a TIME_INFINITE is allowed but interpreted as a
+ 759:../../os/hal/osal/rt-nil/osal.h ****  *                        normal time specification.
+ 760:../../os/hal/osal/rt-nil/osal.h ****  *                      - @a TIME_IMMEDIATE this value is not allowed.
+ 761:../../os/hal/osal/rt-nil/osal.h ****  *                      .
+ 762:../../os/hal/osal/rt-nil/osal.h ****  *
+ 763:../../os/hal/osal/rt-nil/osal.h ****  * @sclass
+ 764:../../os/hal/osal/rt-nil/osal.h ****  */
+ 765:../../os/hal/osal/rt-nil/osal.h **** static inline void osalThreadSleepS(sysinterval_t delay) {
+ 766:../../os/hal/osal/rt-nil/osal.h **** 
+ 767:../../os/hal/osal/rt-nil/osal.h ****   chThdSleepS(delay);
+ 768:../../os/hal/osal/rt-nil/osal.h **** }
+ 769:../../os/hal/osal/rt-nil/osal.h **** 
+ 770:../../os/hal/osal/rt-nil/osal.h **** /**
+ 771:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Suspends the invoking thread for the specified time.
+ 772:../../os/hal/osal/rt-nil/osal.h ****  *
+ 773:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] delay     the delay in system ticks, the special values are
+ 774:../../os/hal/osal/rt-nil/osal.h ****  *                      handled as follow:
+ 775:../../os/hal/osal/rt-nil/osal.h ****  *                      - @a TIME_INFINITE is allowed but interpreted as a
+ 776:../../os/hal/osal/rt-nil/osal.h ****  *                        normal time specification.
+ 777:../../os/hal/osal/rt-nil/osal.h ****  *                      - @a TIME_IMMEDIATE this value is not allowed.
+ 778:../../os/hal/osal/rt-nil/osal.h ****  *                      .
+ 779:../../os/hal/osal/rt-nil/osal.h ****  *
+ 780:../../os/hal/osal/rt-nil/osal.h ****  * @api
+ 781:../../os/hal/osal/rt-nil/osal.h ****  */
+ 782:../../os/hal/osal/rt-nil/osal.h **** static inline void osalThreadSleep(sysinterval_t delay) {
+ 783:../../os/hal/osal/rt-nil/osal.h **** 
+ 784:../../os/hal/osal/rt-nil/osal.h ****   chThdSleep(delay);
+ 785:../../os/hal/osal/rt-nil/osal.h **** }
+ 786:../../os/hal/osal/rt-nil/osal.h **** 
+ 787:../../os/hal/osal/rt-nil/osal.h **** /**
+ 788:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Sends the current thread sleeping and sets a reference variable.
+ 789:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function must reschedule, it can only be called from thread
+ 790:../../os/hal/osal/rt-nil/osal.h ****  *          context.
+ 791:../../os/hal/osal/rt-nil/osal.h ****  *
+ 792:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] trp       a pointer to a thread reference object
+ 793:../../os/hal/osal/rt-nil/osal.h ****  * @return              The wake up message.
+ 794:../../os/hal/osal/rt-nil/osal.h ****  *
+ 795:../../os/hal/osal/rt-nil/osal.h ****  * @sclass
+ 796:../../os/hal/osal/rt-nil/osal.h ****  */
+ 797:../../os/hal/osal/rt-nil/osal.h **** static inline msg_t osalThreadSuspendS(thread_reference_t *trp) {
+ 798:../../os/hal/osal/rt-nil/osal.h **** 
+ 799:../../os/hal/osal/rt-nil/osal.h ****   return chThdSuspendTimeoutS(trp, TIME_INFINITE);
+ 800:../../os/hal/osal/rt-nil/osal.h **** }
+ 801:../../os/hal/osal/rt-nil/osal.h **** 
+ 802:../../os/hal/osal/rt-nil/osal.h **** /**
+ 803:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Sends the current thread sleeping and sets a reference variable.
+ 804:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function must reschedule, it can only be called from thread
+ 805:../../os/hal/osal/rt-nil/osal.h ****  *          context.
+ 806:../../os/hal/osal/rt-nil/osal.h ****  *
+ 807:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] trp       a pointer to a thread reference object
+ 808:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] timeout   the timeout in system ticks, the special values are
+ 809:../../os/hal/osal/rt-nil/osal.h ****  *                      handled as follow:
+ 810:../../os/hal/osal/rt-nil/osal.h ****  *                      - @a TIME_INFINITE the thread enters an infinite sleep
+ 811:../../os/hal/osal/rt-nil/osal.h ****  *                        state.
+ 812:../../os/hal/osal/rt-nil/osal.h ****  *                      - @a TIME_IMMEDIATE the thread is not enqueued and
+ 813:../../os/hal/osal/rt-nil/osal.h ****  *                        the function returns @p MSG_TIMEOUT as if a timeout
+ 814:../../os/hal/osal/rt-nil/osal.h ****  *                        occurred.
+ 815:../../os/hal/osal/rt-nil/osal.h ****  *                      .
+ 816:../../os/hal/osal/rt-nil/osal.h ****  * @return              The wake up message.
+ 817:../../os/hal/osal/rt-nil/osal.h ****  * @retval MSG_TIMEOUT  if the operation timed out.
+ 818:../../os/hal/osal/rt-nil/osal.h ****  *
+ 819:../../os/hal/osal/rt-nil/osal.h ****  * @sclass
+ 820:../../os/hal/osal/rt-nil/osal.h ****  */
+ 821:../../os/hal/osal/rt-nil/osal.h **** static inline msg_t osalThreadSuspendTimeoutS(thread_reference_t *trp,
+ 822:../../os/hal/osal/rt-nil/osal.h ****                                               sysinterval_t timeout) {
+ 823:../../os/hal/osal/rt-nil/osal.h **** 
+ 824:../../os/hal/osal/rt-nil/osal.h ****   return chThdSuspendTimeoutS(trp, timeout);
+ 825:../../os/hal/osal/rt-nil/osal.h **** }
+ 826:../../os/hal/osal/rt-nil/osal.h **** 
+ 827:../../os/hal/osal/rt-nil/osal.h **** /**
+ 828:../../os/hal/osal/rt-nil/osal.h ****  * @brief   Wakes up a thread waiting on a thread reference object.
+ 829:../../os/hal/osal/rt-nil/osal.h ****  * @note    This function must not reschedule because it can be called from
+ 830:../../os/hal/osal/rt-nil/osal.h ****  *          ISR context.
+ 831:../../os/hal/osal/rt-nil/osal.h ****  *
+ 832:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] trp       a pointer to a thread reference object
+ 833:../../os/hal/osal/rt-nil/osal.h ****  * @param[in] msg       the message code
+ 834:../../os/hal/osal/rt-nil/osal.h ****  *
+ 835:../../os/hal/osal/rt-nil/osal.h ****  * @iclass
+ 836:../../os/hal/osal/rt-nil/osal.h ****  */
+ 837:../../os/hal/osal/rt-nil/osal.h **** static inline void osalThreadResumeI(thread_reference_t *trp, msg_t msg) {
+ 838:../../os/hal/osal/rt-nil/osal.h **** 
+ 839:../../os/hal/osal/rt-nil/osal.h ****   chThdResumeI(trp, msg);
+  98               		.loc 2 839 0
+  99 0038 6EEF      		ldi r22,lo8(-2)
+ 100 003a 7FEF      		ldi r23,lo8(-1)
+ 101 003c 80E0      		ldi r24,lo8(I2CD1+12)
+ 102 003e 90E0      		ldi r25,hi8(I2CD1+12)
+ 103               	.LVL2:
+ 104 0040 0E94 0000 		call chThdResumeI
+ 105               	.LVL3:
+ 106               	.L14:
+ 107               	.LBE39:
+ 108               	.LBE38:
+ 125:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     _i2c_wakeup_error_isr(i2cp);
+ 126:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   }
+ 127:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 128:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   if (i2cp->errors != I2C_NO_ERROR) {
+ 109               		.loc 1 128 0
+ 110 0044 8091 0000 		lds r24,I2CD1+3
+ 111 0048 8111      		cpse r24,__zero_reg__
+ 112 004a 00C0      		rjmp .L19
+ 113               	.L21:
+ 129:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWCR = ((1 << TWSTO) | (1 << TWINT) | (1 << TWEN));
+ 130:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     _i2c_wakeup_error_isr(i2cp);
+ 131:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   }
+ 132:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 133:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   OSAL_IRQ_EPILOGUE();
+ 114               		.loc 1 133 0
+ 115 004c 1092 0000 		sts __avr_in_isr,__zero_reg__
+ 116 0050 0E94 0000 		call chSchIsPreemptionRequired
+ 117               	.LVL4:
+ 118 0054 8111      		cpse r24,__zero_reg__
+ 119               		.loc 1 133 0 is_stmt 0 discriminator 1
+ 120 0056 0E94 0000 		call chSchDoPreemption
+ 121               	.LVL5:
+ 122               	.L1:
+ 123               	/* epilogue start */
+ 134:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** }
+ 124               		.loc 1 134 0 is_stmt 1
+ 125 005a FF91      		pop r31
+ 126 005c EF91      		pop r30
+ 127 005e BF91      		pop r27
+ 128 0060 AF91      		pop r26
+ 129 0062 9F91      		pop r25
+ 130 0064 8F91      		pop r24
+ 131 0066 7F91      		pop r23
+ 132 0068 6F91      		pop r22
+ 133 006a 5F91      		pop r21
+ 134 006c 4F91      		pop r20
+ 135 006e 3F91      		pop r19
+ 136 0070 2F91      		pop r18
+ 137 0072 0F90      		pop r0
+ 138 0074 0FBE      		out __SREG__,r0
+ 139 0076 0F90      		pop r0
+ 140 0078 1F90      		pop r1
+ 141 007a 1895      		reti
+ 142               	.L42:
+  65:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_START:
+ 143               		.loc 1 65 0
+ 144 007c F0E0      		ldi r31,0
+ 145 007e E050      		subi r30,lo8(-(gs(.L4)))
+ 146 0080 F040      		sbci r31,hi8(-(gs(.L4)))
+ 147 0082 0C94 0000 		jmp __tablejump2__
+ 148               		.p2align	1
+ 149               	.L4:
+ 150 0086 0000      		.word gs(.L3)
+ 151 0088 0000      		.word gs(.L2)
+ 152 008a 0000      		.word gs(.L2)
+ 153 008c 0000      		.word gs(.L2)
+ 154 008e 0000      		.word gs(.L2)
+ 155 0090 0000      		.word gs(.L2)
+ 156 0092 0000      		.word gs(.L2)
+ 157 0094 0000      		.word gs(.L2)
+ 158 0096 0000      		.word gs(.L5)
+ 159 0098 0000      		.word gs(.L2)
+ 160 009a 0000      		.word gs(.L2)
+ 161 009c 0000      		.word gs(.L2)
+ 162 009e 0000      		.word gs(.L2)
+ 163 00a0 0000      		.word gs(.L2)
+ 164 00a2 0000      		.word gs(.L2)
+ 165 00a4 0000      		.word gs(.L2)
+ 166 00a6 0000      		.word gs(.L5)
+ 167 00a8 0000      		.word gs(.L2)
+ 168 00aa 0000      		.word gs(.L2)
+ 169 00ac 0000      		.word gs(.L2)
+ 170 00ae 0000      		.word gs(.L2)
+ 171 00b0 0000      		.word gs(.L2)
+ 172 00b2 0000      		.word gs(.L2)
+ 173 00b4 0000      		.word gs(.L2)
+ 174 00b6 0000      		.word gs(.L6)
+ 175 00b8 0000      		.word gs(.L2)
+ 176 00ba 0000      		.word gs(.L2)
+ 177 00bc 0000      		.word gs(.L2)
+ 178 00be 0000      		.word gs(.L2)
+ 179 00c0 0000      		.word gs(.L2)
+ 180 00c2 0000      		.word gs(.L2)
+ 181 00c4 0000      		.word gs(.L2)
+ 182 00c6 0000      		.word gs(.L7)
+ 183 00c8 0000      		.word gs(.L2)
+ 184 00ca 0000      		.word gs(.L2)
+ 185 00cc 0000      		.word gs(.L2)
+ 186 00ce 0000      		.word gs(.L2)
+ 187 00d0 0000      		.word gs(.L2)
+ 188 00d2 0000      		.word gs(.L2)
+ 189 00d4 0000      		.word gs(.L2)
+ 190 00d6 0000      		.word gs(.L6)
+ 191 00d8 0000      		.word gs(.L2)
+ 192 00da 0000      		.word gs(.L2)
+ 193 00dc 0000      		.word gs(.L2)
+ 194 00de 0000      		.word gs(.L2)
+ 195 00e0 0000      		.word gs(.L2)
+ 196 00e2 0000      		.word gs(.L2)
+ 197 00e4 0000      		.word gs(.L2)
+ 198 00e6 0000      		.word gs(.L7)
+ 199 00e8 0000      		.word gs(.L2)
+ 200 00ea 0000      		.word gs(.L2)
+ 201 00ec 0000      		.word gs(.L2)
+ 202 00ee 0000      		.word gs(.L2)
+ 203 00f0 0000      		.word gs(.L2)
+ 204 00f2 0000      		.word gs(.L2)
+ 205 00f4 0000      		.word gs(.L2)
+ 206 00f6 0000      		.word gs(.L8)
+ 207 00f8 0000      		.word gs(.L2)
+ 208 00fa 0000      		.word gs(.L2)
+ 209 00fc 0000      		.word gs(.L2)
+ 210 00fe 0000      		.word gs(.L2)
+ 211 0100 0000      		.word gs(.L2)
+ 212 0102 0000      		.word gs(.L2)
+ 213 0104 0000      		.word gs(.L2)
+ 214 0106 0000      		.word gs(.L40)
+ 215 0108 0000      		.word gs(.L2)
+ 216 010a 0000      		.word gs(.L2)
+ 217 010c 0000      		.word gs(.L2)
+ 218 010e 0000      		.word gs(.L2)
+ 219 0110 0000      		.word gs(.L2)
+ 220 0112 0000      		.word gs(.L2)
+ 221 0114 0000      		.word gs(.L2)
+ 222 0116 0000      		.word gs(.L7)
+ 223 0118 0000      		.word gs(.L2)
+ 224 011a 0000      		.word gs(.L2)
+ 225 011c 0000      		.word gs(.L2)
+ 226 011e 0000      		.word gs(.L2)
+ 227 0120 0000      		.word gs(.L2)
+ 228 0122 0000      		.word gs(.L2)
+ 229 0124 0000      		.word gs(.L2)
+ 230 0126 0000      		.word gs(.L10)
+ 231 0128 0000      		.word gs(.L2)
+ 232 012a 0000      		.word gs(.L2)
+ 233 012c 0000      		.word gs(.L2)
+ 234 012e 0000      		.word gs(.L2)
+ 235 0130 0000      		.word gs(.L2)
+ 236 0132 0000      		.word gs(.L2)
+ 237 0134 0000      		.word gs(.L2)
+ 238 0136 0000      		.word gs(.L11)
+ 239               	.L10:
+  99:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     if (i2cp->rxidx == (i2cp->rxbytes - 1)) {
+ 240               		.loc 1 99 0
+ 241 0138 E091 0000 		lds r30,I2CD1+21
+ 242 013c F091 0000 		lds r31,I2CD1+21+1
+ 243 0140 8091 0000 		lds r24,I2CD1+25
+ 244 0144 9091 0000 		lds r25,I2CD1+25+1
+ 245 0148 9C01      		movw r18,r24
+ 246 014a 2F5F      		subi r18,-1
+ 247 014c 3F4F      		sbci r19,-1
+ 248 014e 3093 0000 		sts I2CD1+25+1,r19
+ 249 0152 2093 0000 		sts I2CD1+25,r18
+ 250 0156 2091 BB00 		lds r18,187
+ 251 015a E80F      		add r30,r24
+ 252 015c F91F      		adc r31,r25
+ 253 015e 2083      		st Z,r18
+ 254               	.L40:
+ 100:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 255               		.loc 1 100 0
+ 256 0160 8091 0000 		lds r24,I2CD1+23
+ 257 0164 9091 0000 		lds r25,I2CD1+23+1
+ 258 0168 0197      		sbiw r24,1
+ 259 016a 2091 0000 		lds r18,I2CD1+25
+ 260 016e 3091 0000 		lds r19,I2CD1+25+1
+ 261 0172 2817      		cp r18,r24
+ 262 0174 3907      		cpc r19,r25
+ 263 0176 01F4      		brne .+2
+ 264 0178 00C0      		rjmp .L38
+ 104:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+ 265               		.loc 1 104 0
+ 266 017a 85EC      		ldi r24,lo8(-59)
+ 267 017c 8093 BC00 		sts 188,r24
+ 268 0180 00C0      		rjmp .L14
+ 269               	.L11:
+ 108:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWCR = ((1 << TWSTO) | (1 << TWINT) | (1 << TWEN));
+ 270               		.loc 1 108 0
+ 271 0182 8091 BB00 		lds r24,187
+ 272 0186 E091 0000 		lds r30,I2CD1+21
+ 273 018a F091 0000 		lds r31,I2CD1+21+1
+ 274 018e 2091 0000 		lds r18,I2CD1+25
+ 275 0192 3091 0000 		lds r19,I2CD1+25+1
+ 276 0196 E20F      		add r30,r18
+ 277 0198 F31F      		adc r31,r19
+ 278 019a 8083      		st Z,r24
+ 109:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     _i2c_wakeup_isr(i2cp);
+ 279               		.loc 1 109 0
+ 280 019c 84E9      		ldi r24,lo8(-108)
+ 281 019e 8093 BC00 		sts 188,r24
+ 282               	.LVL6:
+ 283               	.LBB40:
+ 284               	.LBB41:
+ 285               		.loc 2 839 0
+ 286 01a2 70E0      		ldi r23,0
+ 287 01a4 60E0      		ldi r22,0
+ 288 01a6 80E0      		ldi r24,lo8(I2CD1+12)
+ 289 01a8 90E0      		ldi r25,hi8(I2CD1+12)
+ 290               	.LVL7:
+ 291 01aa 0E94 0000 		call chThdResumeI
+ 292               	.LVL8:
+ 293               	.L7:
+ 294               	.LBE41:
+ 295               	.LBE40:
+ 114:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 296               		.loc 1 114 0
+ 297 01ae 8091 0000 		lds r24,I2CD1+3
+ 298 01b2 8460      		ori r24,lo8(4)
+ 299 01b4 8093 0000 		sts I2CD1+3,r24
+ 300               	.L19:
+ 129:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     _i2c_wakeup_error_isr(i2cp);
+ 301               		.loc 1 129 0
+ 302 01b8 84E9      		ldi r24,lo8(-108)
+ 303 01ba 8093 BC00 		sts 188,r24
+ 304               	.LVL9:
+ 305               	.LBB42:
+ 306               	.LBB43:
+ 307               		.loc 2 839 0
+ 308 01be 6EEF      		ldi r22,lo8(-2)
+ 309 01c0 7FEF      		ldi r23,lo8(-1)
+ 310 01c2 80E0      		ldi r24,lo8(I2CD1+12)
+ 311 01c4 90E0      		ldi r25,hi8(I2CD1+12)
+ 312               	.LVL10:
+ 313 01c6 0E94 0000 		call chThdResumeI
+ 314               	.LVL11:
+ 315 01ca 00C0      		rjmp .L21
+ 316               	.LVL12:
+ 317               	.L5:
+ 318               	.LBE43:
+ 319               	.LBE42:
+  68:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     if ((i2cp->txbuf == NULL) || (i2cp->txbytes == 0) || (i2cp->txidx == i2cp->txbytes)) {
+ 320               		.loc 1 68 0
+ 321 01cc 8091 0000 		lds r24,I2CD1+14
+ 322 01d0 880F      		lsl r24
+ 323 01d2 8093 BB00 		sts 187,r24
+  69:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWDR |= 0x01;
+ 324               		.loc 1 69 0
+ 325 01d6 8091 0000 		lds r24,I2CD1+15
+ 326 01da 9091 0000 		lds r25,I2CD1+15+1
+ 327 01de 892B      		or r24,r25
+ 328 01e0 01F0      		breq .L12
+  69:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWDR |= 0x01;
+ 329               		.loc 1 69 0 is_stmt 0 discriminator 1
+ 330 01e2 8091 0000 		lds r24,I2CD1+17
+ 331 01e6 9091 0000 		lds r25,I2CD1+17+1
+ 332 01ea 0097      		sbiw r24,0
+ 333 01ec 01F0      		breq .+2
+ 334 01ee 00C0      		rjmp .L43
+ 335               	.L12:
+  70:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+ 336               		.loc 1 70 0 is_stmt 1
+ 337 01f0 8091 BB00 		lds r24,187
+ 338 01f4 8160      		ori r24,lo8(1)
+ 339 01f6 8093 BB00 		sts 187,r24
+ 340               	.L38:
+ 101:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+ 341               		.loc 1 101 0
+ 342 01fa 85E8      		ldi r24,lo8(-123)
+ 343 01fc 8093 BC00 		sts 188,r24
+ 344 0200 00C0      		rjmp .L14
+ 345               	.L6:
+  76:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWDR = i2cp->txbuf[i2cp->txidx++];
+ 346               		.loc 1 76 0
+ 347 0202 8091 0000 		lds r24,I2CD1+19
+ 348 0206 9091 0000 		lds r25,I2CD1+19+1
+ 349 020a 2091 0000 		lds r18,I2CD1+17
+ 350 020e 3091 0000 		lds r19,I2CD1+17+1
+ 351 0212 8217      		cp r24,r18
+ 352 0214 9307      		cpc r25,r19
+ 353 0216 00F4      		brsh .L15
+  77:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWCR = ((1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 354               		.loc 1 77 0
+ 355 0218 2091 0000 		lds r18,I2CD1+15
+ 356 021c 3091 0000 		lds r19,I2CD1+15+1
+ 357 0220 AC01      		movw r20,r24
+ 358 0222 4F5F      		subi r20,-1
+ 359 0224 5F4F      		sbci r21,-1
+ 360 0226 5093 0000 		sts I2CD1+19+1,r21
+ 361 022a 4093 0000 		sts I2CD1+19,r20
+ 362 022e 820F      		add r24,r18
+ 363 0230 931F      		adc r25,r19
+ 364 0232 FC01      		movw r30,r24
+ 365 0234 8081      		ld r24,Z
+ 366 0236 8093 BB00 		sts 187,r24
+  78:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     }
+ 367               		.loc 1 78 0
+ 368 023a 85E8      		ldi r24,lo8(-123)
+ 369 023c 8093 BC00 		sts 188,r24
+ 370 0240 00C0      		rjmp .L14
+ 371               	.L3:
+ 120:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 372               		.loc 1 120 0
+ 373 0242 8091 0000 		lds r24,I2CD1+3
+ 374 0246 8160      		ori r24,lo8(1)
+ 375 0248 8093 0000 		sts I2CD1+3,r24
+ 121:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   default:
+ 376               		.loc 1 121 0
+ 377 024c 00C0      		rjmp .L19
+ 378               	.L8:
+ 117:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     break;
+ 379               		.loc 1 117 0
+ 380 024e 8091 0000 		lds r24,I2CD1+3
+ 381 0252 8260      		ori r24,lo8(2)
+ 382 0254 8093 0000 		sts I2CD1+3,r24
+ 118:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   case TWI_BUS_ERROR:
+ 383               		.loc 1 118 0
+ 384 0258 00C0      		rjmp .L19
+ 385               	.L15:
+  81:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         TWCR = ((1 << TWSTA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 386               		.loc 1 81 0
+ 387 025a 8091 0000 		lds r24,I2CD1+21
+ 388 025e 9091 0000 		lds r25,I2CD1+21+1
+ 389 0262 892B      		or r24,r25
+ 390 0264 01F0      		breq .L16
+  81:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         TWCR = ((1 << TWSTA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 391               		.loc 1 81 0 is_stmt 0 discriminator 1
+ 392 0266 8091 0000 		lds r24,I2CD1+23
+ 393 026a 9091 0000 		lds r25,I2CD1+23+1
+ 394 026e 892B      		or r24,r25
+ 395 0270 01F0      		breq .L16
+  82:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       }
+ 396               		.loc 1 82 0 is_stmt 1
+ 397 0272 85EA      		ldi r24,lo8(-91)
+ 398 0274 8093 BC00 		sts 188,r24
+ 399 0278 00C0      		rjmp .L14
+ 400               	.L43:
+  69:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****       TWDR |= 0x01;
+ 401               		.loc 1 69 0 discriminator 2
+ 402 027a 2091 0000 		lds r18,I2CD1+19
+ 403 027e 3091 0000 		lds r19,I2CD1+19+1
+ 404 0282 8217      		cp r24,r18
+ 405 0284 9307      		cpc r25,r19
+ 406 0286 01F0      		breq .+2
+ 407 0288 00C0      		rjmp .L38
+ 408 028a 00C0      		rjmp .L12
+ 409               	.L16:
+  85:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****         _i2c_wakeup_isr(i2cp);
+ 410               		.loc 1 85 0
+ 411 028c 84E9      		ldi r24,lo8(-108)
+ 412 028e 8093 BC00 		sts 188,r24
+ 413               	.LVL13:
+ 414               	.LBB44:
+ 415               	.LBB45:
+ 416               		.loc 2 839 0
+ 417 0292 70E0      		ldi r23,0
+ 418 0294 60E0      		ldi r22,0
+ 419 0296 80E0      		ldi r24,lo8(I2CD1+12)
+ 420 0298 90E0      		ldi r25,hi8(I2CD1+12)
+ 421               	.LVL14:
+ 422 029a 0E94 0000 		call chThdResumeI
+ 423               	.LVL15:
+ 424 029e 00C0      		rjmp .L14
+ 425               	.LBE45:
+ 426               	.LBE44:
+ 427               		.cfi_endproc
+ 428               	.LFE238:
+ 430               		.section	.text.i2c_lld_init,"ax",@progbits
+ 431               	.global	i2c_lld_init
+ 433               	i2c_lld_init:
+ 434               	.LFB239:
+ 135:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** #endif /* AVR_I2C_USE_I2C1 */
+ 136:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 137:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+ 138:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /* Driver exported functions.                                               */
+ 139:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /*==========================================================================*/
+ 140:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 141:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+ 142:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   Low level I2C driver initialization.
+ 143:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 144:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @notapi
+ 145:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+ 146:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** void i2c_lld_init(void) {
+ 435               		.loc 1 146 0
+ 436               		.cfi_startproc
+ 437               	/* prologue: function */
+ 438               	/* frame size = 0 */
+ 439               	/* stack size = 0 */
+ 440               	.L__stack_usage = 0
+ 147:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 148:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cObjectInit(&I2CD1);
+ 441               		.loc 1 148 0
+ 442 0000 80E0      		ldi r24,lo8(I2CD1)
+ 443 0002 90E0      		ldi r25,hi8(I2CD1)
+ 444 0004 0E94 0000 		call i2cObjectInit
+ 445               	.LVL16:
+ 149:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   I2CD1.thread = NULL;
+ 446               		.loc 1 149 0
+ 447 0008 1092 0000 		sts I2CD1+12+1,__zero_reg__
+ 448 000c 1092 0000 		sts I2CD1+12,__zero_reg__
+ 449               	/* epilogue start */
+ 150:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** }
+ 450               		.loc 1 150 0
+ 451 0010 0895      		ret
+ 452               		.cfi_endproc
+ 453               	.LFE239:
+ 455               		.section	.text.i2c_lld_start,"ax",@progbits
+ 456               	.global	i2c_lld_start
+ 458               	i2c_lld_start:
+ 459               	.LFB240:
+ 151:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 152:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+ 153:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   Configures and activates the I2C peripheral.
+ 154:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 155:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in] i2cp  pointer to the @p I2CDriver object
+ 156:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 157:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @notapi
+ 158:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+ 159:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** void i2c_lld_start(I2CDriver *i2cp) {
+ 460               		.loc 1 159 0
+ 461               		.cfi_startproc
+ 462               	.LVL17:
+ 463               	/* prologue: function */
+ 464               	/* frame size = 0 */
+ 465               	/* stack size = 0 */
+ 466               	.L__stack_usage = 0
+ 160:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 161:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   uint32_t clock_speed = 100000;
+ 162:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 163:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   /* TODO: Test TWI without external pull-ups (use internal). */
+ 164:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 165:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   /* Configure prescaler to 1. */
+ 166:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   TWSR &= 0xF8;
+ 467               		.loc 1 166 0
+ 468 0000 2091 B900 		lds r18,185
+ 469 0004 287F      		andi r18,lo8(-8)
+ 470 0006 2093 B900 		sts 185,r18
+ 167:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 168:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   if (i2cp->config != NULL)
+ 471               		.loc 1 168 0
+ 472 000a DC01      		movw r26,r24
+ 473 000c 1196      		adiw r26,1
+ 474 000e ED91      		ld r30,X+
+ 475 0010 FC91      		ld r31,X
+ 476 0012 28E4      		ldi r18,lo8(72)
+ 477 0014 3097      		sbiw r30,0
+ 478 0016 01F0      		breq .L46
+ 479               	.LVL18:
+ 480 0018 2081      		ld r18,Z
+ 481 001a 3181      		ldd r19,Z+1
+ 482 001c 4281      		ldd r20,Z+2
+ 483 001e 5381      		ldd r21,Z+3
+ 484 0020 60E0      		ldi r22,0
+ 485 0022 74E2      		ldi r23,lo8(36)
+ 486 0024 84EF      		ldi r24,lo8(-12)
+ 487 0026 90E0      		ldi r25,0
+ 488 0028 0E94 0000 		call __udivmodsi4
+ 489               	.LVL19:
+ 490 002c 2051      		subi r18,16
+ 491 002e 3109      		sbc r19,__zero_reg__
+ 492 0030 4109      		sbc r20,__zero_reg__
+ 493 0032 5109      		sbc r21,__zero_reg__
+ 494 0034 5695      		lsr r21
+ 495 0036 4795      		ror r20
+ 496 0038 3795      		ror r19
+ 497 003a 2795      		ror r18
+ 498               	.LVL20:
+ 499               	.L46:
+ 169:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     clock_speed = i2cp->config->clock_speed;
+ 170:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 171:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   /* Configure baudrate. */
+ 172:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   TWBR = ((F_CPU / clock_speed) - 16) / 2;
+ 500               		.loc 1 172 0
+ 501 003c 2093 B800 		sts 184,r18
+ 502               	/* epilogue start */
+ 173:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** }
+ 503               		.loc 1 173 0
+ 504 0040 0895      		ret
+ 505               		.cfi_endproc
+ 506               	.LFE240:
+ 508               		.section	.text.i2c_lld_stop,"ax",@progbits
+ 509               	.global	i2c_lld_stop
+ 511               	i2c_lld_stop:
+ 512               	.LFB241:
+ 174:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 175:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+ 176:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   Deactivates the I2C peripheral.
+ 177:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 178:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in] i2cp  pointer to the @p I2CDriver object
+ 179:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 180:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @notapi
+ 181:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+ 182:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** void i2c_lld_stop(I2CDriver *i2cp) {
+ 513               		.loc 1 182 0
+ 514               		.cfi_startproc
+ 515               	.LVL21:
+ 516               	/* prologue: function */
+ 517               	/* frame size = 0 */
+ 518               	/* stack size = 0 */
+ 519               	.L__stack_usage = 0
+ 183:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 184:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   if (i2cp->state != I2C_STOP) {
+ 520               		.loc 1 184 0
+ 521 0000 FC01      		movw r30,r24
+ 522 0002 8081      		ld r24,Z
+ 523               	.LVL22:
+ 524 0004 8130      		cpi r24,lo8(1)
+ 525 0006 01F0      		breq .L48
+ 185:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     /* Disable TWI subsystem and stop all operations. */
+ 186:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****     TWCR &= ~(1 << TWEN);
+ 526               		.loc 1 186 0
+ 527 0008 8091 BC00 		lds r24,188
+ 528 000c 8B7F      		andi r24,lo8(-5)
+ 529 000e 8093 BC00 		sts 188,r24
+ 530               	.L48:
+ 531               	/* epilogue start */
+ 187:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   }
+ 188:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** }
+ 532               		.loc 1 188 0
+ 533 0012 0895      		ret
+ 534               		.cfi_endproc
+ 535               	.LFE241:
+ 537               		.section	.text.i2c_lld_master_receive_timeout,"ax",@progbits
+ 538               	.global	i2c_lld_master_receive_timeout
+ 540               	i2c_lld_master_receive_timeout:
+ 541               	.LFB242:
+ 189:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 190:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+ 191:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   Receives data via the I2C bus as master.
+ 192:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 193:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   i2cp      pointer to the @p I2CDriver object
+ 194:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   addr      slave device address
+ 195:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[out]  rxbuf     pointer to the receive buffer
+ 196:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   rxbytes   number of bytes to be received
+ 197:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   timeout   the number of ticks before the operation timeouts,
+ 198:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                        the following special values are allowed:
+ 199:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                        - @a TIME_INFINITE no timeout
+ 200:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 201:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @return              The operation status.
+ 202:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @retval MSG_OK       if the function succeeded.
+ 203:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ 204:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                      be retrieved using @p i2cGetErrors().
+ 205:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @retval MSG_TIMEOUT  if a timeout occurred before operation end. <b>After a
+ 206:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                      timeout the driver must be stopped and restarted
+ 207:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                      because the bus is in an uncertain state</b>.
+ 208:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 209:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @notapi
+ 210:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+ 211:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** msg_t i2c_lld_master_receive_timeout(I2CDriver *i2cp, i2caddr_t addr,
+ 212:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****                                      uint8_t *rxbuf, size_t rxbytes,
+ 213:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****                                      systime_t timeout) {
+ 542               		.loc 1 213 0
+ 543               		.cfi_startproc
+ 544               	.LVL23:
+ 545               	/* prologue: function */
+ 546               	/* frame size = 0 */
+ 547               	/* stack size = 0 */
+ 548               	.L__stack_usage = 0
+ 549 0000 FC01      		movw r30,r24
+ 214:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 215:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->errors = I2C_NO_ERROR;
+ 550               		.loc 1 215 0
+ 551 0002 1382      		std Z+3,__zero_reg__
+ 216:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->addr = addr;
+ 552               		.loc 1 216 0
+ 553 0004 6687      		std Z+14,r22
+ 217:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->txbuf = NULL;
+ 554               		.loc 1 217 0
+ 555 0006 108A      		std Z+16,__zero_reg__
+ 556 0008 1786      		std Z+15,__zero_reg__
+ 218:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->txbytes = 0;
+ 557               		.loc 1 218 0
+ 558 000a 128A      		std Z+18,__zero_reg__
+ 559 000c 118A      		std Z+17,__zero_reg__
+ 219:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->txidx = 0;
+ 560               		.loc 1 219 0
+ 561 000e 148A      		std Z+20,__zero_reg__
+ 562 0010 138A      		std Z+19,__zero_reg__
+ 220:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->rxbuf = rxbuf;
+ 563               		.loc 1 220 0
+ 564 0012 568B      		std Z+22,r21
+ 565 0014 458B      		std Z+21,r20
+ 221:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->rxbytes = rxbytes;
+ 566               		.loc 1 221 0
+ 567 0016 308F      		std Z+24,r19
+ 568 0018 278B      		std Z+23,r18
+ 222:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->rxidx = 0;
+ 569               		.loc 1 222 0
+ 570 001a 128E      		std Z+26,__zero_reg__
+ 571 001c 118E      		std Z+25,__zero_reg__
+ 223:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 224:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   /* Send START. */
+ 225:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   TWCR = ((1 << TWSTA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 572               		.loc 1 225 0
+ 573 001e 85EA      		ldi r24,lo8(-91)
+ 574               	.LVL24:
+ 575 0020 8093 BC00 		sts 188,r24
+ 576               	.LVL25:
+ 577               	.LBB46:
+ 578               	.LBB47:
+ 824:../../os/hal/osal/rt-nil/osal.h **** }
+ 579               		.loc 2 824 0
+ 580 0024 6FEF      		ldi r22,lo8(-1)
+ 581 0026 7FEF      		ldi r23,lo8(-1)
+ 582               	.LVL26:
+ 583 0028 CF01      		movw r24,r30
+ 584 002a 0C96      		adiw r24,12
+ 585               	.LVL27:
+ 586 002c 0C94 0000 		jmp chThdSuspendTimeoutS
+ 587               	.LVL28:
+ 588               	.LBE47:
+ 589               	.LBE46:
+ 590               		.cfi_endproc
+ 591               	.LFE242:
+ 593               		.section	.text.i2c_lld_master_transmit_timeout,"ax",@progbits
+ 594               	.global	i2c_lld_master_transmit_timeout
+ 596               	i2c_lld_master_transmit_timeout:
+ 597               	.LFB243:
+ 226:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 227:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   return osalThreadSuspendTimeoutS(&i2cp->thread, TIME_INFINITE);
+ 228:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** }
+ 229:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 230:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** /**
+ 231:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @brief   Transmits data via the I2C bus as master.
+ 232:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 233:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   i2cp      pointer to the @p I2CDriver object
+ 234:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   addr      slave device address
+ 235:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   txbuf     pointer to the transmit buffer
+ 236:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   txbytes   number of bytes to be transmitted
+ 237:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[out]  rxbuf     pointer to the receive buffer
+ 238:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   rxbytes   number of bytes to be received
+ 239:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @param[in]   timeout   the number of ticks before the operation timeouts,
+ 240:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                        the following special values are allowed:
+ 241:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                        - @a TIME_INFINITE no timeout
+ 242:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 243:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @return              The operation status.
+ 244:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @retval MSG_OK       if the function succeeded.
+ 245:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @retval MSG_RESET    if one or more I2C errors occurred, the errors can
+ 246:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                      be retrieved using @p i2cGetErrors().
+ 247:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @retval MSG_TIMEOUT  if a timeout occurred before operation end. <b>After a
+ 248:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                      timeout the driver must be stopped and restarted
+ 249:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *                      because the bus is in an uncertain state</b>.
+ 250:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  *
+ 251:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  * @notapi
+ 252:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****  */
+ 253:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** msg_t i2c_lld_master_transmit_timeout(I2CDriver *i2cp, i2caddr_t addr,
+ 254:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****                                       const uint8_t *txbuf, size_t txbytes,
+ 255:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****                                       uint8_t *rxbuf, size_t rxbytes,
+ 256:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****                                       systime_t timeout) {
+ 598               		.loc 1 256 0
+ 599               		.cfi_startproc
+ 600               	.LVL29:
+ 601 0000 EF92      		push r14
+ 602               	.LCFI14:
+ 603               		.cfi_def_cfa_offset 3
+ 604               		.cfi_offset 14, -2
+ 605 0002 FF92      		push r15
+ 606               	.LCFI15:
+ 607               		.cfi_def_cfa_offset 4
+ 608               		.cfi_offset 15, -3
+ 609 0004 0F93      		push r16
+ 610               	.LCFI16:
+ 611               		.cfi_def_cfa_offset 5
+ 612               		.cfi_offset 16, -4
+ 613 0006 1F93      		push r17
+ 614               	.LCFI17:
+ 615               		.cfi_def_cfa_offset 6
+ 616               		.cfi_offset 17, -5
+ 617               	/* prologue: function */
+ 618               	/* frame size = 0 */
+ 619               	/* stack size = 4 */
+ 620               	.L__stack_usage = 4
+ 621 0008 FC01      		movw r30,r24
+ 257:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 258:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->errors = I2C_NO_ERROR;
+ 622               		.loc 1 258 0
+ 623 000a 1382      		std Z+3,__zero_reg__
+ 259:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->addr = addr;
+ 624               		.loc 1 259 0
+ 625 000c 6687      		std Z+14,r22
+ 260:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->txbuf = txbuf;
+ 626               		.loc 1 260 0
+ 627 000e 508B      		std Z+16,r21
+ 628 0010 4787      		std Z+15,r20
+ 261:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->txbytes = txbytes;
+ 629               		.loc 1 261 0
+ 630 0012 328B      		std Z+18,r19
+ 631 0014 218B      		std Z+17,r18
+ 262:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->txidx = 0;
+ 632               		.loc 1 262 0
+ 633 0016 148A      		std Z+20,__zero_reg__
+ 634 0018 138A      		std Z+19,__zero_reg__
+ 263:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->rxbuf = rxbuf;
+ 635               		.loc 1 263 0
+ 636 001a 168B      		std Z+22,r17
+ 637 001c 058B      		std Z+21,r16
+ 264:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->rxbytes = rxbytes;
+ 638               		.loc 1 264 0
+ 639 001e F08E      		std Z+24,r15
+ 640 0020 E78A      		std Z+23,r14
+ 265:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   i2cp->rxidx = 0;
+ 641               		.loc 1 265 0
+ 642 0022 128E      		std Z+26,__zero_reg__
+ 643 0024 118E      		std Z+25,__zero_reg__
+ 266:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 267:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   TWCR = ((1 << TWSTA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE));
+ 644               		.loc 1 267 0
+ 645 0026 85EA      		ldi r24,lo8(-91)
+ 646               	.LVL30:
+ 647 0028 8093 BC00 		sts 188,r24
+ 648               	.LVL31:
+ 649               	.LBB48:
+ 650               	.LBB49:
+ 824:../../os/hal/osal/rt-nil/osal.h **** }
+ 651               		.loc 2 824 0
+ 652 002c 6FEF      		ldi r22,lo8(-1)
+ 653 002e 7FEF      		ldi r23,lo8(-1)
+ 654               	.LVL32:
+ 655 0030 CF01      		movw r24,r30
+ 656 0032 0C96      		adiw r24,12
+ 657               	.LVL33:
+ 658               	/* epilogue start */
+ 659               	.LBE49:
+ 660               	.LBE48:
+ 268:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** 
+ 269:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c ****   return osalThreadSuspendTimeoutS(&i2cp->thread, TIME_INFINITE);
+ 270:../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.c **** }
+ 661               		.loc 1 270 0
+ 662 0034 1F91      		pop r17
+ 663 0036 0F91      		pop r16
+ 664               	.LVL34:
+ 665 0038 FF90      		pop r15
+ 666 003a EF90      		pop r14
+ 667               	.LVL35:
+ 668               	.LBB51:
+ 669               	.LBB50:
+ 824:../../os/hal/osal/rt-nil/osal.h **** }
+ 670               		.loc 2 824 0
+ 671 003c 0C94 0000 		jmp chThdSuspendTimeoutS
+ 672               	.LVL36:
+ 673               	.LBE50:
+ 674               	.LBE51:
+ 675               		.cfi_endproc
+ 676               	.LFE243:
+ 678               		.comm	I2CD1,27,1
+ 679               		.text
+ 680               	.Letext0:
+ 681               		.file 3 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 682               		.file 4 "/usr/lib/avr/include/stdint.h"
+ 683               		.file 5 "../../os/common/ports/AVR/compilers/GCC/chtypes.h"
+ 684               		.file 6 "../../os/rt/include/chearly.h"
+ 685               		.file 7 "../../os/rt/include/chobjects.h"
+ 686               		.file 8 "../../os/rt/include/chrfcu.h"
+ 687               		.file 9 "../../os/rt/include/chdebug.h"
+ 688               		.file 10 "../../os/rt/include/chtime.h"
+ 689               		.file 11 "../../os/rt/include/chlists.h"
+ 690               		.file 12 "../../os/common/ports/AVR/chcore.h"
+ 691               		.file 13 "../../os/rt/include/chsem.h"
+ 692               		.file 14 "../../os/rt/include/chmtx.h"
+ 693               		.file 15 "../../os/rt/include/chsys.h"
+ 694               		.file 16 "../../os/rt/include/chregistry.h"
+ 695               		.file 17 "../../os/rt/include/chevents.h"
+ 696               		.file 18 "../../os/oslib/include/chmemcore.h"
+ 697               		.file 19 "../../os/hal/include/hal_queues.h"
+ 698               		.file 20 "../../os/hal/ports/AVR/MEGA/LLD/GPIOv1/hal_pal_lld.h"
+ 699               		.file 21 "../../os/hal/include/hal_gpt.h"
+ 700               		.file 22 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.h"
+ 701               		.file 23 "../../os/hal/include/hal_i2c.h"
+ 702               		.file 24 "../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.h"
+ 703               		.file 25 "../../os/hal/include/hal_serial.h"
+ 704               		.file 26 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
+ 705               		.file 27 "../../os/rt/include/chthreads.h"
+ 706               		.file 28 "../../os/rt/include/chschd.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 hal_i2c_lld.c
+     /tmp/ccX9xgwi.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/ccX9xgwi.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/ccX9xgwi.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/ccX9xgwi.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/ccX9xgwi.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/ccX9xgwi.s:13     .text.__vector_24:0000000000000000 __vector_24
+                            *COM*:000000000000001b I2CD1
+     /tmp/ccX9xgwi.s:433    .text.i2c_lld_init:0000000000000000 i2c_lld_init
+     /tmp/ccX9xgwi.s:458    .text.i2c_lld_start:0000000000000000 i2c_lld_start
+     /tmp/ccX9xgwi.s:511    .text.i2c_lld_stop:0000000000000000 i2c_lld_stop
+     /tmp/ccX9xgwi.s:540    .text.i2c_lld_master_receive_timeout:0000000000000000 i2c_lld_master_receive_timeout
+     /tmp/ccX9xgwi.s:596    .text.i2c_lld_master_transmit_timeout:0000000000000000 i2c_lld_master_transmit_timeout
+
+UNDEFINED SYMBOLS
+__avr_in_isr
+chThdResumeI
+chSchIsPreemptionRequired
+chSchDoPreemption
+__tablejump2__
+i2cObjectInit
+__udivmodsi4
+chThdSuspendTimeoutS
+__do_clear_bss

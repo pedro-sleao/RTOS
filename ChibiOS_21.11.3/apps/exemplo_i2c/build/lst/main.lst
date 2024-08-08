@@ -1,0 +1,320 @@
+   1               		.file	"main.c"
+   2               	__SP_H__ = 0x3e
+   3               	__SP_L__ = 0x3d
+   4               	__SREG__ = 0x3f
+   5               	__tmp_reg__ = 0
+   6               	__zero_reg__ = 1
+   7               		.text
+   8               	.Ltext0:
+   9               		.cfi_sections	.debug_frame
+  10               		.section	.text.gpt_cb,"ax",@progbits
+  11               	.global	gpt_cb
+  13               	gpt_cb:
+  14               	.LFB238:
+  15               		.file 1 "main.c"
+   1:main.c        **** /*
+   2:main.c        ****     ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
+   3:main.c        **** 
+   4:main.c        ****     Licensed under the Apache License, Version 2.0 (the "License");
+   5:main.c        ****     you may not use this file except in compliance with the License.
+   6:main.c        ****     You may obtain a copy of the License at
+   7:main.c        **** 
+   8:main.c        ****         http://www.apache.org/licenses/LICENSE-2.0
+   9:main.c        **** 
+  10:main.c        ****     Unless required by applicable law or agreed to in writing, software
+  11:main.c        ****     distributed under the License is distributed on an "AS IS" BASIS,
+  12:main.c        ****     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  13:main.c        ****     See the License for the specific language governing permissions and
+  14:main.c        ****     limitations under the License.
+  15:main.c        **** */
+  16:main.c        **** 
+  17:main.c        **** #include "ch.h"
+  18:main.c        **** #include "hal.h"
+  19:main.c        **** #include "chprintf.h"
+  20:main.c        **** 
+  21:main.c        **** #define PEER_ADDRESS 0x90
+  22:main.c        **** 
+  23:main.c        **** 
+  24:main.c        **** volatile uint8_t flag;
+  25:main.c        **** void gpt_cb(GPTDriver* gptd) {
+  16               		.loc 1 25 0
+  17               		.cfi_startproc
+  18               	.LVL0:
+  19               	/* prologue: function */
+  20               	/* frame size = 0 */
+  21               	/* stack size = 0 */
+  22               	.L__stack_usage = 0
+  26:main.c        ****   (void) gptd;
+  27:main.c        ****   flag = 1;
+  23               		.loc 1 27 0
+  24 0000 81E0      		ldi r24,lo8(1)
+  25               	.LVL1:
+  26 0002 8093 0000 		sts flag,r24
+  27               	/* epilogue start */
+  28:main.c        **** }
+  28               		.loc 1 28 0
+  29 0006 0895      		ret
+  30               		.cfi_endproc
+  31               	.LFE238:
+  33               		.section	.rodata.main.str1.1,"aMS",@progbits,1
+  34               	.LC1:
+  35 0000 2564 00   		.string	"%d"
+  36               		.section	.rodata
+  37               	.LC0:
+  38 0000 09        		.byte	9
+  39 0001 3D        		.byte	61
+  40 0002 00        		.byte	0
+  41 0003 00        		.byte	0
+  42 0004 0000      		.word	gs(gpt_cb)
+  43               		.section	.text.startup.main,"ax",@progbits
+  44               	.global	main
+  46               	main:
+  47               	.LFB239:
+  29:main.c        **** 
+  30:main.c        **** /*
+  31:main.c        ****  * Application entry point.
+  32:main.c        ****  */
+  33:main.c        **** int main(void) {
+  48               		.loc 1 33 0
+  49               		.cfi_startproc
+  50 0000 CF93      		push r28
+  51               	.LCFI0:
+  52               		.cfi_def_cfa_offset 3
+  53               		.cfi_offset 28, -2
+  54 0002 DF93      		push r29
+  55               	.LCFI1:
+  56               		.cfi_def_cfa_offset 4
+  57               		.cfi_offset 29, -3
+  58 0004 CDB7      		in r28,__SP_L__
+  59 0006 DEB7      		in r29,__SP_H__
+  60               	.LCFI2:
+  61               		.cfi_def_cfa_register 28
+  62 0008 2F97      		sbiw r28,15
+  63               	.LCFI3:
+  64               		.cfi_def_cfa_offset 19
+  65 000a 0FB6      		in __tmp_reg__,__SREG__
+  66 000c F894      		cli
+  67 000e DEBF      		out __SP_H__,r29
+  68 0010 0FBE      		out __SREG__,__tmp_reg__
+  69 0012 CDBF      		out __SP_L__,r28
+  70               	/* prologue: function */
+  71               	/* frame size = 15 */
+  72               	/* stack size = 17 */
+  73               	.L__stack_usage = 17
+  34:main.c        ****   uint8_t rx_buffer[2];
+  35:main.c        ****   I2CConfig i2c_config = {.clock_speed = 100000};
+  74               		.loc 1 35 0
+  75 0014 80EA      		ldi r24,lo8(-96)
+  76 0016 96E8      		ldi r25,lo8(-122)
+  77 0018 A1E0      		ldi r26,lo8(1)
+  78 001a B0E0      		ldi r27,0
+  79 001c 8F83      		std Y+7,r24
+  80 001e 9887      		std Y+8,r25
+  81 0020 A987      		std Y+9,r26
+  82 0022 BA87      		std Y+10,r27
+  36:main.c        **** 
+  37:main.c        ****   GPTConfig driver_config = {.frequency = 15625,
+  83               		.loc 1 37 0
+  84 0024 86E0      		ldi r24,lo8(6)
+  85 0026 E0E0      		ldi r30,lo8(.LC0)
+  86 0028 F0E0      		ldi r31,hi8(.LC0)
+  87 002a DE01      		movw r26,r28
+  88 002c 1196      		adiw r26,1
+  89               		0:
+  90 002e 0190      		ld r0,Z+
+  91 0030 0D92      		st X+,r0
+  92 0032 8A95      		dec r24
+  93 0034 01F4      		brne 0b
+  38:main.c        ****                              .callback = gpt_cb
+  39:main.c        ****   };
+  40:main.c        **** 
+  41:main.c        ****   SerialConfig serial_config = {.sc_brr = UBRR2x(9600),
+  94               		.loc 1 41 0
+  95 0036 8FEC      		ldi r24,lo8(-49)
+  96 0038 90E0      		ldi r25,0
+  97 003a 9C87      		std Y+12,r25
+  98 003c 8B87      		std Y+11,r24
+  99 003e 83E0      		ldi r24,lo8(3)
+ 100 0040 8D87      		std Y+13,r24
+  42:main.c        ****                                 .sc_bits_per_char = USART_CHAR_SIZE_8};
+  43:main.c        **** 
+  44:main.c        ****   /*
+  45:main.c        ****    * System initializations.
+  46:main.c        ****    * - HAL initialization, this also initializes the configured device drivers
+  47:main.c        ****    *   and performs the board-specific initializations.
+  48:main.c        ****    * - Kernel initialization, the main() function becomes a thread and the
+  49:main.c        ****    *   RTOS is active.
+  50:main.c        ****    */
+  51:main.c        ****   halInit();
+ 101               		.loc 1 51 0
+ 102 0042 0E94 0000 		call halInit
+ 103               	.LVL2:
+  52:main.c        ****   chSysInit();
+ 104               		.loc 1 52 0
+ 105 0046 0E94 0000 		call chSysInit
+ 106               	.LVL3:
+  53:main.c        **** 
+  54:main.c        ****   palSetPadMode(IOPORT2, PB0, PAL_MODE_INPUT_PULLUP);
+ 107               		.loc 1 54 0
+ 108 004a 43E0      		ldi r20,lo8(3)
+ 109 004c 61E0      		ldi r22,lo8(1)
+ 110 004e 83E2      		ldi r24,lo8(35)
+ 111 0050 90E0      		ldi r25,0
+ 112 0052 0E94 0000 		call _pal_lld_setgroupmode
+ 113               	.LVL4:
+  55:main.c        **** 
+  56:main.c        ****   gptStart(&GPTD1, &driver_config);
+ 114               		.loc 1 56 0
+ 115 0056 BE01      		movw r22,r28
+ 116 0058 6F5F      		subi r22,-1
+ 117 005a 7F4F      		sbci r23,-1
+ 118 005c 80E0      		ldi r24,lo8(GPTD1)
+ 119 005e 90E0      		ldi r25,hi8(GPTD1)
+ 120 0060 0E94 0000 		call gptStart
+ 121               	.LVL5:
+  57:main.c        ****   gptStartContinuous(&GPTD1, 15625);
+ 122               		.loc 1 57 0
+ 123 0064 69E0      		ldi r22,lo8(9)
+ 124 0066 7DE3      		ldi r23,lo8(61)
+ 125 0068 80E0      		ldi r24,lo8(GPTD1)
+ 126 006a 90E0      		ldi r25,hi8(GPTD1)
+ 127 006c 0E94 0000 		call gptStartContinuous
+ 128               	.LVL6:
+  58:main.c        **** 
+  59:main.c        ****   i2cStart(&I2CD1, &i2c_config);
+ 129               		.loc 1 59 0
+ 130 0070 BE01      		movw r22,r28
+ 131 0072 695F      		subi r22,-7
+ 132 0074 7F4F      		sbci r23,-1
+ 133 0076 80E0      		ldi r24,lo8(I2CD1)
+ 134 0078 90E0      		ldi r25,hi8(I2CD1)
+ 135 007a 0E94 0000 		call i2cStart
+ 136               	.LVL7:
+  60:main.c        **** 
+  61:main.c        ****   sdStart(&SD1, &serial_config);
+ 137               		.loc 1 61 0
+ 138 007e BE01      		movw r22,r28
+ 139 0080 655F      		subi r22,-11
+ 140 0082 7F4F      		sbci r23,-1
+ 141 0084 80E0      		ldi r24,lo8(SD1)
+ 142 0086 90E0      		ldi r25,hi8(SD1)
+ 143 0088 0E94 0000 		call sdStart
+ 144               	.LVL8:
+  62:main.c        **** 
+  63:main.c        ****   while (true) {
+  64:main.c        ****     if (flag) {
+  65:main.c        ****       i2cMasterTransmitTimeout(&I2CD1, PEER_ADDRESS, 0x00, 0, rx_buffer, 2, TIME_INFINITE);
+  66:main.c        ****       chprintf((BaseSequentialStream *) &SD1, "%d", rx_buffer[0]);
+ 145               		.loc 1 66 0
+ 146 008c 20E0      		ldi r18,lo8(.LC1)
+ 147 008e 822E      		mov r8,r18
+ 148 0090 20E0      		ldi r18,hi8(.LC1)
+ 149 0092 922E      		mov r9,r18
+ 150 0094 30E0      		ldi r19,lo8(SD1)
+ 151 0096 A32E      		mov r10,r19
+ 152 0098 30E0      		ldi r19,hi8(SD1)
+ 153 009a B32E      		mov r11,r19
+ 154               	.L4:
+  64:main.c        ****       i2cMasterTransmitTimeout(&I2CD1, PEER_ADDRESS, 0x00, 0, rx_buffer, 2, TIME_INFINITE);
+ 155               		.loc 1 64 0
+ 156 009c 8091 0000 		lds r24,flag
+ 157 00a0 8823      		tst r24
+ 158 00a2 01F0      		breq .L4
+  65:main.c        ****       chprintf((BaseSequentialStream *) &SD1, "%d", rx_buffer[0]);
+ 159               		.loc 1 65 0
+ 160 00a4 CC24      		clr r12
+ 161 00a6 CA94      		dec r12
+ 162 00a8 DC2C      		mov r13,r12
+ 163 00aa 92E0      		ldi r25,lo8(2)
+ 164 00ac E92E      		mov r14,r25
+ 165 00ae F12C      		mov r15,__zero_reg__
+ 166 00b0 8E01      		movw r16,r28
+ 167 00b2 025F      		subi r16,-14
+ 168 00b4 1F4F      		sbci r17,-1
+ 169 00b6 30E0      		ldi r19,0
+ 170 00b8 20E0      		ldi r18,0
+ 171 00ba 50E0      		ldi r21,0
+ 172 00bc 40E0      		ldi r20,0
+ 173 00be 60E9      		ldi r22,lo8(-112)
+ 174 00c0 80E0      		ldi r24,lo8(I2CD1)
+ 175 00c2 90E0      		ldi r25,hi8(I2CD1)
+ 176 00c4 0E94 0000 		call i2cMasterTransmitTimeout
+ 177               	.LVL9:
+ 178               		.loc 1 66 0
+ 179 00c8 8E85      		ldd r24,Y+14
+ 180 00ca 1F92      		push __zero_reg__
+ 181 00cc 8F93      		push r24
+ 182 00ce 9F92      		push r9
+ 183 00d0 8F92      		push r8
+ 184 00d2 BF92      		push r11
+ 185 00d4 AF92      		push r10
+ 186 00d6 0E94 0000 		call chprintf
+ 187               	.LVL10:
+  67:main.c        ****       flag = 0;
+ 188               		.loc 1 67 0
+ 189 00da 1092 0000 		sts flag,__zero_reg__
+ 190 00de 0F90      		pop __tmp_reg__
+ 191 00e0 0F90      		pop __tmp_reg__
+ 192 00e2 0F90      		pop __tmp_reg__
+ 193 00e4 0F90      		pop __tmp_reg__
+ 194 00e6 0F90      		pop __tmp_reg__
+ 195 00e8 0F90      		pop __tmp_reg__
+ 196 00ea 00C0      		rjmp .L4
+ 197               		.cfi_endproc
+ 198               	.LFE239:
+ 200               		.comm	flag,1,1
+ 201               		.text
+ 202               	.Letext0:
+ 203               		.file 2 "/usr/lib/gcc/avr/7.3.0/include/stddef.h"
+ 204               		.file 3 "/usr/lib/avr/include/stdint.h"
+ 205               		.file 4 "../../os/common/ports/AVR/compilers/GCC/chtypes.h"
+ 206               		.file 5 "../../os/rt/include/chearly.h"
+ 207               		.file 6 "../../os/rt/include/chobjects.h"
+ 208               		.file 7 "../../os/rt/include/chrfcu.h"
+ 209               		.file 8 "../../os/rt/include/chdebug.h"
+ 210               		.file 9 "../../os/rt/include/chtime.h"
+ 211               		.file 10 "../../os/rt/include/chlists.h"
+ 212               		.file 11 "../../os/common/ports/AVR/chcore.h"
+ 213               		.file 12 "../../os/rt/include/chsem.h"
+ 214               		.file 13 "../../os/rt/include/chmtx.h"
+ 215               		.file 14 "../../os/rt/include/chsys.h"
+ 216               		.file 15 "../../os/rt/include/chregistry.h"
+ 217               		.file 16 "../../os/rt/include/chevents.h"
+ 218               		.file 17 "../../os/oslib/include/chmemcore.h"
+ 219               		.file 18 "../../os/hal/include/hal_streams.h"
+ 220               		.file 19 "../../os/hal/include/hal_queues.h"
+ 221               		.file 20 "../../os/hal/ports/AVR/MEGA/LLD/GPIOv1/hal_pal_lld.h"
+ 222               		.file 21 "../../os/hal/include/hal_gpt.h"
+ 223               		.file 22 "../../os/hal/ports/AVR/MEGA/LLD/TIMv1/hal_gpt_lld.h"
+ 224               		.file 23 "../../os/hal/include/hal_i2c.h"
+ 225               		.file 24 "../../os/hal/ports/AVR/MEGA/LLD/I2Cv1/hal_i2c_lld.h"
+ 226               		.file 25 "../../os/hal/include/hal_serial.h"
+ 227               		.file 26 "../../os/hal/ports/AVR/MEGA/LLD/USARTv1/hal_serial_lld.h"
+ 228               		.file 27 "../../os/hal/include/hal.h"
+ 229               		.file 28 "../../os/hal/lib/streams/chprintf.h"
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/cc0pOH6W.s:2      *ABS*:000000000000003e __SP_H__
+     /tmp/cc0pOH6W.s:3      *ABS*:000000000000003d __SP_L__
+     /tmp/cc0pOH6W.s:4      *ABS*:000000000000003f __SREG__
+     /tmp/cc0pOH6W.s:5      *ABS*:0000000000000000 __tmp_reg__
+     /tmp/cc0pOH6W.s:6      *ABS*:0000000000000001 __zero_reg__
+     /tmp/cc0pOH6W.s:13     .text.gpt_cb:0000000000000000 gpt_cb
+                            *COM*:0000000000000001 flag
+     /tmp/cc0pOH6W.s:46     .text.startup.main:0000000000000000 main
+
+UNDEFINED SYMBOLS
+halInit
+chSysInit
+_pal_lld_setgroupmode
+GPTD1
+gptStart
+gptStartContinuous
+I2CD1
+i2cStart
+SD1
+sdStart
+i2cMasterTransmitTimeout
+chprintf
+__do_copy_data
+__do_clear_bss
